@@ -33,6 +33,7 @@ export default {
     return {
       leftList: {},
       currentModule: '',
+      currentMenu: '',
       activeIndex: '',
       isCreated: false,
     }
@@ -40,7 +41,8 @@ export default {
   watch: {
     $route: {
       handler(val) {
-        this.currentModule = val.fullPath.split('/')[1]
+        this.currentMenu = val.fullPath
+        this.currentModule = this.currentMenu.split('/')[1]
         if (this.isCreated) {
           this.activeIndex = this.leftList[this.currentModule][0].path
         }
@@ -55,12 +57,13 @@ export default {
   },
   methods: {
     initLeftMenuList() {
+      console.log('initLeftMenuList')
       defaultRouter.map((item) => {
         if (item.children && item.children.length > 0) {
           this.leftList[item.name] = item.children
         }
       })
-      this.activeIndex = this.leftList[this.currentModule][0].path
+      this.activeIndex = this.currentMenu
     },
   },
 }
@@ -92,6 +95,7 @@ export default {
   padding: 15px;
   background: white;
   box-shadow: 0 0 8px #bfbfbf;
+  overflow: hidden;
 }
 .iconfont {
   font-size: 25px;

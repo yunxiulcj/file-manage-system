@@ -1,20 +1,18 @@
 <template>
-    <div class="box">
-
-    </div>
+  <div class="box">
+    <page-frame title="流程审批系统" icon="approvalFlow"></page-frame>
+  </div>
 </template>
 
 <script>
+import pageFrame from '../../components/pageFrame.vue'
 export default {
-    name:'approvalFlow',
-    data(){
-        return{
-
-        }
-    }
+  name: 'approvalFlow',
+  components: { pageFrame },
+  data() {
+    return {}
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

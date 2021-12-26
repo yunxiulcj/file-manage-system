@@ -40,11 +40,14 @@ export default {
   computed: {},
   created() {
     this.menuList = defaultRouter
-    this.activeIndex = defaultRouter[0].path
+    this.activeIndex = this.$route.path.substring(
+      0,
+      this.$route.path.lastIndexOf('/')
+    )
   },
   methods: {
     logout() {
-      console.log('logout')
+      this.$router.push({ path: '/login', replace: true })
     },
   },
 }
