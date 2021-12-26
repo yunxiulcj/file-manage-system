@@ -1,0 +1,151 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3054260 */
+  src: url('iconfont.woff2?t=1640490790073') format('woff2'),
+       url('iconfont.woff?t=1640490790073') format('woff'),
+       url('iconfont.ttf?t=1640490790073') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-approvalStrategy:before {
+  content: "\e6ff";
+}
+
+.icon-securityStrategy:before {
+  content: "\e6a3";
+}
+
+.icon-userManage:before {
+  content: "\e633";
+}
+
+.icon-yonghutianchong:before {
+  content: "\e6a2";
+}
+
+.icon-setting:before {
+  content: "\e68f";
+}
+
+.icon-laiyuangailan:before {
+  content: "\e61d";
+}
+
+.icon-chengyuan:before {
+  content: "\e61c";
+}
+
+.icon-emailConfig:before {
+  content: "\e624";
+}
+
+.icon-recycleBin:before {
+  content: "\e61a";
+}
+
+.icon-yingyong:before {
+  content: "\e64f";
+}
+
+.icon-transferStop:before {
+  content: "\e88e";
+}
+
+.icon-xiazaidaoru:before {
+  content: "\e8c6";
+}
+
+.icon-soFile:before {
+  content: "\e604";
+}
+
+.icon-spaceManage:before {
+  content: "\e60e";
+}
+
+.icon-myApplication:before {
+  content: "\eb61";
+}
+
+.icon-myApproval:before {
+  content: "\eb67";
+}
+
+.icon-approvalFlow:before {
+  content: "\e60c";
+}
+
+.icon-huaban:before {
+  content: "\e617";
+}
+
+.icon-xinjianwenjian:before {
+  content: "\e629";
+}
+
+.icon-security:before {
+  content: "\ec4d";
+}
+
+.icon-sendLink:before {
+  content: "\e671";
+}
+
+.icon-upload:before {
+  content: "\e61e";
+}
+
+.icon-filePool:before {
+  content: "\e641";
+}
+
+.icon-share:before {
+  content: "\e8b0";
+}
+
+.icon-home:before {
+  content: "\e7a7";
+}
+
+.icon-adminConfig:before {
+  content: "\e681";
+}
+
+.icon-operatingRecord:before {
+  content: "\e62a";
+}
+
+.icon-yunpan:before {
+  content: "\e606";
+}
+
+.icon-systemLog:before {
+  content: "\e74e";
+}
+
+.icon-inbox:before {
+  content: "\e898";
+}
+
+.icon-cloudManage:before {
+  content: "\e945";
+}
+
+.icon-cloud:before {
+  content: "\e988";
+}
+
+.icon-logout:before {
+  content: "\e6ac";
+}
+
+.icon-storeFrontConfig:before {
+  content: "\e62e";
+}
+

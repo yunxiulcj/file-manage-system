@@ -1,0 +1,247 @@
+{
+  "id": "3054260",
+  "name": "fileManager",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4933240",
+      "name": "审批",
+      "font_class": "approvalStrategy",
+      "unicode": "e6ff",
+      "unicode_decimal": 59135
+    },
+    {
+      "icon_id": "20853325",
+      "name": "安全策略配置",
+      "font_class": "securityStrategy",
+      "unicode": "e6a3",
+      "unicode_decimal": 59043
+    },
+    {
+      "icon_id": "145442",
+      "name": "用户",
+      "font_class": "userManage",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "145742",
+      "name": "用户_填充",
+      "font_class": "yonghutianchong",
+      "unicode": "e6a2",
+      "unicode_decimal": 59042
+    },
+    {
+      "icon_id": "666885",
+      "name": "设置",
+      "font_class": "setting",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "873499",
+      "name": "来源概览",
+      "font_class": "laiyuangailan",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "1025525",
+      "name": "成员",
+      "font_class": "chengyuan",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "1304893",
+      "name": "邮件",
+      "font_class": "emailConfig",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "1376050",
+      "name": "回收站",
+      "font_class": "recycleBin",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "1503777",
+      "name": "应用",
+      "font_class": "yingyong",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "1727329",
+      "name": "11中转站-线性",
+      "font_class": "transferStop",
+      "unicode": "e88e",
+      "unicode_decimal": 59534
+    },
+    {
+      "icon_id": "1727452",
+      "name": "218下载、导入",
+      "font_class": "xiazaidaoru",
+      "unicode": "e8c6",
+      "unicode_decimal": 59590
+    },
+    {
+      "icon_id": "2987288",
+      "name": "文件夹",
+      "font_class": "soFile",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "3513823",
+      "name": "项目空间",
+      "font_class": "spaceManage",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "3868271",
+      "name": "测试申请",
+      "font_class": "myApplication",
+      "unicode": "eb61",
+      "unicode_decimal": 60257
+    },
+    {
+      "icon_id": "3868280",
+      "name": "提案审批",
+      "font_class": "myApproval",
+      "unicode": "eb67",
+      "unicode_decimal": 60263
+    },
+    {
+      "icon_id": "4246237",
+      "name": "流程配置",
+      "font_class": "approvalFlow",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "5114088",
+      "name": "用户组织",
+      "font_class": "huaban",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "5641060",
+      "name": "新建文件",
+      "font_class": "xinjianwenjian",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "5961299",
+      "name": "安全",
+      "font_class": "security",
+      "unicode": "ec4d",
+      "unicode_decimal": 60493
+    },
+    {
+      "icon_id": "6537196",
+      "name": "链接",
+      "font_class": "sendLink",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "6550618",
+      "name": "上传",
+      "font_class": "upload",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "7038154",
+      "name": "文件夹",
+      "font_class": "filePool",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "11372666",
+      "name": "分享",
+      "font_class": "share",
+      "unicode": "e8b0",
+      "unicode_decimal": 59568
+    },
+    {
+      "icon_id": "11674090",
+      "name": "home",
+      "font_class": "home",
+      "unicode": "e7a7",
+      "unicode_decimal": 59303
+    },
+    {
+      "icon_id": "11810477",
+      "name": "管理员",
+      "font_class": "adminConfig",
+      "unicode": "e681",
+      "unicode_decimal": 59009
+    },
+    {
+      "icon_id": "11882426",
+      "name": "操作记录",
+      "font_class": "operatingRecord",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "12382571",
+      "name": "yunpan",
+      "font_class": "yunpan",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "14303372",
+      "name": "系统日志",
+      "font_class": "systemLog",
+      "unicode": "e74e",
+      "unicode_decimal": 59214
+    },
+    {
+      "icon_id": "18165590",
+      "name": "收集箱,箱子,文件箱,盒",
+      "font_class": "inbox",
+      "unicode": "e898",
+      "unicode_decimal": 59544
+    },
+    {
+      "icon_id": "18169792",
+      "name": "云服务器,云端",
+      "font_class": "cloudManage",
+      "unicode": "e945",
+      "unicode_decimal": 59717
+    },
+    {
+      "icon_id": "18170211",
+      "name": "云端,云,云服务",
+      "font_class": "cloud",
+      "unicode": "e988",
+      "unicode_decimal": 59784
+    },
+    {
+      "icon_id": "20853368",
+      "name": "注销",
+      "font_class": "logout",
+      "unicode": "e6ac",
+      "unicode_decimal": 59052
+    },
+    {
+      "icon_id": "23457878",
+      "name": "Storefront",
+      "font_class": "storeFrontConfig",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    }
+  ]
+}
