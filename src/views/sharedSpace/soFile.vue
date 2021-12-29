@@ -1,24 +1,19 @@
 <template>
   <div class="box">
-    soFile
-    <el-button @click="test">test</el-button>
+    <page-frame title="所有文件" icon="soFile"></page-frame>
   </div>
 </template>
 
 <script>
+import pageFrame from '../../components/pageFrame.vue'
 export default {
   name: 'soFile',
+  components: { pageFrame },
   data() {
     return {}
   },
-  created() {
-    console.log('created', 'soFile')
-  },
-  methods: {
-    test() {
-      this.$router.push('/permissions/adminConfig')
-    },
-  },
+  created() {},
+  methods: {},
 }
 </script>
 

@@ -1,0 +1,10 @@
+.tabBox .el-tabs__item {
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    width: 150px;
+}
+
+.el-drawer__header{
+    margin-bottom: 15px;
+}

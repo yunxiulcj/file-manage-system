@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     initLeftMenuList() {
-      console.log('initLeftMenuList')
       defaultRouter.map((item) => {
         if (item.children && item.children.length > 0) {
           this.leftList[item.name] = item.children
@@ -94,7 +93,7 @@ export default {
   height: calc(100% - 15px);
   padding: 15px;
   background: white;
-  box-shadow: 0 0 8px #bfbfbf;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
 .iconfont {

@@ -1,14 +1,18 @@
 <template>
-  <div class="box"></div>
+  <div class="box">
+    <page-frame title="管理员配置" icon="adminConfig"></page-frame>
+  </div>
 </template>
 
 <script>
+import pageFrame from '../../components/pageFrame.vue'
 export default {
-  name: "adminConfig",
+  name: 'adminConfig',
+  components: { pageFrame },
   data() {
-    return {};
+    return {}
   },
-};
+}
 </script>
 
 <style scoped></style>

@@ -1,14 +1,18 @@
 <template>
-  <div class="box"></div>
+  <div class="box">
+    <page-frame title="发出的链接" icon="sendLink"></page-frame>
+  </div>
 </template>
 
 <script>
+import pageFrame from '../../components/pageFrame.vue'
 export default {
-  name: "sendLink",
+  name: 'sendLink',
+  components: { pageFrame },
   data() {
-    return {};
+    return {}
   },
-};
+}
 </script>
 
 <style scoped></style>

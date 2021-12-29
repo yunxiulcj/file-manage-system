@@ -3,6 +3,9 @@
     <el-header style="height: 25px; line-height: 25px">
       <i :class="'iconfont icon-' + icon"></i>
       <span class="title">{{ title }}</span>
+      <div class="headBtn">
+        <slot name="headBtn"></slot>
+      </div>
     </el-header>
     <el-divider></el-divider>
     <el-container>
@@ -52,11 +55,17 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* justify-content: center; */
+}
+.headBtn {
+  position: absolute;
+  right: 35px;
 }
 .el-container {
   height: calc(100% - 40px);
   width: 100%;
+}
+.el-main {
+  padding: 10px;
 }
 .el-divider {
   background-color: #d9d9d9;

@@ -8,13 +8,8 @@
       loadingText="正在加载表格数据"
       :empty-text="emptyText"
       :data="cloneConfig.tableData"
-      :border="
-        cloneConfig.border
-          ? cloneConfig.border
-          : cloneConfig.expand
-          ? false
-          : true
-      "
+      :header-cell-style="cloneConfig.headerCellStyle"
+      :border="cloneConfig.border"
       :row-key="cloneConfig.rowKey"
       lazy
       :default-sort="cloneConfig.defaultSort"
@@ -33,15 +28,13 @@
         type="selection"
         align="center"
         width="55"
-      >
-      </el-table-column>
+      ></el-table-column>
       <el-table-column
         v-if="cloneConfig.serialNumber"
         type="index"
         align="center"
         width="55"
-      >
-      </el-table-column>
+      ></el-table-column>
       <el-table-column v-if="cloneConfig.expand" type="expand">
         <template slot-scope="scope">
           <slot name="expand" :row="scope.row" :index="scope.$index"></slot>
@@ -89,7 +82,7 @@
               :title="item.title"
             >
               {{
-                typeof item.formatter === "function"
+                typeof item.formatter === 'function'
                   ? item.formatter(
                       scope.row,
                       scope.column,
@@ -145,7 +138,7 @@
                 "
               >
                 {{
-                  typeof item.label === "function"
+                  typeof item.label === 'function'
                     ? item.label(scope.row)
                     : item.label
                 }}
@@ -159,7 +152,7 @@
                 v-else
               >
                 {{
-                  typeof item.label === "function"
+                  typeof item.label === 'function'
                     ? item.label(scope.row)
                     : item.label
                 }}
@@ -178,8 +171,7 @@
         :page-sizes="cloneConfig.page.pageSizes"
         :layout="layout"
         :total="cloneConfig.page.total"
-      >
-      </el-pagination>
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -201,10 +193,10 @@
  * @emit [Function] afterFetch 数据返回后的执行的函数
  */
 
-import { clone, merge } from "@/utils/obj-operation";
-import { Table } from "element-ui";
+import { clone, merge } from '@/utils/obj-operation'
+import { Table } from 'element-ui'
 export default {
-  name: "TableTemp",
+  name: 'TableTemp',
   props: {
     config: {
       type: Object,
@@ -217,8 +209,8 @@ export default {
     ...Table.props,
   },
   watch: {
-    "config.tableData"() {
-      this.init();
+    'config.tableData'() {
+      this.init()
     },
   },
   data() {
@@ -228,97 +220,97 @@ export default {
       showSelectList: false,
       cloneConfig: {
         map: {
-          data: "data.items",
-          total: "data.total",
+          data: 'data.items',
+          total: 'data.total',
         },
         resetIndex: true,
       },
-      layout: "prev, pager, next, jumper",
+      layout: 'prev, pager, next, jumper',
       clientMaxHeight: 200,
       isSizeOrIndexChange: false, // 判断是否为页码获取，如果不是，则将重置currentIndex为1
       innerLoading: false, // 默认开启表格得loading
-    };
+    }
   },
   methods: {
     handleSortChange(val) {
-      this.sortAble = true;
-      this.$emit("sortChange", val);
+      this.sortAble = true
+      this.$emit('sortChange', val)
     },
     getLayout() {
       if (this.cloneConfig.page && this.cloneConfig.page.pageSizes) {
-        this.layout = "sizes, " + this.layout;
+        this.layout = 'sizes, ' + this.layout
       }
       if (
         this.cloneConfig.page &&
         (this.cloneConfig.page.total === 0 || this.cloneConfig.page.total)
       ) {
-        this.layout = "total, " + this.layout;
+        this.layout = 'total, ' + this.layout
       }
     },
     handleSelectionChange(selection) {
-      this.$emit("selection-change", selection);
+      this.$emit('selection-change', selection)
     },
     handleSizeChange(index) {
       if (this.cloneConfig.page) {
-        this.cloneConfig.page.pageSize = index;
-        this.cloneConfig.page.pageIndex = 1;
-        this.isSizeOrIndexChange = true;
+        this.cloneConfig.page.pageSize = index
+        this.cloneConfig.page.pageIndex = 1
+        this.isSizeOrIndexChange = true
       }
-      if (this.cloneConfig.fetchUrl !== "undefined") {
-        this.fetch();
+      if (this.cloneConfig.fetchUrl !== 'undefined') {
+        this.fetch()
       } else {
-        this.splitData();
+        this.splitData()
       }
     },
     handleCurrentChange(index) {
       if (this.cloneConfig.page) {
-        this.cloneConfig.page.pageIndex = index;
-        this.isSizeOrIndexChange = true;
+        this.cloneConfig.page.pageIndex = index
+        this.isSizeOrIndexChange = true
       }
-      if (this.cloneConfig.fetchUrl !== "undefined") {
-        this.fetch();
+      if (this.cloneConfig.fetchUrl !== 'undefined') {
+        this.fetch()
       } else {
-        this.splitData();
+        this.splitData()
       }
     },
     // 请求表格的方法
     fetch(methodName) {
-      let ContentType;
-      let promise;
+      let ContentType
+      let promise
       if (!this.cloneConfig.fetchUrl) {
-        console.log("%c没有fetchUrl，请检查", "color: red");
-        return;
+        console.log('%c没有fetchUrl，请检查', 'color: red')
+        return
       }
       try {
         if (this.cloneConfig.resetIndex || !this.sortAble) {
-          this.resetIndex();
+          this.resetIndex()
         }
         let postData = {
           ...this.cloneConfig.condition,
-        };
+        }
         if (this.cloneConfig.page) {
-          let size = "pageSize";
-          let index = "pageIndex";
+          let size = 'pageSize'
+          let index = 'pageIndex'
           if (this.cloneConfig.page.map) {
-            size = this.cloneConfig.page.map.size || "pageSize";
-            index = this.cloneConfig.page.map.index || "pageIndex";
+            size = this.cloneConfig.page.map.size || 'pageSize'
+            index = this.cloneConfig.page.map.index || 'pageIndex'
           }
-          postData[size] = this.cloneConfig.page.pageSize || 15;
-          postData[index] = this.cloneConfig.page.pageIndex || 1;
+          postData[size] = this.cloneConfig.page.pageSize || 15
+          postData[index] = this.cloneConfig.page.pageIndex || 1
         }
 
-        this.innerLoading = true;
-        this.$emit("update:loading", true);
-        if (methodName != undefined && methodName == "get") {
-          postData.methodName = methodName;
+        this.innerLoading = true
+        this.$emit('update:loading', true)
+        if (methodName != undefined && methodName == 'get') {
+          postData.methodName = methodName
         }
         if (this.cloneConfig.map && this.cloneConfig.map.ContentType) {
-          ContentType = this.cloneConfig.map.ContentType;
+          ContentType = this.cloneConfig.map.ContentType
           promise = this.$http(this.config.fetchUrl, postData, {
-            headers: { "Content-Type": ContentType },
-          });
+            headers: { 'Content-Type': ContentType },
+          })
         } else {
-          promise = this.$http(this.config.fetchUrl, postData);
+          promise = this.$http(this.config.fetchUrl, postData)
         }
 
         // console.log('postData', postData)
@@ -326,123 +318,123 @@ export default {
           .then(
             (data) => {
               // 保存结果
-              this.responseData = data;
+              this.responseData = data
               let tableData =
-                this.dataMap(data, this.cloneConfig.map.data) || [];
+                this.dataMap(data, this.cloneConfig.map.data) || []
               // 数据处理函数, 传入请求返回的数据，输出处理后的数组
               if (this.cloneConfig.dataProcess) {
-                tableData = this.cloneConfig.dataProcess(tableData);
+                tableData = this.cloneConfig.dataProcess(tableData)
               }
               // todo merge合并之后，作用于为cloneConfig，直接覆盖会使config无法响应
-              this.cloneConfig.tableData = tableData;
-              this.config.tableData = tableData;
+              this.cloneConfig.tableData = tableData
+              this.config.tableData = tableData
               if (this.config.page) {
                 if (
                   this.config.page.total === 0 ? true : this.config.page.total
                 ) {
                   let total =
-                    this.dataMap(data, this.cloneConfig.map.total) || 0;
+                    this.dataMap(data, this.cloneConfig.map.total) || 0
                   this.cloneConfig.page &&
-                    this.$set(this.cloneConfig.page, "total", total);
+                    this.$set(this.cloneConfig.page, 'total', total)
                 }
               }
             },
             () => {
-              this.clearData();
+              this.clearData()
             }
           )
           .finally(() => {
-            this.$emit("afterFetch", this.responseData);
-            this.$emit("update:loading", false);
-            this.innerLoading = false;
-          });
-        this.sortAble = false;
+            this.$emit('afterFetch', this.responseData)
+            this.$emit('update:loading', false)
+            this.innerLoading = false
+          })
+        this.sortAble = false
       } catch (e) {
-        this.innerLoading = false;
-        this.$emit("update:loading", false);
-        console.log("%c%s", "color: red", e);
+        this.innerLoading = false
+        this.$emit('update:loading', false)
+        console.log('%c%s', 'color: red', e)
       }
     },
     clearData() {
-      this.cloneConfig.tableData = [];
+      this.cloneConfig.tableData = []
       this.cloneConfig.page &&
         (this.cloneConfig.page.pageIndex = 1) &&
-        (this.cloneConfig.page.total = 0);
+        (this.cloneConfig.page.total = 0)
     },
     dataMap(resData, map) {
       try {
-        let mapArr = map.split(".");
-        let data = clone(resData);
+        let mapArr = map.split('.')
+        let data = clone(resData)
         while (mapArr.length > 0) {
-          data = data[mapArr.shift()];
+          data = data[mapArr.shift()]
         }
-        return data;
+        return data
       } catch (e) {
-        console.log("数据映射出错%c%s", "color: red", e);
+        console.log('数据映射出错%c%s', 'color: red', e)
       }
     },
     rowClick(row, event, column) {
-      this.$emit("row-click", row, event, column);
+      this.$emit('row-click', row, event, column)
     },
     expandChange(row, expandedRows) {
-      this.$emit("expand-change", row, expandedRows);
+      this.$emit('expand-change', row, expandedRows)
     },
     resetIndex() {
       // 重置页码为1
       if (this.cloneConfig.page && !this.isSizeOrIndexChange) {
-        this.$set(this.cloneConfig.page, "pageIndex", 1);
-        this.isSizeOrIndexChange = false;
+        this.$set(this.cloneConfig.page, 'pageIndex', 1)
+        this.isSizeOrIndexChange = false
       } else {
-        this.isSizeOrIndexChange = false;
+        this.isSizeOrIndexChange = false
       }
     },
     getMaxHeight() {
-      let tableTempWrap = this.$refs.tableTempWrap;
-      let reportNav = this.$refs.reportNav;
+      let tableTempWrap = this.$refs.tableTempWrap
+      let reportNav = this.$refs.reportNav
       this.clientMaxHeight =
-        tableTempWrap.clientHeight - (reportNav ? reportNav.offsetHeight : 0);
+        tableTempWrap.clientHeight - (reportNav ? reportNav.offsetHeight : 0)
     },
     splitData() {
       let index = this.cloneConfig.page
         ? this.cloneConfig.page.pageIndex || 1
-        : 1;
+        : 1
       let size = this.cloneConfig.page
         ? this.cloneConfig.page.pageSize || 15
-        : 15;
+        : 15
       let last =
         this.config.tableData.length > size
           ? size
-          : this.config.tableData.length;
+          : this.config.tableData.length
       this.cloneConfig.tableData = this.config.tableData.slice(
         (index - 1) * size,
         (index - 1) * size + last
-      );
+      )
       if (this.config.page) {
-        this.cloneConfig.page.total = this.config.tableData.length;
+        this.cloneConfig.page.total = this.config.tableData.length
       }
     },
     init() {
-      if (typeof this.config.fetchUrl === "undefined" && this.config.page) {
-        this.cloneConfig = clone(this.config);
-        this.splitData();
+      if (typeof this.config.fetchUrl === 'undefined' && this.config.page) {
+        this.cloneConfig = clone(this.config)
+        this.splitData()
       } else {
-        this.cloneConfig = merge(this.config, this.cloneConfig);
+        this.cloneConfig = merge(this.config, this.cloneConfig)
       }
       if (this.loading) {
-        this.innerLoading = this.loading;
+        this.innerLoading = this.loading
       }
     },
   },
   // 如果不是分页接口，而是全部返回的模式，自动分割数据形成分页
   created() {
-    this.init();
-    this.getLayout();
+    this.init()
+    this.getLayout()
   },
   mounted() {
     // let table = this.$refs.elTable
     // console.log(table.$listeners)
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -459,7 +451,7 @@ export default {
 }
 
 .report-nav:after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -478,12 +470,12 @@ export default {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAvElEQVQ4T62S4Q3CIBSE301gR2EFN3hsoBs4Am6iE/A2qCM4Sp3gDElpaEsTWuUfgfu4dwfkx4Wk997zCCfGiAmQNkcg/3PQ+jrJJwAVkdNshBYAyauZPVRVAcRdgELciUgPwC0BH5IBQEj2Skc1cTqfAUjezSyoqgPwypAtcQ0wiMjZzN4ZQvI2zjzZLp2tMiBZQjozG1S1Kl45yOQlJAdWa2mzhQQBcBlDdVsV76pxl4OWTzXLoFVQu/cFw8iYEWa3XFsAAAAASUVORK5CYII=")
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAvElEQVQ4T62S4Q3CIBSE301gR2EFN3hsoBs4Am6iE/A2qCM4Sp3gDElpaEsTWuUfgfu4dwfkx4Wk997zCCfGiAmQNkcg/3PQ+jrJJwAVkdNshBYAyauZPVRVAcRdgELciUgPwC0BH5IBQEj2Skc1cTqfAUjezSyoqgPwypAtcQ0wiMjZzN4ZQvI2zjzZLp2tMiBZQjozG1S1Kl45yOQlJAdWa2mzhQQBcBlDdVsV76pxl4OWTzXLoFVQu/cFw8iYEWa3XFsAAAAASUVORK5CYII=')
       center center no-repeat;
     cursor: pointer;
     z-index: 8;
     .active {
-      background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyUlEQVQ4T62SzQ2CQBCFv9EClAT7oAU7oATtQC8GbnhTL7agFViClmAhJODRRB0Dhl9ZA+qcNtl93743M8KPJal+FepXHM+WAuDZr3PH+qODtj8rewQXGFCJ0AagTPHtHevQRTl0A2TibTTkejuCOHXABZEA1SC1V64mcXJfiaC6xB8FbCKHx/2UQ0ziNwDE9PpjFtY5hyizNHPZdtlZQxMLSCKaW7FR3OAgY1chWcOapvRhjDEwgaSh4hgn3HkP6qT/AdpsoeHNEyCmdRG0SxEsAAAAAElFTkSuQmCC")
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyUlEQVQ4T62SzQ2CQBCFv9EClAT7oAU7oATtQC8GbnhTL7agFViClmAhJODRRB0Dhl9ZA+qcNtl93743M8KPJal+FepXHM+WAuDZr3PH+qODtj8rewQXGFCJ0AagTPHtHevQRTl0A2TibTTkejuCOHXABZEA1SC1V64mcXJfiaC6xB8FbCKHx/2UQ0ziNwDE9PpjFtY5hyizNHPZdtlZQxMLSCKaW7FR3OAgY1chWcOapvRhjDEwgaSh4hgn3HkP6qT/AdpsoeHNEyCmdRG0SxEsAAAAAElFTkSuQmCC')
         center center no-repeat;
     }
   }
@@ -509,13 +501,13 @@ export default {
       right: 10px;
       width: 16px;
       height: 16px;
-      background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABAElEQVQ4T6VT0U3DMBC95wXoBi1S7F86QpmAdgLEBLQbwAR0hI4QRsgG+bYtmRHgP9FDFyVRa4HUNCf5w757796zz5AsUkqLtm2fSG5FZKFpkl8ASmvtZ16P84MQwpuIvA7AvFiJjDGHoijKITcSeO9PAJ5z0F97ki/OuZPmOoIY45Gkdr46AOxUCVJKq6Zp0tXIvlDtOOfucUv30T+wg/e+BvAwVUFf/44QAm8EK6yaTzDbwpxLFJHH4RlrEbmbeBeVtXbTDVIIYS8iHxMIfkhunHP1OMoTrCh4fzHKQ+cY45bkUUSW/6iperBa7uLiN2ZEa5IrY8w3SV2lSs6JfwGzII2KRxeE/gAAAABJRU5ErkJggg==");
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABAElEQVQ4T6VT0U3DMBC95wXoBi1S7F86QpmAdgLEBLQbwAR0hI4QRsgG+bYtmRHgP9FDFyVRa4HUNCf5w757796zz5AsUkqLtm2fSG5FZKFpkl8ASmvtZ16P84MQwpuIvA7AvFiJjDGHoijKITcSeO9PAJ5z0F97ki/OuZPmOoIY45Gkdr46AOxUCVJKq6Zp0tXIvlDtOOfucUv30T+wg/e+BvAwVUFf/44QAm8EK6yaTzDbwpxLFJHH4RlrEbmbeBeVtXbTDVIIYS8iHxMIfkhunHP1OMoTrCh4fzHKQ+cY45bkUUSW/6iperBa7uLiN2ZEa5IrY8w3SV2lSs6JfwGzII2KRxeE/gAAAABJRU5ErkJggg==');
     }
     .required .select-column-status {
-      background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABM0lEQVQ4T51Ty1HDMBDVi+U7dIBmLF9JCdBB6MAdJFRAqACnAkgHUAEuIbnKnjElcPdnmdVYHkUh4ES31c57bz9vIYJX1/VN27ZLIroDMOc0Ee0AFFLKjVLqy4fAD6qqyoloGZIGca61fnR/I4ExhlVu/wG7dKG1vufAEkxUHrmJaA/gXWu9xtBzPVGZ57FN0zQry3ItpXzDOeoObIyZA/gEsMXU3j1wBuBFCHFlt1OWJXnlPxPRIhxmAH49WKNPIKW85mTTNIUj+Qtst+C3wCXFcWzXwyRCiB0PzBjDZR8oDwbbHw3RJ1FKfZ8CW3Vg8+saB5KHtm0zIcTTqRVLKdVFRnLqSZKsLrXyh9Z6MVrZlTjFVNw3Kx8dk/tga3ddt+r7ns/ZHhd7fzabFVEU5eE5/wDggs2uByZ5sAAAAABJRU5ErkJggg==");
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABM0lEQVQ4T51Ty1HDMBDVi+U7dIBmLF9JCdBB6MAdJFRAqACnAkgHUAEuIbnKnjElcPdnmdVYHkUh4ES31c57bz9vIYJX1/VN27ZLIroDMOc0Ee0AFFLKjVLqy4fAD6qqyoloGZIGca61fnR/I4ExhlVu/wG7dKG1vufAEkxUHrmJaA/gXWu9xtBzPVGZ57FN0zQry3ItpXzDOeoObIyZA/gEsMXU3j1wBuBFCHFlt1OWJXnlPxPRIhxmAH49WKNPIKW85mTTNIUj+Qtst+C3wCXFcWzXwyRCiB0PzBjDZR8oDwbbHw3RJ1FKfZ8CW3Vg8+saB5KHtm0zIcTTqRVLKdVFRnLqSZKsLrXyh9Z6MVrZlTjFVNw3Kx8dk/tga3ddt+r7ns/ZHhd7fzabFVEU5eE5/wDggs2uByZ5sAAAAABJRU5ErkJggg==');
     }
     .selected .select-column-status {
-      background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABJklEQVQ4T52TQU7CUBRFz0ubMLVJmesKZAm6A9xBdyDM2pE4gjixrEDZga7ALqFdgc4hwalJ8Zn+T0sLlFT+rH3/3vvev/cJ+2e6vkTye+AGZGDLmgIJ6s6JvK86RBr42SoGCvCJozFhf1xe2BHMlinI9WlwVU0I/dviyxJ0Uq5Ta4byRtSfCGbmzWdHZVAWRH7AdDkB91X+pV6Cn9YDfjcfwELoOnulvAoQnoGLwp2iA63aV31EGB48ZhP80rSxTtBzPFP8yZOK5ATYutAYQVN6rrHHkKik9sFM2w3lbcCyI49YIxl73+1gQzFvsVFT1L2DPEDkodVida7ODJJVJ/RH50b5ndAf7qJc9tgt0kb5cJnKPzbaI9BinbfLpRlIgjrx/jr/AbD0gLAZujQ+AAAAAElFTkSuQmCC");
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABJklEQVQ4T52TQU7CUBRFz0ubMLVJmesKZAm6A9xBdyDM2pE4gjixrEDZga7ALqFdgc4hwalJ8Zn+T0sLlFT+rH3/3vvev/cJ+2e6vkTye+AGZGDLmgIJ6s6JvK86RBr42SoGCvCJozFhf1xe2BHMlinI9WlwVU0I/dviyxJ0Uq5Ta4byRtSfCGbmzWdHZVAWRH7AdDkB91X+pV6Cn9YDfjcfwELoOnulvAoQnoGLwp2iA63aV31EGB48ZhP80rSxTtBzPFP8yZOK5ATYutAYQVN6rrHHkKik9sFM2w3lbcCyI49YIxl73+1gQzFvsVFT1L2DPEDkodVida7ODJJVJ/RH50b5ndAf7qJc9tgt0kb5cJnKPzbaI9BinbfLpRlIgjrx/jr/AbD0gLAZujQ+AAAAAElFTkSuQmCC');
     }
   }
 }

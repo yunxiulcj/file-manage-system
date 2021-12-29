@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1111451",
+      "name": "密码",
+      "font_class": "passwordPolicy",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "6121041",
+      "name": "限制成员",
+      "font_class": "limitStrategy",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "8435708",
+      "name": "收集箱",
+      "font_class": "fileCollect",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "10720776",
+      "name": "文件分享",
+      "font_class": "fileShare",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "13646264",
+      "name": "用户2",
+      "font_class": "loginStrategy",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "5388069",
+      "name": "眼睛_显示_o",
+      "font_class": "show",
+      "unicode": "ebcc",
+      "unicode_decimal": 60364
+    },
+    {
+      "icon_id": "5388071",
+      "name": "眼睛_隐藏_o",
+      "font_class": "hidden",
+      "unicode": "ebcd",
+      "unicode_decimal": 60365
+    },
+    {
       "icon_id": "5532892",
       "name": "密码",
       "font_class": "mima",
@@ -99,7 +148,7 @@
     {
       "icon_id": "1727452",
       "name": "218下载、导入",
-      "font_class": "xiazaidaoru",
+      "font_class": "fileDownload",
       "unicode": "e8c6",
       "unicode_decimal": 59590
     },

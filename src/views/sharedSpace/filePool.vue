@@ -1,20 +1,18 @@
 <template>
-    <div class="box">
-
-    </div>
+  <div class="box">
+    <page-frame title="文件池" icon="filePool"></page-frame>
+  </div>
 </template>
 
 <script>
+import pageFrame from '../../components/pageFrame.vue'
 export default {
-    name:'filePool',
-    data(){
-        return{
-
-        }
-    }
+  name: 'filePool',
+  components: { pageFrame },
+  data() {
+    return {}
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

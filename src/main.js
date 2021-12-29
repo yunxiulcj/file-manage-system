@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import promiseFinally from './utils/promise-finally'
 import '@/assets/css/iconfont/iconfont.css'
 import '@/assets/css/index.css'
+import '@/assets/css/element.css'
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
