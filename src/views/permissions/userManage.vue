@@ -1,6 +1,8 @@
 <template>
   <div class="box">
-    <page-frame title="用户管理" icon="userManage"></page-frame>
+    <page-frame title="用户管理" icon="userManage" :aside="true">
+      <template #aside></template>
+    </page-frame>
   </div>
 </template>
 

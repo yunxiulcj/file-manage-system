@@ -85,12 +85,12 @@ export default {
 .contentBox {
   padding: 15px;
   width: 100%;
-  background: #f5f5f5;
-  height: calc(100% - 30px);
+  background: #f0f0f0;
+  height: calc(100% - 12px);
 }
 .content {
   width: calc(100% - 30px);
-  height: calc(100% - 15px);
+  height: calc(100% - 30px);
   padding: 15px;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);

@@ -39,6 +39,20 @@ export default {
         {
           label: '文件分享策略',
           value: 'fileShare',
+          // children: [
+          //   {
+          //     label: '1测试啊测试1',
+          //     value: 'test1',
+          //   },
+          //   {
+          //     label: '2测试啊测试2',
+          //     value: 'test2',
+          //   },
+          //   {
+          //     label: '3测试啊测试3',
+          //     value: 'test3',
+          //   },
+          // ],
         },
         {
           label: '文件下载策略',

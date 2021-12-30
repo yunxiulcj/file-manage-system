@@ -22,7 +22,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="全部消息" name="1">
           <div class="itemWrap">
-            <message-item></message-item>
+            <message-item :messageList="messageList"></message-item>
           </div>
         </el-tab-pane>
         <el-tab-pane name="2">
@@ -74,7 +74,122 @@ export default {
           value: '5',
         },
       ],
+      messageList: [
+        {
+          id: 1,
+          applyType: '1',
+          state: '1',
+          isRead: true,
+          files: [
+            {
+              fileName: '好东西.txt',
+              fileIcon: '',
+              fileSize: '12kb',
+              fileLevel: '1',
+            },
+          ],
+          invalidDay: '2',
+          approver: 'approver',
+          describe: '测试啊这是3',
+          title: '用户chenyue进行了公网上传申请',
+          invalidStartDate: '2020-1-12 02:02:02',
+          invalidEndDate: '2021-12-12 12:12:12',
+          applyUser: 'applyUser',
+          receiver: 'receiver',
+          receiverEmail: '123@cc.com',
+          receiverTel: '14234325433',
+          receiverCompany: '天天摸鱼3',
+          applyEmail: '321@aa.com',
+          applyTel: '153245431332',
+        },
+        {
+          id: 2,
+          applyType: 2,
+          state: 2,
+          isRead: false,
+          files: [
+            {
+              fileName: '好东西2.txt',
+              fileIcon: '',
+              fileSize: '12kb',
+              fileLevel: '2',
+            },
+          ],
+          invalidDay: '3',
+          approver: 'approver',
+          describe: '测试啊这是2',
+          title: '管理员Matt同意了您外发文件的申请',
+          invalidStartDate: '2020-1-12 02:02:02',
+          invalidEndDate: '2021-12-12 12:12:12',
+          applyUser: 'applyUser',
+          receiver: 'receiver',
+          receiverEmail: '123@cc.com',
+          receiverTel: '14234325433',
+          receiverCompany: '天天摸鱼2',
+          applyEmail: '321@aa.com',
+          applyTel: '153245431332',
+        },
+        {
+          id: 3,
+          applyType: 3,
+          state: 1,
+          isRead: false,
+          files: [
+            {
+              fileName: '好东西1.txt',
+              fileIcon: '',
+              fileSize: '232kb',
+              fileLevel: '1',
+            },
+            {
+              fileName: '好东西2.txt',
+              fileIcon: '',
+              fileSize: '123kb',
+              fileLevel: '2',
+            },
+            {
+              fileName: '好东西3.txt',
+              fileIcon: '',
+              fileSize: '12kb',
+              fileLevel: '3',
+            },
+            {
+              fileName: '好东西4.txt',
+              fileIcon: '',
+              fileSize: '122kb',
+              fileLevel: '1',
+            },
+            {
+              fileName: '好东西5.txt',
+              fileIcon: '',
+              fileSize: '12kb',
+              fileLevel: '2',
+            },
+          ],
+          invalidDay: '5',
+          approver: 'approver',
+          describe: '测试啊这是1',
+          title: '管理员Matt 拒绝了您文件下载的申请',
+          invalidStartDate: '2020-1-12 02:02:02',
+          invalidEndDate: '2021-12-12 12:12:12',
+          applyUser: 'applyUser',
+          receiver: 'receiver',
+          receiverEmail: '123@cc.com',
+          receiverTel: '14234325433',
+          receiverCompany: '天天摸鱼1',
+          applyEmail: '321@aa.com',
+          applyTel: '153245431332',
+        },
+      ],
     }
+  },
+  watch: {
+    activeName: {
+      handler(val) {
+        console.log(val)
+      },
+      immediate: true,
+    },
   },
   created() {},
   methods: {
@@ -89,12 +204,14 @@ export default {
 .box {
   display: flex;
   justify-content: center;
-  background: #f5f5f5;
+  background: #f0f0f0;
+  height: calc(100% + 18px);
   .tabBox {
     width: 80%;
+    height: calc(100% - 35px);
     margin-top: 18px;
     background: white;
-    box-shadow: 0px 2px 2px 2px #d9d9d9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
     position: relative;
     .filter {
       position: absolute;
