@@ -18,6 +18,12 @@ export default [
         component: () => import('@/views/strategy/securityStrategy.vue'),
         meta: { title: '安全策略', icon: 'securityStrategy' },
       },
+      {
+        path: '/strategy/relation',
+        name: 'relation',
+        component: () => import('@/views/strategy/relation.vue'),
+        meta: { title: '审批关系', icon: 'relation' },
+      },
     ],
   },
 ]

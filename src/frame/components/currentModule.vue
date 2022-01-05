@@ -14,6 +14,21 @@
           </el-menu-item>
         </template>
       </el-menu>
+      <div class="capacityView" v-if="currentModule == 'sharedSpace'">
+        <div class="progressWrap">
+          <el-progress
+            :percentage="
+              Math.round((capacity.used / capacity.remainingSize) * 100)
+            "
+            color="#228be6"
+            :stroke-width="20"
+            :text-inside="true"
+          ></el-progress>
+        </div>
+        <div class="info">
+          {{ capacity.used }}GB / {{ capacity.remainingSize }}GB
+        </div>
+      </div>
     </div>
     <div class="contentBox">
       <div class="content">
@@ -31,6 +46,10 @@ export default {
   components: {},
   data() {
     return {
+      capacity: {
+        used: 22.12,
+        remainingSize: 50,
+      },
       leftList: {},
       currentModule: '',
       currentMenu: '',
@@ -81,6 +100,7 @@ export default {
   background: white;
   box-shadow: 1px 0 1px #f0f0f0;
   margin-top: 15px;
+  position: relative;
 }
 .contentBox {
   padding: 15px;
@@ -99,5 +119,19 @@ export default {
 .iconfont {
   font-size: 25px;
   margin-right: 15px;
+}
+.capacityView {
+  position: absolute;
+  bottom: 50px;
+  width: 90%;
+  margin: 0px 10px;
+  .progressWrap {
+    margin-bottom: 5px;
+  }
+  .info {
+    font-size: 12px;
+    margin-left: 5px;
+    color: #495057;
+  }
 }
 </style>

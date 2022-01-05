@@ -64,7 +64,7 @@ export default {
 }
 .headBtn {
   position: absolute;
-  right: 35px;
+  right: 10px;
 }
 .el-container {
   height: calc(100% - 40px);

@@ -5,7 +5,6 @@ import sharedSpace from './modules/sharedSpace'
 import message from './modules/message'
 import process from './modules/process'
 import strategy from './modules/strategy'
-import permissions from './modules/permissions'
 import systemManage from './modules/systemManage'
 
 Vue.use(VueRouter)
@@ -15,7 +14,6 @@ let defaultRouter = [
   ...message,
   ...process,
   ...strategy,
-  ...permissions,
   ...systemManage,
 ]
 const routes = [

@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1282",
+      "name": "列表",
+      "font_class": "liebiao",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "4804284",
+      "name": "下载",
+      "font_class": "xiazai",
+      "unicode": "e77f",
+      "unicode_decimal": 59263
+    },
+    {
+      "icon_id": "9384062",
+      "name": "菜单",
+      "font_class": "caidan",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "6773111",
+      "name": "文件-设置说明",
+      "font_class": "file",
+      "unicode": "e745",
+      "unicode_decimal": 59205
+    },
+    {
+      "icon_id": "518150",
+      "name": "11 关系",
+      "font_class": "relation",
+      "unicode": "e88f",
+      "unicode_decimal": 59535
+    },
+    {
+      "icon_id": "4942642",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "5077694",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
       "icon_id": "1111451",
       "name": "密码",
       "font_class": "passwordPolicy",

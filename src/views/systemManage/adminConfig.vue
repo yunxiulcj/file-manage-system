@@ -263,7 +263,7 @@ export default {
     flex-direction: row;
     .rightBtn {
       position: absolute;
-      right: 0px;
+      right: 15px;
     }
   }
 }
