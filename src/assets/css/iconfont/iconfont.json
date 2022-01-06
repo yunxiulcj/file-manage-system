@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7171163",
+      "name": "财务月报表审批",
+      "font_class": "approval",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
       "icon_id": "1282",
       "name": "列表",
       "font_class": "liebiao",
