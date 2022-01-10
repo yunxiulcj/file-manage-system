@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10936590",
+      "name": "nav_待审批",
+      "font_class": "daishenpi",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "3515320",
+      "name": "审核不通过",
+      "font_class": "shenhebutongguo",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "7094465",
+      "name": "审批通过",
+      "font_class": "shenpitongguo",
+      "unicode": "e721",
+      "unicode_decimal": 59169
+    },
+    {
       "icon_id": "7171163",
       "name": "财务月报表审批",
       "font_class": "approval",

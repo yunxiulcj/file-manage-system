@@ -26,6 +26,16 @@ export default [
           icon: 'myApproval',
         },
       },
+      {
+        path: '/process/approval',
+        name: 'approval',
+        component: () => import('@/views/process/approval.vue'),
+        meta: {
+          title: '审批详情',
+          icon: 'approval',
+        },
+        hidden: true,
+      },
     ],
   },
 ]

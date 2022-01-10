@@ -8,7 +8,7 @@
         router
       >
         <template v-for="item in leftList[currentModule]">
-          <el-menu-item :key="item.name" :index="item.path">
+          <el-menu-item :key="item.name" :index="item.path" v-if="!item.hidden">
             <i :class="'iconfont icon-' + item.meta.icon"></i>
             <span slot="title">{{ item.meta.title }}</span>
           </el-menu-item>

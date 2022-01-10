@@ -157,6 +157,38 @@ export default {
           value: '3',
         },
       ],
+      approvalData: {
+        file: [
+          {
+            fileName: 'testFile1.txt',
+            fileLevel: '1',
+          },
+          {
+            fileName: 'testFile1.txt',
+            fileLevel: '2',
+          },
+        ],
+        applyTime: '',
+        applyState: '',
+        workOrderNum: '',
+        applyUser: '',
+        department: '',
+        invalidDay: '',
+        describe: '',
+        processList: [
+          {
+            approvalUser: '',
+            approvalState: '',
+            describe: '',
+            approvalTime: '',
+          },
+        ],
+        receiver: '',
+        receiverEmail: '',
+        receiverTel: '',
+        receiverCompany: '',
+        approvalSuccessTime: '',
+      },
       testData: [
         {
           approvalTime: '2021-12-12 12:12:12',
@@ -324,6 +356,9 @@ export default {
                 case '3':
                   str = '待处理'
                   break
+                case '4':
+                  str = '审批中'
+                  break
                 default:
                   str = '-'
                   break
@@ -349,7 +384,25 @@ export default {
               type: 'text',
               fn: (row) => {
                 console.log(row)
-                this.drawerVisible = true
+                this.$router.push('approval')
+              },
+            },
+            {
+              label: '撤回',
+              type: 'text',
+              fn: (row) => {
+                this.$confirm('是否撤回当前申请？', '提示', {
+                  confirmButtonText: '确认',
+                  cancelButtonText: '取消',
+                  type: 'info',
+                  center: true,
+                }).then(() => {
+                  console.log(row)
+                })
+              },
+              style: { color: '#fd7e14' },
+              show: (row) => {
+                return row.applyStatus == 3 || row.applyStatus == 4
               },
             },
           ],
