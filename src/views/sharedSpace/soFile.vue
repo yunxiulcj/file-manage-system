@@ -3,7 +3,7 @@
     <div class="contentBox" v-if="!showNewApply">
       <header>
         <div class="headLeft">
-          <el-button size="mini" type="primary">
+          <el-button size="mini" type="primary" @click="addFolderDialog = true">
             <i class="iconfont icon-xinjianwenjian"></i>
             新建文件夹
           </el-button>
@@ -158,6 +158,35 @@
         </div>
       </page-frame>
     </div>
+    <el-dialog :visible.sync="addFolderDialog" width="30%">
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          新建文件夹
+        </div>
+      </template>
+      <span>文件夹名称</span>
+      <el-input
+        v-model="folderName"
+        size="small"
+        placeholder="请输入文件夹名称"
+        style="margin-top: 5px"
+      ></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addFolderDialog = false" size="small">
+          取 消
+        </el-button>
+        <el-button type="primary" @click="addFolderDialog = false" size="small">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -169,6 +198,8 @@ export default {
   components: { tableTemp, pageFrame },
   data() {
     return {
+      folderName: '',
+      addFolderDialog: false,
       showNewApply: false,
       applyForm: {
         applicant: 'admin01',
@@ -344,6 +375,7 @@ export default {
         border-radius: 8px;
         font-size: 14px;
         .seniorTitle {
+          color: #495057;
           font-size: 14px;
           font-weight: bold;
           height: 40px;
@@ -352,6 +384,7 @@ export default {
           margin-top: 20px;
         }
         .seniorItem {
+          color: #495057;
           margin: 15px;
           margin-left: 25px;
           .seniorContent {

@@ -69,29 +69,6 @@
         </el-button>
       </span>
     </el-dialog>
-    <el-drawer :visible.sync="drawerVisible" direction="rtl" size="60%">
-      <template slot="title">
-        <div
-          style="
-            height: 20px;
-            line-height: 20px;
-            border-left: 4px solid #1890ff;
-            padding-left: 10px;
-            color: #1890ff;
-          "
-        >
-          审批详情
-        </div>
-      </template>
-      <el-steps :active="1" simple>
-        <el-step title="步骤 1" icon="el-icon-edit"></el-step>
-        <el-step title="步骤 2" icon="el-icon-upload"></el-step>
-        <el-step title="步骤 3" icon="el-icon-picture"></el-step>
-      </el-steps>
-      <el-divider></el-divider>
-
-      <el-divider></el-divider>
-    </el-drawer>
   </div>
 </template>
 
@@ -104,7 +81,6 @@ export default {
   components: { pageFrame, tableTemp },
   data() {
     return {
-      drawerVisible: false,
       MultiFileDialog: false,
       tableLoading1: false,
       pickerOptions: {
@@ -349,7 +325,6 @@ export default {
               label: '详情',
               type: 'text',
               fn: (row) => {
-                this.drawerVisible = true
                 console.log(row)
               },
             },
