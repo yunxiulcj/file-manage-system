@@ -45,8 +45,8 @@
                   <div class="input" v-else>
                     <el-input
                       v-model="typeStr"
-                      @keyup.enter.native="addType(typeStr)"
-                      @blur="addType(typeStr)"
+                      @keyup.enter.native="addType(typeStr, 1)"
+                      @blur="addType(typeStr, 2)"
                       size="mini"
                       style="width: 100px"
                       ref="inputType"
@@ -164,7 +164,7 @@ export default {
         this.$refs['inputType'].focus()
       })
     },
-    addType(val) {
+    addType(val, type) {
       if (val) {
         if (!this.fileTypeList.includes(val)) {
           this.fileTypeList.push(val)
@@ -172,12 +172,15 @@ export default {
           this.$message.info('已存在该类型')
         }
       }
-      this.isInput = !this.isInput
       this.typeStr = ''
-      console.log(val)
+      if (type == 1) {
+        this.$refs['inputType'].focus()
+      } else {
+        this.$refs['inputType'].blur()
+        this.isInput = !this.isInput
+      }
     },
     delType(val) {
-      console.log(val)
       this.fileTypeList.splice(val, 1)
     },
   },

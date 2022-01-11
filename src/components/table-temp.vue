@@ -22,6 +22,9 @@
       @expand-change="expandChange"
       @selection-change="handleSelectionChange"
       @sort-change="handleSortChange"
+      @cell-mouse-enter="cellMouseEnter"
+      @cell-mouse-leave="cellMouseLeave"
+      @cell-click="cellClick"
     >
       <el-table-column
         v-if="cloneConfig.selection"
@@ -235,6 +238,15 @@ export default {
     handleSortChange(val) {
       this.sortAble = true
       this.$emit('sortChange', val)
+    },
+    cellMouseEnter(val) {
+      this.$emit('cellMouseEnter', val)
+    },
+    cellMouseLeave(val) {
+      this.$emit('cellMouseLeave', val)
+    },
+    cellClick(val, event, column) {
+      this.$emit('cellClick', val, event, column)
     },
     getLayout() {
       if (this.cloneConfig.page && this.cloneConfig.page.pageSizes) {
