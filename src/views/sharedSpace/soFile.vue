@@ -65,7 +65,7 @@
         >
           <template slot="file" slot-scope="scope">
             <div class="fileWrap">
-              <div class="fileIcon">i</div>
+              <div class="fileIcon">iiiiiiii</div>
               <div class="fileName">
                 <el-input
                   ref="editInput"
@@ -73,7 +73,6 @@
                   v-model="scope.row.tempName"
                   placeholder="请输入文件名"
                   size="mini"
-                  clearable
                 >
                   <el-button slot="append" @click="editFileName(scope.row)">
                     <i class="el-icon-check"></i>
@@ -116,9 +115,24 @@
           </template>
         </table-temp>
       </div>
-      <div class="iconWrap" v-else>
-        <el-checkbox v-model="checkAll">全选</el-checkbox>
+      <div class="isIconWrap" v-else>
+        <el-checkbox
+          v-model="checkAll"
+          :indeterminate="isIndeterminate"
+          @change="handleCheckAllChange"
+        >
+          全选
+        </el-checkbox>
         <el-divider></el-divider>
+        <div class="fileWrap">
+          <template v-for="(item, index) in tableConfig.tableData">
+            <div class="fileBox" :key="index" @click="selectedFile(item)">
+              <i class="el-icon-success" v-if="item.checked"></i>
+              <div class="fileIcon"></div>
+              <div class="fileName">{{ item.fileName }}</div>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
     <div class="newApplyBox" v-else>
@@ -292,6 +306,8 @@ export default {
   data() {
     return {
       folderName: '',
+      selectedList: [],
+      isIndeterminate: true,
       uploadDialog: false,
       addFolderDialog: false,
       showNewApply: false,
@@ -362,6 +378,150 @@ export default {
           dateChang: '2022-03-11 13:35:12',
           isFolder: false,
         },
+        {
+          id: 1,
+          fileName: 'test001.txt',
+          fileSize: '12kb',
+          dateChang: '2022-01-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 2,
+          fileName: 'test002.txt',
+          fileSize: '512kb',
+          dateChang: '2022-01-12 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 3,
+          fileName: 'test003.txt',
+          fileSize: '212kb',
+          dateChang: '2022-01-13 13:35:12',
+          isFolder: true,
+        },
+        {
+          id: 4,
+          fileName:
+            '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
+          fileSize: '312kb',
+          dateChang: '2022-02-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 5,
+          fileName: 'test005.txt',
+          fileSize: '123MB',
+          dateChang: '2022-03-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 1,
+          fileName: 'test001.txt',
+          fileSize: '12kb',
+          dateChang: '2022-01-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 2,
+          fileName: 'test002.txt',
+          fileSize: '512kb',
+          dateChang: '2022-01-12 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 3,
+          fileName: 'test003.txt',
+          fileSize: '212kb',
+          dateChang: '2022-01-13 13:35:12',
+          isFolder: true,
+        },
+        {
+          id: 4,
+          fileName:
+            '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
+          fileSize: '312kb',
+          dateChang: '2022-02-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 5,
+          fileName: 'test005.txt',
+          fileSize: '123MB',
+          dateChang: '2022-03-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 1,
+          fileName: 'test001.txt',
+          fileSize: '12kb',
+          dateChang: '2022-01-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 2,
+          fileName: 'test002.txt',
+          fileSize: '512kb',
+          dateChang: '2022-01-12 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 3,
+          fileName: 'test003.txt',
+          fileSize: '212kb',
+          dateChang: '2022-01-13 13:35:12',
+          isFolder: true,
+        },
+        {
+          id: 4,
+          fileName:
+            '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
+          fileSize: '312kb',
+          dateChang: '2022-02-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 5,
+          fileName: 'test005.txt',
+          fileSize: '123MB',
+          dateChang: '2022-03-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 1,
+          fileName: 'test001.txt',
+          fileSize: '12kb',
+          dateChang: '2022-01-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 2,
+          fileName: 'test002.txt',
+          fileSize: '512kb',
+          dateChang: '2022-01-12 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 3,
+          fileName: 'test003.txt',
+          fileSize: '212kb',
+          dateChang: '2022-01-13 13:35:12',
+          isFolder: true,
+        },
+        {
+          id: 4,
+          fileName:
+            '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
+          fileSize: '312kb',
+          dateChang: '2022-02-11 13:35:12',
+          isFolder: false,
+        },
+        {
+          id: 5,
+          fileName: 'test005.txt',
+          fileSize: '123MB',
+          dateChang: '2022-03-11 13:35:12',
+          isFolder: false,
+        },
       ],
       tableLoading: false,
       tableConfig: {
@@ -382,16 +542,15 @@ export default {
             label: '文件名',
             align: 'left',
             slot: 'file',
+            minWidth: '400px',
           },
           {
             prop: 'fileSize',
             label: '大小',
-            width: '250px',
           },
           {
             prop: 'dateChang',
             label: '修改日期',
-            width: '300px',
           },
         ],
       },
@@ -405,14 +564,15 @@ export default {
     this.tableConfig.maxHeight = document.body.clientHeight - 220 + 'px'
   },
   methods: {
-    handleSelectionChange(val) {
-      this.selectData = val
+    handleCheckAllChange(val) {
+      console.log(val)
     },
-    cellMouseEnter(val) {
-      this.$set(val, 'showOperate', true)
-    },
-    cellMouseLeave(val) {
-      this.$set(val, 'showOperate', false)
+    selectedFile(data) {
+      if (data.checked) {
+        this.$set(data, 'checked', false)
+      } else {
+        this.$set(data, 'checked', true)
+      }
     },
     addDownloadApply(data) {
       console.log(data)
@@ -446,6 +606,15 @@ export default {
     uploadFile() {
       this.uploadDialog = true
     },
+    handleSelectionChange(val) {
+      this.selectData = val
+    },
+    cellMouseEnter(val) {
+      this.$set(val, 'showOperate', true)
+    },
+    cellMouseLeave(val) {
+      this.$set(val, 'showOperate', false)
+    },
   },
 }
 </script>
@@ -476,7 +645,7 @@ export default {
     .tableWrap {
       width: 100%;
       height: calc(100% - 90px);
-      overflow: auto;
+      // overflow: auto;
       .fileWrap {
         color: #495057;
         display: flex;
@@ -509,6 +678,62 @@ export default {
           i:hover {
             color: #1864ab;
           }
+          .icon-quxiao {
+            color: #ff6b6b;
+          }
+          .icon-quxiao:hover {
+            color: #fa5252;
+          }
+        }
+      }
+    }
+    .isIconWrap {
+      height: calc(100% - 90px);
+      width: 100%;
+      .fileWrap {
+        height: calc(100% - 50px);
+        width: 100%;
+        overflow: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 116px);
+        grid-template-rows: repeat(auto-fill, 116px);
+        grid-gap: 5px;
+
+        .fileBox {
+          width: 115px;
+          height: 115px;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          align-items: center;
+          justify-content: center;
+          border-radius: 5px;
+          cursor: pointer;
+          i {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            color: #228be6;
+          }
+          .fileIcon {
+            width: 65px;
+            height: 65px;
+            background: #228be6;
+            margin-bottom: 8px;
+          }
+          .fileName {
+            width: 110px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            font-size: 13px;
+            color: #343a40;
+          }
+        }
+        .fileBox:hover {
+          border: 0.5px solid #228be6;
+          background: #e7f5ff;
         }
       }
     }
