@@ -142,19 +142,27 @@ export default {
       stateList: [
         {
           label: '全部',
-          value: '0',
+          value: '',
         },
         {
-          label: '已同意',
+          label: '已撤回',
           value: '1',
         },
         {
-          label: '已拒绝',
+          label: '待处理',
           value: '2',
         },
         {
-          label: '待处理',
+          label: '审批中',
           value: '3',
+        },
+        {
+          label: '审批通过',
+          value: '4',
+        },
+        {
+          label: '审批拒绝',
+          value: '5',
         },
       ],
       approvalData: {
@@ -330,13 +338,19 @@ export default {
               let sty
               switch (row.applyStatus) {
                 case '1':
-                  sty = { color: '#389e0d' }
+                  sty = { color: '#fd7e14' }
                   break
                 case '2':
-                  sty = { color: '#f5222d' }
+                  sty = { color: '#228be6' }
                   break
                 case '3':
-                  sty = { color: '#1890ff' }
+                  sty = { color: '#fcc419' }
+                  break
+                case '4':
+                  sty = { color: '#40c057' }
+                  break
+                case '5':
+                  sty = { color: '#f03e3e' }
                   break
                 default:
                   sty = { color: '#595959' }
@@ -348,16 +362,19 @@ export default {
               let str
               switch (row.applyStatus) {
                 case '1':
-                  str = '已同意'
+                  str = '已撤回'
                   break
                 case '2':
-                  str = '已拒绝'
-                  break
-                case '3':
                   str = '待处理'
                   break
-                case '4':
+                case '3':
                   str = '审批中'
+                  break
+                case '4':
+                  str = '审批通过'
+                  break
+                case '5':
+                  str = '审批拒绝'
                   break
                 default:
                   str = '-'
@@ -372,7 +389,7 @@ export default {
           total: 'data.totalCount',
         },
         condition: {
-          applyStatus: '0',
+          applyStatus: '',
           startTime: '',
           endTime: '',
           searchStr: '',
@@ -402,7 +419,7 @@ export default {
               },
               style: { color: '#fd7e14' },
               show: (row) => {
-                return row.applyStatus == 3 || row.applyStatus == 4
+                return row.applyStatus == 2 || row.applyStatus == 3
               },
             },
           ],

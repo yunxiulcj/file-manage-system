@@ -9,7 +9,7 @@
           </el-button>
           <el-button size="mini" type="primary" @click="uploadFile">
             <i class="iconfont icon-upload"></i>
-            上传
+            上传文件
           </el-button>
           <el-button
             size="mini"
@@ -126,11 +126,27 @@
         <el-divider></el-divider>
         <div class="fileWrap">
           <template v-for="(item, index) in tableConfig.tableData">
-            <div class="fileBox" :key="index" @click="selectedFile(item)">
-              <i class="el-icon-success" v-if="item.checked"></i>
-              <div class="fileIcon"></div>
-              <div class="fileName">{{ item.fileName }}</div>
-            </div>
+            <el-tooltip
+              :key="index"
+              effect="dark"
+              placement="top"
+              :open-delay="400"
+            >
+              <div slot="content">
+                <div>文件名称：{{ item.fileName }}</div>
+                <div>文件大小：{{ item.fileSize }}</div>
+                <div>修改日期：{{ item.dateChang }}</div>
+              </div>
+              <div
+                class="fileBox"
+                :class="{ checked: item.checked }"
+                @click="selectedFile(item)"
+              >
+                <i class="el-icon-success" v-if="item.checked"></i>
+                <div class="fileIcon"></div>
+                <div class="fileName">{{ item.fileName }}</div>
+              </div>
+            </el-tooltip>
           </template>
         </div>
       </div>
@@ -697,8 +713,7 @@ export default {
         display: grid;
         grid-template-columns: repeat(auto-fill, 116px);
         grid-template-rows: repeat(auto-fill, 116px);
-        grid-gap: 5px;
-
+        grid-gap: 15px 8px;
         .fileBox {
           width: 115px;
           height: 115px;
@@ -732,6 +747,10 @@ export default {
           }
         }
         .fileBox:hover {
+          border: 0.5px solid #228be6;
+          background: #e7f5ff;
+        }
+        .checked {
           border: 0.5px solid #228be6;
           background: #e7f5ff;
         }
