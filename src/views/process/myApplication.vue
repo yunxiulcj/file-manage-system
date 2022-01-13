@@ -205,7 +205,7 @@ export default {
           applyTime: '2021-12-12 12:12:12',
           applyType: '3',
           sensitivityLevel: '3',
-          applyId: '123',
+          applyId: '12sd3',
           fileName: '多个文件',
           workOrderNum: '123321789',
           isMultiFile: true,
@@ -218,7 +218,7 @@ export default {
           applyTime: '2021-12-12 12:12:12',
           applyType: '2',
           sensitivityLevel: '2',
-          applyId: '123',
+          applyId: '12sdfs',
           fileName: 'Testtes',
           workOrderNum: '3123321789',
           isMultiFile: false,
@@ -231,7 +231,33 @@ export default {
           applyTime: '2021-12-12 12:12:12',
           applyType: '1',
           sensitivityLevel: '1',
-          applyId: '123',
+          applyId: '122343',
+          fileName: 'qwerrewq',
+          workOrderNum: '2123321789',
+          isMultiFile: false,
+          approvalCurrentUserId: '',
+        },
+        {
+          approvalTime: '2021-12-12 12:12:12',
+          canDownload: '',
+          applyStatus: '5',
+          applyTime: '2021-12-12 12:12:12',
+          applyType: '1',
+          sensitivityLevel: '1',
+          applyId: '122gdfg343',
+          fileName: 'qwerrewq',
+          workOrderNum: '2123321789',
+          isMultiFile: false,
+          approvalCurrentUserId: '',
+        },
+        {
+          approvalTime: '2021-12-12 12:12:12',
+          canDownload: '',
+          applyStatus: '4',
+          applyTime: '2021-12-12 12:12:12',
+          applyType: '1',
+          sensitivityLevel: '1',
+          applyId: '122sdfsd343',
           fileName: 'qwerrewq',
           workOrderNum: '2123321789',
           isMultiFile: false,
@@ -341,11 +367,11 @@ export default {
                   sty = { color: '#fd7e14' }
                   break
                 case '2':
+                case '3':
                   sty = { color: '#228be6' }
                   break
-                case '3':
-                  sty = { color: '#fcc419' }
-                  break
+                // sty = { color: '#fcc419' }
+                // break
                 case '4':
                   sty = { color: '#40c057' }
                   break
@@ -400,8 +426,14 @@ export default {
               label: '详情',
               type: 'text',
               fn: (row) => {
-                console.log(row)
-                this.$router.push('approval')
+                this.$router.push({
+                  name: 'approval',
+                  params: {
+                    accountType: '0',
+                    approvalState: row.applyStatus,
+                    applyId: row.applyId,
+                  },
+                })
               },
             },
             {
@@ -419,7 +451,7 @@ export default {
               },
               style: { color: '#fd7e14' },
               show: (row) => {
-                return row.applyStatus == 2 || row.applyStatus == 3
+                return row.applyStatus == 2
               },
             },
           ],
