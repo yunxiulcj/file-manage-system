@@ -6,16 +6,20 @@
           <el-date-picker
             v-model="tableConfig.condition.date"
             type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
             placeholder="选择日期时间"
             align="right"
-            :picker-options="pickerOptions"
+            :picker-options="pickerOptions1"
+            clearable
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-input
             style="width: 200px"
-            v-model="tableConfig.condition.userId"
+            v-model="tableConfig.condition.username"
             placeholder="请输入操作人名称"
+            clearable
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -37,7 +41,7 @@
         :loading="tableLoading"
       ></table-temp>
     </page-frame>
-    <el-dialog :visible.sync="dialogVisible" width="400px">
+    <el-dialog :visible.sync="dialogVisible" width="550px">
       <template slot="title">
         <div
           style="
@@ -55,9 +59,12 @@
         <el-form-item label="选择日期">
           <el-date-picker
             v-model="delLogDate"
-            type="datetime"
+            type="datetimerange"
             size="small"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
             placeholder="选择日期时间"
+            :picker-options="pickerOptions2"
             align="right"
           ></el-date-picker>
         </el-form-item>
@@ -65,9 +72,7 @@
       <div class="delLogTips">提示：请选择一年以前的历史记录</div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="dialogVisible = false">
-          确 定
-        </el-button>
+        <el-button size="small" type="primary" @click="delLog">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -84,7 +89,7 @@ export default {
       dialogVisible: false,
       tableLoading: false,
       delLogDate: '',
-      pickerOptions: {
+      pickerOptions1: {
         shortcuts: [
           {
             text: '今天',
@@ -110,34 +115,69 @@ export default {
           },
         ],
       },
+      pickerOptions2: {
+        shortcuts: [
+          {
+            text: '一年前',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+              picker.$emit('pick', [start, end])
+            },
+          },
+          {
+            text: '一年半前',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 548)
+              picker.$emit('pick', [start, end])
+            },
+          },
+          {
+            text: '两年前',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 730)
+              picker.$emit('pick', [start, end])
+            },
+          },
+        ],
+      },
       tableConfig: {
         tableData: [],
         border: true,
         tableSetting: [
           {
-            label: '时间',
-            prop: 'operationTime',
+            label: '用户',
+            prop: 'username',
           },
           {
             label: '操作时间',
-            prop: 'userId',
+            prop: 'operationTime',
           },
           {
             label: '日志类型',
-            prop: 'logContent',
-          },
-          {
-            label: '日志内容',
             prop: 'logType',
           },
           {
+            label: '日志内容',
+            prop: 'logContent',
+          },
+          {
             label: '执行结果',
-            prop: 'operationResult',
+            prop: 'result',
           },
         ],
         condition: {
           date: '',
-          userId: '',
+          username: '',
+        },
+        map: {
+          data: 'data.data',
+          total: 'data.totalCount',
         },
         page: {
           pageIndex: 1,
@@ -149,12 +189,31 @@ export default {
             size: 'pageSize',
           },
         },
-        fetchUrl: 'operationList',
+        fetchUrl: 'getSystemLogList',
       },
     }
   },
+  mounted() {
+    this.getData()
+  },
   methods: {
-    getData() {},
+    getData() {
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
+      })
+    },
+    delLog() {
+      if (this.delLogDate.length > 0) {
+        this.$http('deleteSystemLog', {
+          startDate: this.delLogDate[0],
+          endDate: this.delLogDate[1],
+        }).then((res) => {
+          this.$message.success(res.message)
+        })
+      } else {
+        this.$message.warning('请选择时间范围')
+      }
+    },
   },
 }
 </script>

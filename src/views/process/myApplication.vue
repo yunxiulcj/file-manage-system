@@ -411,7 +411,7 @@ export default {
           },
         ],
         map: {
-          data: 'data.items',
+          data: 'data.data',
           total: 'data.totalCount',
         },
         condition: {
@@ -456,6 +456,7 @@ export default {
             },
           ],
         },
+
         page: {
           pageIndex: 1,
           pageSize: 10,
@@ -524,19 +525,25 @@ export default {
         condition: {
           applyId: '',
         },
-        fetchUrl: 'getMultipleFiles',
+        fetchUrl: 'getApplyList',
       },
     }
   },
   computed: {},
   created() {
     this.getDefaultTime()
+  },
+  mounted() {
+    this.getData()
     this.tableConfig.tableData = this.testData
   },
   methods: {
     getData() {
       this.tableConfig.condition.startTime = this.times[0]
       this.tableConfig.condition.endTime = this.times[1]
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
+      })
     },
     getDefaultTime() {
       this.times = [

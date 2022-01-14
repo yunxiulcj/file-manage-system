@@ -6,16 +6,20 @@
           <el-date-picker
             v-model="tableConfig.condition.date"
             type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
             placeholder="选择日期时间"
             align="right"
             :picker-options="pickerOptions"
+            clearable
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-input
             style="width: 200px"
-            v-model="tableConfig.condition.userId"
+            v-model="tableConfig.condition.username"
             placeholder="请输入用户名"
+            clearable
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -76,11 +80,11 @@ export default {
           },
           {
             label: '用户',
-            prop: 'userId',
+            prop: 'username',
           },
           {
             label: '部门',
-            prop: 'depart',
+            prop: 'dept',
           },
           {
             label: '文档',
@@ -88,12 +92,16 @@ export default {
           },
           {
             label: '行为',
-            prop: 'behavior',
+            prop: 'operation',
           },
         ],
         condition: {
           date: '',
-          userId: '',
+          username: '',
+        },
+        map: {
+          data: 'data.data',
+          total: 'data.totalCount',
         },
         page: {
           pageIndex: 1,
@@ -105,12 +113,19 @@ export default {
             size: 'pageSize',
           },
         },
-        fetchUrl: 'operationList',
+        fetchUrl: 'getFileOperationLogList',
       },
     }
   },
+  mounted() {
+    this.getData()
+  },
   methods: {
-    getData() {},
+    getData() {
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
+      })
+    },
   },
 }
 </script>

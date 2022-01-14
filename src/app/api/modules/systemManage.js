@@ -18,7 +18,7 @@ export default {
     url: '/system/saveAccount',
   },
   domainAccountMatch: {
-    url: '/system/domainAccountMatch',
+    url: '/system/accountMatch',
   },
   getAccountDetail: {
     url: '/system/getAccountDetail',

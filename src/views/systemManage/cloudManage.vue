@@ -4,14 +4,14 @@
       <template #aside>
         <mini-menu :options="menuList" v-model="menu"></mini-menu>
       </template>
-      <div class="file" v-if="menu == 'file'">
+      <div class="file" v-if="menu == 'file'" v-loading="loading">
         <div class="uploadBox fileBox">
           <div class="title">上传文件限制</div>
           <div class="contentBox">
             <div class="subtitle">设置单个文件上传的大小上限</div>
             <div class="count">
               <el-input-number
-                v-model="formObj.uploadSize"
+                v-model="formObj.uploadFileSize"
                 :min="1"
                 size="small"
               ></el-input-number>
@@ -24,9 +24,13 @@
           <div class="contentBox">
             <div class="subtitle">设置一般用户可操作的文件类型</div>
             <div class="type">
-              <el-checkbox-group v-model="formObj.fileType">
+              <el-checkbox-group
+                v-model="formObj.operationFileType"
+                v-if="formObj.operationFileType"
+              >
                 <el-checkbox
                   v-for="(item, index) in fileTypeList"
+                  v-show="item"
                   :key="item"
                   :label="item"
                   size="mini"
@@ -63,31 +67,31 @@
           <div class="contentBox1">
             <div class="setting1 setting">
               <el-checkbox
-                v-model="formObj.isDownloadLimit"
+                v-model="formObj.enableDownLoadCount"
                 label="文件下载申请默认下载次数上限"
                 style="width: 306px"
               ></el-checkbox>
-              <span v-show="formObj.isDownloadLimit">
+              <span>
                 <el-input-number
                   :min="1"
                   size="mini"
-                  v-model="formObj.downloadNum"
+                  v-model="formObj.defaultDownLoadCount"
                 ></el-input-number>
                 <span class="unit">单位：次</span>
               </span>
             </div>
             <div class="setting2 setting">
               <el-checkbox
-                v-model="formObj.isDownloadTime"
+                v-model="formObj.enableDownLoadDay"
                 label="默认下载申请有效期上限设置"
                 style="width: 245px"
               ></el-checkbox>
-              <span class="unit" v-show="formObj.isDownloadTime">
+              <span class="unit">
                 审批后
                 <el-input-number
                   :min="1"
                   size="mini"
-                  v-model="formObj.downloadTime"
+                  v-model="formObj.defaultDownLoadDay"
                 ></el-input-number>
                 天内邮箱
               </span>
@@ -95,17 +99,23 @@
           </div>
         </div>
         <div class="operate">
-          <el-button type="primary" size="small">保存</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="saveFileSetting(formObj)"
+          >
+            保存
+          </el-button>
         </div>
       </div>
-      <div class="cloud" v-if="menu == 'cloud'">
+      <div class="cloud" v-if="menu == 'cloud'" v-loading="loading">
         <div class="cloudPath fileBox">
           <div class="title">网盘路径设置</div>
           <div class="contentBox">
             <el-form label-width="100px" label-position="right" size="small">
               <el-form-item label="网盘根路径">
                 <el-input
-                  v-model="pathForm.cloudPath"
+                  v-model="formObj.diskRootPath"
                   style="width: 450px"
                   placeholder="请输入网盘根路径，示例：\\yxcloud-DFS01\"
                 ></el-input>
@@ -114,7 +124,9 @@
           </div>
         </div>
         <div class="operate">
-          <el-button type="primary" size="small">保存</el-button>
+          <el-button type="primary" size="small" @click="savePath(formObj)">
+            保存
+          </el-button>
         </div>
       </div>
     </page-frame>
@@ -124,6 +136,7 @@
 <script>
 import pageFrame from '../../components/pageFrame.vue'
 import miniMenu from '../../components/miniMenu.vue'
+import { clone } from '../../utils/obj-operation'
 export default {
   name: 'cloudManage',
   components: { pageFrame, miniMenu },
@@ -142,22 +155,80 @@ export default {
       ],
       typeStr: '',
       formObj: {
-        uploadSize: 1,
-        fileType: [],
-        isDownloadLimit: false,
-        isDownloadTime: false,
-        downloadNum: 1,
-        downloadTime: 1,
+        uploadFileSize: 1,
+        operationFileType: [],
+        enableDownLoadCount: false,
+        enableDownLoadDay: false,
+        defaultDownLoadCount: 1,
+        defaultDownLoadDay: 1,
+        diskRootPath: '',
       },
-      pathForm: {
-        cloudPath: '',
-        formRules: {},
-      },
-      fileTypeList: ['txt', 'word', 'pdf', 'excel', 'zip'],
+      fileTypeList: [],
       isInput: false,
+      loading: false,
     }
   },
+  watch: {
+    menu: {
+      handler(val) {
+        let type = val == 'file' ? 1 : 2
+        this.getData(type)
+      },
+      immediate: true,
+    },
+  },
   methods: {
+    getData(type) {
+      this.loading = true
+      this.$http('getSetting', { settingId: type })
+        .then((res) => {
+          let data = res.data
+          // if (data.defaultDownLoadCount && data.defaultDownLoadCount == 0) {
+          //   data['enableDownLoadCount'] = false
+          //   data.defaultDownLoadCount = 1
+          // } else {
+          //   data['enableDownLoadCount'] = true
+          // }
+          // if (data.defaultDownLoadDay && data.defaultDownLoadDay == 0) {
+          //   data['enableDownLoadDay'] = false
+          //   data.defaultDownLoadDay = 1
+          // } else {
+          //   data['enableDownLoadDay'] = true
+          // }
+          if (data.operationFileType) {
+            this.fileTypeList = clone(data.operationFileType)
+          }
+          this.formObj = data
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    saveFileSetting(data) {
+      // if (!data.enableDownLoadCount) {
+      //   data.defaultDownLoadCount = 0
+      // }
+      // if (!data.enableDownLoadDay) {
+      //   data.defaultDownLoadDay = 0
+      // }
+      this.$http('fileSetting', {
+        uploadFileSize: data.uploadFileSize,
+        operationFileType: data.operationFileType,
+        defaultDownLoadCount: data.defaultDownLoadCount,
+        defaultDownLoadDay: data.defaultDownLoadDay,
+        enableDownLoadCount: data.enableDownLoadCount,
+        enableDownLoadDay: data.enableDownLoadDay,
+      }).then((res) => {
+        this.$message.success(res.errMsg)
+      })
+    },
+    savePath(data) {
+      this.$http('diskPathSetting', { diskRootPath: data.diskRootPath }).then(
+        (res) => {
+          this.$message.success(res.errMsg)
+        }
+      )
+    },
     clickAdd() {
       this.isInput = !this.isInput
       this.$nextTick(() => {
@@ -166,8 +237,12 @@ export default {
     },
     addType(val, type) {
       if (val) {
-        if (!this.fileTypeList.includes(val)) {
+        let temp = this.fileTypeList.filter(
+          (item) => item.toLowerCase() == val.toLowerCase()
+        )
+        if (temp.length == 0) {
           this.fileTypeList.push(val)
+          this.formObj.operationFileType.push(val)
         } else {
           this.$message.info('已存在该类型')
         }
@@ -181,6 +256,9 @@ export default {
       }
     },
     delType(val) {
+      this.formObj.operationFileType = this.formObj.operationFileType.filter(
+        (item) => item != this.fileTypeList[val]
+      )
       this.fileTypeList.splice(val, 1)
     },
   },

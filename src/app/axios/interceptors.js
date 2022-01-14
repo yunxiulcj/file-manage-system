@@ -6,14 +6,14 @@ import { Message } from 'element-ui'
 import { typeTest } from '@/utils/obj-operation'
 import router from '@/app/router/index'
 function getErrText(data) {
-  if (!data || !data.message) {
+  if (!data || !data.errMsg) {
     return '网络异常'
   }
-  if (typeTest(data.message, 'string')) {
-    return data.message
+  if (typeTest(data.errMsg, 'string')) {
+    return data.errMsg
   }
-  if (typeTest(data.message, 'object')) {
-    return data.message
+  if (typeTest(data.errMsg, 'object')) {
+    return data.errMsg
   }
   return null
 }
@@ -52,9 +52,9 @@ function responseInterceptor(response) {
       console.log('解析数据出错， come from iframe', e)
     }
   }
-  if (data && data.code) {
-    let code = data.code
-    switch (code) {
+  if (data && data.errCode) {
+    let errCode = data.errCode
+    switch (errCode) {
       case -1:
         return data
       case 14001:

@@ -1,6 +1,6 @@
-import VueSystem from "vue-system";
-import Router from "vue-router";
-import Axios from "axios";
+import VueSystem from 'vue-system'
+import Router from 'vue-router'
+import Axios from 'axios'
 
 /**
  * vue-system封装了一些钩子
@@ -12,4 +12,4 @@ import Axios from "axios";
  * Axios:
  *        registerReqManage(reqWhitelist, mode) 注册请求管理器
  */
-export default new VueSystem(Axios, Router);
+export default new VueSystem(Axios, Router)

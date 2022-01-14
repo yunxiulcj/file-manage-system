@@ -34,11 +34,12 @@ export default {
     return {
       activeIndex: '',
       menuList: [],
-      account: 'admin01',
+      account: '',
     }
   },
   computed: {},
   created() {
+    this.account = localStorage.getItem('username') || 'admin01'
     this.menuList = defaultRouter
     this.activeIndex = this.$route.path.substring(
       0,
@@ -47,7 +48,21 @@ export default {
   },
   methods: {
     logout() {
-      this.$router.push({ path: '/login', replace: true })
+      this.$confirm('是否要退出登录？', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'info',
+        center: true,
+      }).then(() => {
+        this.$http('logout')
+          .then((res) => {
+            this.$message.success(res.errMsg)
+          })
+          .finally(() => {
+            this.$router.push({ path: '/login', replace: true })
+          })
+      })
+      // this.$router.push({ path: '/login', replace: true })
     },
   },
 }

@@ -16,7 +16,12 @@
         </div>
         <div class="rightBtn">
           <el-button type="warning" size="small">权限预览</el-button>
-          <el-button type="primary" size="small" icon="el-icon-refresh">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-refresh"
+            @click="getData"
+          >
             刷新列表
           </el-button>
         </div>
@@ -44,28 +49,28 @@
       <el-form
         ref="form"
         :model="formObj"
-        :rules="formObj.formRules"
+        :rules="formRules"
         size="small"
         style="width: 400px"
         label-position="right"
         label-width="100px"
       >
-        <el-form-item label="域账号" prop="id">
+        <el-form-item label="域账号" prop="userId">
           <el-input
-            v-model="formObj.id"
+            v-model="formObj.userId"
             placeholder="请输入域账号"
             clearable
           ></el-input>
         </el-form-item>
         <el-form-item label="真实姓名">
           <el-input
-            v-model="formObj.realName"
+            v-model="formObj.username"
             placeholder="请输入真实姓名"
             clearable
           ></el-input>
         </el-form-item>
         <el-form-item label="用户角色">
-          <el-select v-model="formObj.userRole" style="width: 300px">
+          <el-select v-model="formObj.roleId" style="width: 300px">
             <el-option
               v-for="item in roleType"
               :key="item.value"
@@ -83,7 +88,7 @@
         </el-form-item>
         <el-form-item label="手机号码">
           <el-input
-            v-model="formObj.tel"
+            v-model="formObj.phone"
             placeholder="请输入手机号码"
             clearable
           ></el-input>
@@ -106,45 +111,41 @@ export default {
   name: 'adminConfig',
   components: { pageFrame, tableTemp },
   data() {
+    var checkUserId = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('域账号不能为空'))
+      }
+      this.$http('domainAccountMatch', { userId: value }).then((res) => {
+        if (res.errCode != -1) {
+          callback(new Error(res.errMsg))
+        } else {
+          callback()
+        }
+      })
+    }
     return {
       newOrEdit: '',
       showNewOrEdit: false,
       tableLoading: false,
       delAccount: [],
       formObj: {
-        id: '',
-        realName: '',
-        userRole: '1',
+        userId: '',
+        username: '',
+        roleId: '1',
         email: '',
-        tel: '',
-        formRules: {
-          id: [{ required: true, message: '请输入域账号', trigger: 'blur' }],
-        },
+        phone: '',
+      },
+      formRules: {
+        userId: [{ required: true, validator: checkUserId, trigger: 'blur' }],
       },
       roleType: [
         {
           label: '系统管理员',
-          value: '1',
+          value: 1,
         },
         {
           label: '普通管理员',
-          value: '2',
-        },
-      ],
-      testData: [
-        {
-          id: '123456',
-          realName: 'qwer',
-          userRole: '1',
-          email: '123213@qq.com',
-          tel: '12321452355',
-        },
-        {
-          id: '654321',
-          realName: 'rewrt',
-          userRole: '2',
-          email: 'gfdf13@qq.com',
-          tel: '1234435355',
+          value: 2,
         },
       ],
       tableConfig: {
@@ -153,23 +154,26 @@ export default {
         border: true,
         tableSetting: [
           {
-            prop: 'id',
+            prop: 'userId',
             label: '域账号',
           },
           {
-            prop: 'realName',
+            prop: 'username',
             label: '真实姓名',
           },
           {
-            prop: 'userRole',
+            prop: 'roleId',
             label: '角色',
+            formatter: (row) => {
+              return row.roleId == 1 ? '系统管理员' : '普通管理员'
+            },
           },
           {
             prop: 'email',
             label: '邮箱',
           },
           {
-            prop: 'tel',
+            prop: 'phone',
             label: '手机号码',
           },
         ],
@@ -180,11 +184,12 @@ export default {
               type: 'text',
               fn: (row) => {
                 this.newOrEdit = '编辑账号'
-                this.formObj.id = row.id
-                this.formObj.realName = row.realName
-                this.formObj.userRole = row.userRole
+                this.formObj.userId = row.userId
+                this.formObj.username = row.username
+                this.formObj.roleId = row.roleId
                 this.formObj.email = row.email
-                this.formObj.tel = row.tel
+                this.formObj.phone = row.phone
+                this.formObj['id'] = row.id
                 this.showNewOrEdit = true
               },
             },
@@ -198,6 +203,10 @@ export default {
             },
           ],
         },
+        map: {
+          data: 'data.data',
+          total: 'data.totalCount',
+        },
         page: {
           pageIndex: 1,
           pageSize: 10,
@@ -208,26 +217,37 @@ export default {
             size: 'pageSize',
           },
         },
-        fetchUrl: 'getApplyList',
+        fetchUrl: 'getAccountList',
       },
     }
   },
-  created() {
-    this.tableConfig.tableData = this.testData
+  mounted() {
+    this.getData()
   },
   methods: {
+    getData() {
+      this.$refs.table.fetch()
+    },
     showNew() {
       this.newOrEdit = '新建账号'
-      this.formObj.id = ''
-      this.formObj.realName = ''
+      this.formObj.userId = ''
+      this.formObj.username = ''
+      this.formObj.roleId = 1
       this.formObj.email = ''
-      this.formObj.tel = ''
+      this.formObj.phone = ''
       this.showNewOrEdit = true
     },
     NewOrEditUser() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.showNewOrEdit = false
+          this.$http('saveAccount', this.formObj)
+            .then((res) => {
+              this.$message.success(res.errMsg)
+            })
+            .finally(() => {
+              this.showNewOrEdit = false
+              this.getData()
+            })
         }
       })
     },
@@ -241,10 +261,16 @@ export default {
         this.$confirm('是否删除所选账号？', '提示', {
           confirmButtonText: '确认',
           cancelButtonText: '取消',
-          type: 'info',
+          type: 'error',
           center: true,
         }).then(() => {
-          console.log(val)
+          this.$http('deleteAccount', { idList: val })
+            .then((res) => {
+              this.$message.success(res.errMsg)
+            })
+            .finally(() => {
+              this.getData()
+            })
         })
       } else {
         this.$message.info('请勾选删除的账号')

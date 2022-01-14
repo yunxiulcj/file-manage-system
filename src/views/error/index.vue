@@ -4,18 +4,17 @@
       <i class="errr-icon el-icon-warning"></i>
       <span class="text">can not find this page</span>
     </div>
-    <router-link class="return-home"
-                 to="/home">返回首页</router-link>
+    <router-link class="return-home" to="/">返回首页</router-link>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Error'
+  name: 'Error',
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .error {
   height: 100vh;
   width: 100vw;
