@@ -3,7 +3,7 @@
     v-model="tempDep"
     clearable
     :size="size"
-    placeholder="请选择应用范围"
+    :placeholder="$t('placeholder.department')"
     :multiple="multiple"
     @remove-tag="RemoveDep"
     @clear="clearTemp"
