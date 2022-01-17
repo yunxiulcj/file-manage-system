@@ -41,43 +41,51 @@
             <div class="label">条件</div>
             <div class="content">
               <span>应用范围：</span>
-              <span>{{ item.scopeId }}</span>
+              <span>{{ item.scope }}</span>
             </div>
           </div>
           <div class="approval">
             <div class="label">审批人</div>
-            <div class="superior" v-if="item.type == 1">
-              <div class="approvalBox">
-                <div class="iconBox">
-                  <i class="iconfont icon-yonghutianchong"></i>
-                </div>
-                <span>{{ levelObj[item.superior.level] }}</span>
-                <span>（{{ approvalMode[item.superior.approvalType] }}）</span>
-              </div>
-            </div>
-            <div class="member" v-if="item.type == 2">
-              <div class="content">
-                <template v-for="user in item.member.userList">
-                  <div :key="user.index">
-                    <div class="memberBox">
-                      <div class="iconBox">
-                        <i class="iconfont icon-yonghutianchong"></i>
-                      </div>
-                      <span>{{ user.userId }}</span>
-                    </div>
+            <div
+              class="approvalWrap"
+              v-for="(approval, index1) in item.approvalList"
+              :key="index1"
+            >
+              <div class="superior" v-if="approval.type == 1">
+                <div class="approvalBox">
+                  <div class="iconBox">
+                    <i class="iconfont icon-yonghutianchong"></i>
                   </div>
-                </template>
-              </div>
-              <div class="memType">
-                （{{ approvalMode[item.member.approvalType] }}）
-              </div>
-            </div>
-            <div class="iAm" v-if="item.type == 3">
-              <div class="approvalBox">
-                <div class="iconBox">
-                  <i class="iconfont icon-yonghutianchong"></i>
+                  <span>{{ levelObj[approval.superior.level] }}</span>
+                  <span>
+                    （{{ approvalMode[approval.superior.approvalType] }}）
+                  </span>
                 </div>
-                <span>申请人本人</span>
+              </div>
+              <div class="menber" v-if="approval.type == 2">
+                <div class="content">
+                  <template v-for="user in approval.menber.userList">
+                    <div :key="user.index">
+                      <div class="menberBox">
+                        <div class="iconBox">
+                          <i class="iconfont icon-yonghutianchong"></i>
+                        </div>
+                        <span>{{ user.userId }}</span>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+                <div class="memType">
+                  （{{ approvalMode[approval.menber.approvalType] }}）
+                </div>
+              </div>
+              <div class="iAm" v-if="approval.type == 3">
+                <div class="approvalBox">
+                  <div class="iconBox">
+                    <i class="iconfont icon-yonghutianchong"></i>
+                  </div>
+                  <span>申请人本人</span>
+                </div>
               </div>
             </div>
           </div>
@@ -243,14 +251,14 @@ export default {
             }
           }
         }
-        .member {
+        .menber {
           display: flex;
           flex-direction: column;
           align-items: center;
           .content {
             display: flex;
             flex-direction: row;
-            .memberBox {
+            .menberBox {
               display: flex;
               flex-direction: column;
               align-items: center;

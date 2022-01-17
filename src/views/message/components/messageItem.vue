@@ -14,16 +14,22 @@
             </div>
             <div class="messageContent">
               <div class="infoTop">
-                <div class="describe infoItem">
-                  <span class="label">申请描述：</span>
-                  {{ item.describe }}
+                <div class="applyUser infoItem">
+                  <span class="label">申请人：</span>
+                  {{ item.applyUser }}
                 </div>
                 <el-divider direction="vertical"></el-divider>
+
                 <div class="periodValidity infoItem">
                   <span class="label">有效期：</span>
                   {{ item.invalidStartDate }} 至
                   {{ item.invalidEndDate }}
                 </div>
+                <el-divider direction="vertical"></el-divider>
+                <div class="invalidDay infoItem">
+                  申请后{{ item.invalidDay }}天内
+                </div>
+                <el-divider direction="vertical"></el-divider>
                 <div class="detail infoItem" @click="showDetail(item)">
                   详情
                 </div>
@@ -35,34 +41,9 @@
                     item.state != 1 ? { width: '100%' } : { width: '85%' }
                   "
                 >
-                  <div class="applyUser infoItem">
-                    <span class="label">申请人：</span>
-                    {{ item.applyUser }}
-                  </div>
-                  <el-divider direction="vertical"></el-divider>
-                  <div class="receiver infoItem">
-                    <span class="label">接收人：</span>
-                    {{ item.receiver }}
-                  </div>
-                  <el-divider direction="vertical"></el-divider>
-                  <div class="receiverEmail infoItem">
-                    <span class="label">接收人邮箱：</span>
-                    {{ item.receiverEmail }}
-                  </div>
-                  <el-divider direction="vertical"></el-divider>
-                  <div class="receiverTel infoItem">
-                    <span class="label">接收人电话：</span>
-                    {{ item.receiverTel }}
-                  </div>
-                  <el-divider direction="vertical"></el-divider>
-                  <div class="receiverCompany infoItem">
-                    <span class="label">接收人公司：</span>
-                    {{ item.receiverCompany }}
-                  </div>
-                  <el-divider direction="vertical"></el-divider>
-                  <div class="invalidDay infoItem">
-                    <span class="label">有效期：</span>
-                    申请后{{ item.invalidDay }}天内
+                  <div class="describe infoItem">
+                    <span class="label">申请描述：</span>
+                    {{ item.describe }}
                   </div>
                 </div>
                 <div class="btnBox" v-if="item.state == 1">
@@ -92,22 +73,11 @@
         <el-divider></el-divider>
         <div class="messageBottom" v-if="item.files && item.files.length > 0">
           <div class="fileWrap" v-for="file in item.files" :key="file.Name">
-            <div class="fileIcon"></div>
             <div class="fileBox">
               <div class="fileName">{{ file.fileName }}</div>
               <div class="fileInfo">
                 <div class="fileSize">
                   {{ file.fileSize }}
-                </div>
-                <div
-                  class="fileLevel"
-                  :class="{
-                    level1: file.fileLevel == 1,
-                    level2: file.fileLevel == 2,
-                    level3: file.fileLevel == 3,
-                  }"
-                >
-                  {{ fileLevel[file.fileLevel] }}
                 </div>
                 <div class="download">下载</div>
               </div>
@@ -317,7 +287,7 @@ export default {
                 }
               }
               .btnBox {
-                width: 130px;
+                width: 140px;
                 text-align: right;
               }
             }

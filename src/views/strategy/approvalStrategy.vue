@@ -19,6 +19,7 @@
           @passSignal="passSignal"
         ></strategy-item>
       </div>
+      <!-- 新建或编辑策略 -->
       <div class="newOrEditWrap" v-else>
         <div class="header">
           <div class="title">{{ newOrEditTitle }}</div>
@@ -42,17 +43,67 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="应用范围">
-              <el-select
-                v-model="formObj.scopeId"
-                style="width: 300px"
-              ></el-select>
+              <scope-select
+                v-model="showScope"
+                size="small"
+                width="300px"
+              ></scope-select>
             </el-form-item>
             <el-form-item label="审批人">
+              <div
+                class="approvalWrap"
+                v-for="(item, index) in formObj.approvalList"
+                :key="index"
+              >
+                <div class="superior" v-if="item.type == 1">
+                  <div class="approvalBox">
+                    <div class="iconBox">
+                      <i class="iconfont icon-yonghutianchong"></i>
+                    </div>
+                    <span>{{ levelObj[item.superior.level] }}</span>
+                    <span>
+                      （{{ approvalMode[item.superior.approvalType] }}）
+                    </span>
+                  </div>
+                </div>
+                <div class="menber" v-if="item.type == 2">
+                  <div class="menberWrap">
+                    <div class="content">
+                      <template v-for="user in item.menber.userList">
+                        <div class="menberBox" :key="user.index">
+                          <div class="iconBox">
+                            <i class="iconfont icon-yonghutianchong"></i>
+                          </div>
+                          <span>{{ user.userId }}</span>
+                        </div>
+                      </template>
+                    </div>
+                    <div class="addBox" @click="showNewApproval = true">
+                      <i class="el-icon-plus"></i>
+                    </div>
+                  </div>
+                  <div class="memType">
+                    （{{ approvalMode[item.menber.approvalType] }}）
+                  </div>
+                </div>
+                <div class="iAm" v-if="item.type == 3">
+                  <div class="approvalBox">
+                    <div class="iconBox">
+                      <i class="iconfont icon-yonghutianchong"></i>
+                    </div>
+                    <span>申请人本人</span>
+                  </div>
+                </div>
+              </div>
               <div class="addBox" @click="showNewApproval = true">
                 <i class="el-icon-plus"></i>
               </div>
             </el-form-item>
             <el-form-item label="抄送人">
+              <div class="ccWrap" v-for="cc in formObj.ccList" :key="cc">
+                <span>{{ cc }}</span>
+                <el-divider direction="vertical"></el-divider>
+              </div>
               <div class="addBox" @click="showNewCc = true">
                 <i class="el-icon-plus"></i>
               </div>
@@ -69,7 +120,11 @@
         </div>
       </div>
     </page-frame>
-    <new-approval v-model="showNewApproval"></new-approval>
+    <new-approval
+      v-model="showNewApproval"
+      :formObj="formObj"
+      @addApproval="addApproval"
+    ></new-approval>
     <new-cc v-model="showNewCc"></new-cc>
   </div>
 </template>
@@ -79,134 +134,193 @@ import pageFrame from '../../components/pageFrame.vue'
 import strategyItem from './components/strategyItem.vue'
 import newApproval from './components/newApproval.vue'
 import newCc from './components/newCc.vue'
+import scopeSelect from './components/scopeSelect.vue'
 
 export default {
   name: 'approvalStrategy',
-  components: { pageFrame, strategyItem, newApproval, newCc },
+  components: { pageFrame, strategyItem, newApproval, newCc, scopeSelect },
   data() {
     return {
+      showScope: '',
+      realScope: '',
       showNewStrategy: false,
       showNewApproval: false,
       showNewCc: false,
       newOrEditTitle: '',
+      approvalMode: {
+        1: '会签',
+        2: '或签',
+        3: '依次审批',
+      },
+      levelObj: {
+        1: '直接上级',
+        2: '第二级上级',
+        3: '第三级上级',
+        4: '第四级上级',
+        5: '第五级上级',
+        6: '第六级上级',
+      },
       formObj: {
+        scope: '',
         strategyName: '',
-        strategyType: 1,
-        scopeId: '',
-        ccList: [
-          {
-            ccUser: '',
-          },
+        ccList: [],
+        approvalList: [
+          // {
+          //   superior: {
+          //     levelType: 1,
+          //     level: 1,
+          //     noSuperior: false,
+          //     approvalType: 1,
+          //   },
+          //   menber: {
+          //     approvalType: 1,
+          //     userList: [],
+          //   },
+          //   type: 1,
+          // },
         ],
-        id: '',
-        superior: {
-          levelType: 1,
-          level: 1,
-          noSuperior: false,
-          approvalType: 1,
-        },
-        member: {
-          userList: [
-            {
-              userId: '',
-              index: '',
-            },
-          ],
-          approvalType: 1,
-        },
-        type: 1,
       },
       strategyList: [
         {
-          strategyName: '1文件下载审批流程1',
-          strategyType: 1,
-          scopeId: '根目录',
-          ccList: ['test1', 'test2', 'test3'],
-          id: '',
-          superior: {
-            levelType: 1,
-            level: 1,
-            noSuperior: false,
-            approvalType: 1,
-          },
-          member: {
-            userList: [
-              {
-                userId: 'test1',
-                index: '1',
+          scope: 'tetse',
+          strategyName: '2策略2',
+          ccList: ['qwertr', 'test001', 'test002', 'test003', 'tset004'],
+          approvalList: [
+            {
+              superior: {
+                levelType: 1,
+                level: 1,
+                noSuperior: false,
+                approvalType: 1,
               },
-              {
-                userId: 'test2',
-                index: '2',
+              menber: {
+                approvalType: 1,
+                userList: [
+                  {
+                    userId: '',
+                    index: 1,
+                  },
+                ],
               },
-              {
-                userId: 'test3',
-                index: '3',
-              },
-              {
-                userId: 'test4',
-                index: '4',
-              },
-            ],
-            approvalType: 2,
-          },
-          type: 2,
-        },
-        {
-          strategyName: '2文件下载审批流程2',
-          strategyType: 1,
-          scopeId: '根目录',
-          ccList: [
-            'test1',
-            'test2',
-            'test3',
-            'test11',
-            'test22',
-            'test33',
-            'test12',
-            'test21',
-            'test32',
+              type: 1,
+            },
+            { type: 3 },
           ],
-          id: '2',
-          superior: {
-            levelType: 1,
-            level: 1,
-            noSuperior: false,
-            approvalType: 1,
-          },
-          member: {
-            userList: [
-              {
-                userId: '',
-                index: '',
-              },
-            ],
-            approvalType: 2,
-          },
-          type: 1,
         },
         {
-          strategyName: '2文件下载审批流程2',
-          strategyType: 1,
-          scopeId: '根目录',
-          ccList: ['test1', 'test2'],
-          id: '3',
-          superior: {
-            levelType: 1,
-            level: 1,
-            noSuperior: false,
-            approvalType: 1,
-          },
-          member: {
-            userList: [
-              {
-                userId: '',
-                index: '',
+          scope: 'tetse',
+          strategyName: '3策略3',
+          ccList: [
+            'tsettsetss',
+            'test001',
+            'test002',
+            'test003',
+            '4tset004',
+            '2test002',
+            '3test003',
+            'tset004',
+          ],
+          approvalList: [
+            {
+              superior: {
+                levelType: 1,
+                level: 1,
+                noSuperior: false,
+                approvalType: 1,
               },
-            ],
-            approvalType: 2,
-          },
-          type: 3,
+              menber: {
+                approvalType: 2,
+                userList: [
+                  {
+                    userId: 'test1',
+                    index: 2,
+                  },
+                  {
+                    userId: 'test2',
+                    index: 1,
+                  },
+                  {
+                    userId: 'test3',
+                    index: 3,
+                  },
+                  {
+                    userId: 'tset3',
+                    index: 4,
+                  },
+                ],
+              },
+              type: 2,
+            },
+          ],
+        },
+        {
+          scope: '',
+          strategyName: '1策略1',
+          ccList: ['testtest', 'test002', 'test003', 'tset004'],
+          approvalList: [
+            {
+              superior: {
+                levelType: 2,
+                level: 3,
+                noSuperior: true,
+                approvalType: 2,
+              },
+              menber: {
+                approvalType: 1,
+                userList: [
+                  {
+                    userId: '',
+                    index: 1,
+                  },
+                ],
+              },
+              type: 1,
+            },
+            {
+              superior: {
+                levelType: 1,
+                level: 1,
+                noSuperior: false,
+                approvalType: 1,
+              },
+              menber: {
+                approvalType: 2,
+                userList: [
+                  {
+                    userId: 'test1',
+                    index: 2,
+                  },
+                  {
+                    userId: 'test2',
+                    index: 1,
+                  },
+                  {
+                    userId: 'test3',
+                    index: 3,
+                  },
+                ],
+              },
+              type: 2,
+            },
+            {
+              superior: {
+                levelType: 1,
+                level: 1,
+                noSuperior: true,
+                approvalType: 1,
+              },
+              menber: {
+                approvalType: 1,
+                userList: [
+                  {
+                    userId: '',
+                    index: 1,
+                  },
+                ],
+              },
+              type: 1,
+            },
+          ],
         },
       ],
     }
@@ -216,6 +330,10 @@ export default {
     newStrategy() {
       console.log('new')
       this.newOrEditTitle = '新建策略'
+      this.formObj.scope = ''
+      this.formObj.strategyName = ''
+      this.formObj.ccList = []
+      this.formObj.approvalList = []
       this.showNewStrategy = true
     },
     passSignal(val, data) {
@@ -223,6 +341,10 @@ export default {
       this.showNewStrategy = val
       this.newOrEditTitle = '编辑策略'
       this.formObj = data
+    },
+    addApproval(val) {
+      this.formObj.approvalList.push(val)
+      console.log('addApproval', val)
     },
     saveNewOrEdit() {
       this.showNewStrategy = false
@@ -280,23 +402,132 @@ export default {
       }
     }
     .content {
-      .addBox {
-        width: 35px;
-        height: 35px;
-        line-height: 35px;
-        border: 1px dotted #ced4da;
-        border-radius: 5px;
-        text-align: center;
-        color: #ced4da;
-        cursor: pointer;
-        i {
-          font-size: 18px;
-          font-weight: bold;
+      .superior {
+        .approvalBox {
+          display: flex;
+          flex-direction: column;
+          width: 60px;
+          align-items: center;
+          .iconBox {
+            background: #bdccea;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            i {
+              font-size: 30px;
+              color: #fcfcfc;
+            }
+          }
+          span {
+            color: #343a40;
+            font-size: 12px;
+            height: 20px;
+            line-height: 20px;
+          }
         }
       }
-      .addBox:hover {
-        border: 1px solid #228be6;
-        color: #228be6;
+      .menber {
+        // display: flex;
+        // flex-direction: column;
+        // // align-items: center;
+        // justify-content: center;
+        .menberWrap {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .content {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            max-height: 152px;
+            overflow: auto;
+            border: 0.5px solid #d9d9d9;
+            border-radius: 5px;
+            width: 300px;
+            padding-bottom: 10px;
+            .menberBox {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              margin: 15px 0px 0px 16px;
+              .iconBox {
+                background: #bdccea;
+                width: 40px;
+                height: 40px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 5px;
+                i {
+                  font-size: 30px;
+                  color: #fcfcfc;
+                }
+              }
+              span {
+                color: #343a40;
+                height: 20px;
+                line-height: 20px;
+                font-size: 13px;
+              }
+            }
+          }
+          .addBox {
+            margin-left: 15px;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            border: 1.5px dotted #d9d9d9;
+            border-radius: 5px;
+            text-align: center;
+            color: #ced4da;
+            cursor: pointer;
+            i {
+              font-size: 18px;
+              font-weight: bold;
+            }
+          }
+          .addBox:hover {
+            border: 1px solid #228be6;
+            color: #228be6;
+          }
+        }
+        .memType {
+          width: 300px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #343a40;
+          font-size: 12px;
+        }
+      }
+      .iAm {
+        .approvalBox {
+          display: flex;
+          flex-direction: column;
+          width: 60px;
+          align-items: center;
+          .iconBox {
+            background: #bdccea;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            i {
+              font-size: 30px;
+              color: #fcfcfc;
+            }
+          }
+          span {
+            color: #343a40;
+            font-size: 12px;
+          }
+        }
       }
     }
     .footer {

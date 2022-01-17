@@ -108,10 +108,10 @@
           </el-button>
         </div>
       </div>
-      <div class="cloud" v-if="menu == 'cloud'" v-loading="loading">
+      <div class="cloud" v-if="menu == 'cloud'">
         <div class="cloudPath fileBox">
           <div class="title">网盘路径设置</div>
-          <div class="contentBox">
+          <div class="contentBox" v-loading="loading">
             <el-form label-width="100px" label-position="right" size="small">
               <el-form-item label="网盘根路径">
                 <el-input

@@ -70,7 +70,7 @@ export default {
           value: '4',
         },
         {
-          label: '其他',
+          label: '全部时间',
           value: '5',
         },
       ],
@@ -83,9 +83,8 @@ export default {
           files: [
             {
               fileName: '好东西.txt',
-              fileIcon: '',
               fileSize: '12kb',
-              fileLevel: '1',
+              filePath: '',
             },
           ],
           invalidDay: '2',
@@ -195,6 +194,20 @@ export default {
   methods: {
     MarkRead() {
       this.unread = 0
+    },
+    getUserUnreadNoticeNum() {
+      this.$http('getUserUnreadNoticeNum').then((res) => {
+        this.unread = res.data
+      })
+    },
+    getNoticeList() {
+      this.$http('getNoticeList', { noticeType: this.activeName }).then(
+        (res) => {
+          if (res.data) {
+            this.messageList = res.data
+          }
+        }
+      )
     },
   },
 }

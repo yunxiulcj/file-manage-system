@@ -17,7 +17,13 @@ export default {
   updateApply: {
     url: '/process/updateApply',
   },
+  createApply: {
+    url: '/process/createApply',
+  },
   back: {
     url: '/process/back',
+  },
+  getCurrentApprovalUser: {
+    url: '/process/getCurrentApprovalUser',
   },
 }

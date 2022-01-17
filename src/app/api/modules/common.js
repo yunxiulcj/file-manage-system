@@ -1,6 +1,6 @@
 export default {
-  generateToken: {
-    url: '/common/generateToken',
+  createToken: {
+    url: '/common/createToken',
   },
   login: {
     url: '/common/login',
@@ -8,7 +8,7 @@ export default {
   logout: {
     url: '/common/logout',
   },
-  getAuthCode: {
-    url: '/common/getAuthCode',
+  getCaptchaCode: {
+    url: '/common/getCaptchaCode',
   },
 }
