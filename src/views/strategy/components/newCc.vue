@@ -3,7 +3,7 @@
     <el-dialog
       :visible.sync="tempVal"
       top="50px"
-      width="600px"
+      width="750px"
       @close="dialogClose"
     >
       <template slot="title">
@@ -23,17 +23,39 @@
         <div class="treeWrap">
           <el-tree
             ref="tree"
-            :data="treeData"
+            :props="props"
+            :load="loadNode"
             show-checkbox
-            node-key="id"
-            @check="nodeClick"
-          ></el-tree>
+            node-key="name"
+            lazy
+            empty-text="暂无数据"
+            @check="nodeCheck"
+          >
+            <span class="nodeItem" slot-scope="{ node, data }">
+              <i
+                :class="
+                  data.type == 'user'
+                    ? 'iconfont icon-yonghutianchong'
+                    : data.type == 'group'
+                    ? 'iconfont icon-huaban'
+                    : 'iconfont icon-department'
+                "
+              ></i>
+              <span style="margin-left: 5px">{{ node.label }}</span>
+            </span>
+          </el-tree>
         </div>
         <div class="seleWrap">
           <template v-for="(item, index) in seleNodeList">
-            <div :key="item.id" class="seleItem">
-              <i class="el-icon-user-solid"></i>
-              <span>{{ item.label }}</span>
+            <div :key="item.name" class="seleItem">
+              <i
+                :class="
+                  item.type == 'user'
+                    ? 'iconfont icon-yonghutianchong'
+                    : 'iconfont icon-huaban'
+                "
+              ></i>
+              <span>{{ item.name }}</span>
               <i class="el-icon-close" @click="delMember(index, item)"></i>
             </div>
           </template>
@@ -60,91 +82,9 @@ export default {
     return {
       tempVal: false,
       seleNodeList: [],
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1',
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1',
-            },
-            {
-              id: 6,
-              label: '二级 2-2',
-            },
-          ],
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1',
-            },
-            {
-              id: 8,
-              label: '二级 3-2',
-            },
-            {
-              id: 11,
-              label: '二级 3-5',
-            },
-            {
-              id: 12,
-              label: '二级 3-6',
-            },
-            {
-              id: 13,
-              label: '二级 3-7',
-            },
-            {
-              id: 14,
-              label: '二级 3-8',
-            },
-            {
-              id: 15,
-              label: '二级 3-7',
-            },
-            {
-              id: 16,
-              label: '二级 3-8',
-            },
-            {
-              id: 17,
-              label: '二级 3-7',
-            },
-            {
-              id: 18,
-              label: '二级 3-8',
-            },
-          ],
-        },
-      ],
-      defaultProps: {
-        children: 'children',
-        label: 'label',
+      props: {
+        label: 'name',
+        isLeaf: 'leaf',
       },
     }
   },
@@ -157,21 +97,46 @@ export default {
     },
   },
   methods: {
-    nodeClick(a, b) {
-      console.log(a, b.checkedNodes)
+    loadNode(node, resolve) {
+      let dn = node.level == 0 ? '' : node.data.dn
+      this.$http('getDepartmentUserTree', { dn: dn }).then((res) => {
+        let temp = []
+        if (res.data && res.data.length > 0) {
+          res.data.map((item) => {
+            temp.push({
+              name: item.name,
+              leaf: !item.hasChild,
+              dn: item.dn,
+              parentDn: item.parentDn,
+              type: item.type,
+            })
+          })
+        }
+        resolve(temp)
+      })
+    },
+    nodeCheck(a, b) {
       this.seleNodeList = b.checkedNodes.filter((item) => {
-        if (!item.children) return item
+        if (item.hasChild) {
+          return item
+        }
+      })
+    },
+    getDepartmentUserTree(val) {
+      this.$http('getDepartmentUserTree', { dn: val }).then((res) => {
+        return res.data
       })
     },
     delMember(val, data) {
       this.seleNodeList.splice(val, 1)
-      this.$refs['tree'].setChecked(data.id, false)
+      this.$refs['tree'].setChecked(data.name, false)
     },
     cancel() {
       this.$emit('input', false)
     },
     confirm() {
       this.$emit('input', false)
+      this.$emit('selectUser', this.seleNodeList)
     },
     dialogClose() {
       this.$emit('input', false)
@@ -191,14 +156,16 @@ export default {
   display: flex;
   flex-direction: row;
   .treeWrap {
+    padding: 10px 0px;
     width: 50%;
-    height: 350px;
+    height: 450px;
     overflow: auto;
     border-right: 0.5px solid #ced4da;
   }
   .seleWrap {
+    padding: 10px 0px;
     width: 50%;
-    height: 350px;
+    height: 450px;
     overflow: auto;
     .seleItem {
       position: relative;

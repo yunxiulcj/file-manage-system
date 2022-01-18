@@ -54,15 +54,15 @@
           </el-checkbox>
         </div>
       </div>
-      <div class="menber" v-if="formObj.type == 2">
+      <div class="member" v-if="formObj.type == 2">
         <div class="labelWrap">
           <span class="label">添加成员</span>
           <span class="tips">不能超过100人</span>
         </div>
-        <div class="menberWrap">
-          <div class="content" v-if="formObj.menber.userList.length > 0">
-            <template v-for="user in formObj.menber.userList">
-              <div class="menberBox" :key="user.index">
+        <div class="memberWrap">
+          <div class="content" v-if="formObj.member.userList.length > 0">
+            <template v-for="user in formObj.member.userList">
+              <div class="memberBox" :key="user.index">
                 <div class="iconBox">
                   <i class="iconfont icon-yonghutianchong"></i>
                 </div>
@@ -107,7 +107,7 @@
         </el-button>
       </span>
     </el-dialog>
-    <new-cc v-model="showAddMember"></new-cc>
+    <new-cc v-model="showAddMember" @selectUser="selectUser"></new-cc>
   </div>
 </template>
 
@@ -132,7 +132,7 @@ export default {
           noSuperior: false,
           approvalType: 1,
         },
-        menber: {
+        member: {
           approvalType: 1,
           userList: [],
         },
@@ -213,8 +213,13 @@ export default {
     },
   },
   methods: {
+    selectUser(val) {
+      this.formObj.member.userList = val.map((item, index) => {
+        return { userId: item.name, index: index }
+      })
+    },
     typeChange(val) {
-      this.type = val == 1 ? 'superior' : 'menber'
+      this.type = val == 1 ? 'superior' : 'member'
     },
     cancel() {
       this.$emit('input', false)
@@ -236,7 +241,7 @@ export default {
     margin-top: 25px;
   }
 }
-.menber {
+.member {
   .labelWrap {
     .label {
       margin-right: 12px;
@@ -245,7 +250,7 @@ export default {
       font-size: 12px;
     }
   }
-  .menberWrap {
+  .memberWrap {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -254,7 +259,7 @@ export default {
       flex-direction: row;
       flex-wrap: wrap;
       padding-bottom: 10px;
-      .menberBox {
+      .memberBox {
         display: flex;
         flex-direction: column;
         align-items: center;

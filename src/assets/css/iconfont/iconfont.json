@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9954476",
+      "name": "部门管理 ",
+      "font_class": "department",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
       "icon_id": "5900851",
       "name": "撤回色块",
       "font_class": "withdraw",

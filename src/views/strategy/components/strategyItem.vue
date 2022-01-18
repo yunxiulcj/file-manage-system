@@ -7,7 +7,9 @@
     >
       <div class="strategyBox">
         <div class="topWrap">
-          <div class="strategyName">{{ item.strategyName }}</div>
+          <div class="strategyName">
+            {{ item.strategyName }}
+          </div>
           <div class="operate">
             <i
               class="iconfont icon-bianji"
@@ -16,7 +18,7 @@
             ></i>
             <el-dropdown
               @command="handleCommand"
-              @visible-change="visibleChange(index, item.id)"
+              @visible-change="visibleChange(item.id)"
             >
               <span>
                 <i class="iconfont icon-gengduo"></i>
@@ -41,7 +43,7 @@
             <div class="label">条件</div>
             <div class="content">
               <span>应用范围：</span>
-              <span>{{ item.scope }}</span>
+              <span>{{ item.scope.split(',')[0].substring(3) }}</span>
             </div>
           </div>
           <div class="approval">
@@ -62,11 +64,11 @@
                   </span>
                 </div>
               </div>
-              <div class="menber" v-if="approval.type == 2">
+              <div class="member" v-if="approval.type == 2">
                 <div class="content">
-                  <template v-for="user in approval.menber.userList">
+                  <template v-for="user in approval.member.userList">
                     <div :key="user.index">
-                      <div class="menberBox">
+                      <div class="memberBox">
                         <div class="iconBox">
                           <i class="iconfont icon-yonghutianchong"></i>
                         </div>
@@ -76,7 +78,7 @@
                   </template>
                 </div>
                 <div class="memType">
-                  （{{ approvalMode[approval.menber.approvalType] }}）
+                  （{{ approvalMode[approval.member.approvalType] }}）
                 </div>
               </div>
               <div class="iAm" v-if="approval.type == 3">
@@ -117,8 +119,7 @@ export default {
   data() {
     return {
       testKey: 0,
-      operateId: '',
-      operateIndex: 0,
+      operateId: 0,
       approvalMode: {
         1: '会签',
         2: '或签',
@@ -136,29 +137,27 @@ export default {
   },
   methods: {
     handleCommand(val) {
-      let temp = this.strategyList[this.operateIndex]
       switch (val) {
         case 'del':
-          this.strategyList.splice(this.operateIndex, 1)
+          this.$http('deleteStrategy', { id: this.operateId }).then((res) => {
+            this.$emit('operation', true)
+            this.$message.success(res.errMsg)
+          })
           break
         case 'up':
-          console.log('up')
-          this.strategyList[this.operateIndex] =
-            this.strategyList[this.operateIndex - 1]
-          this.strategyList[this.operateIndex - 1] = temp
-          break
         case 'down':
-          console.log('down')
-          this.strategyList[this.operateIndex] =
-            this.strategyList[this.operateIndex + 1]
-          this.strategyList[this.operateIndex + 1] = temp
+          this.$http('upOrDown', {
+            id: this.operateId,
+            isUp: val == 'up',
+          }).then((res) => {
+            this.$emit('operation', true)
+            this.$message.success(res.errMsg)
+          })
           break
       }
-      this.testKey += 1
     },
-    visibleChange(index, id) {
+    visibleChange(id) {
       this.operateId = id
-      this.operateIndex = index
     },
     editItem(data) {
       this.$emit('passSignal', true, data)
@@ -230,6 +229,7 @@ export default {
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin: 0px 10px;
             .iconBox {
               background: #bdccea;
               width: 40px;
@@ -251,14 +251,14 @@ export default {
             }
           }
         }
-        .menber {
+        .member {
           display: flex;
           flex-direction: column;
           align-items: center;
           .content {
             display: flex;
             flex-direction: row;
-            .menberBox {
+            .memberBox {
               display: flex;
               flex-direction: column;
               align-items: center;

@@ -3,28 +3,35 @@
     <page-frame title="用户管理" icon="userManage" :aside="true">
       <template #aside>
         <el-input
-          v-model="tableConfig.codition.departmentName"
+          v-model="filterDep"
           size="mini"
           placeholder="请输入部门名称"
           style="margin: 10px 10px 10px 0px; width: 172px"
         ></el-input>
         <el-tree
           ref="tree"
-          :data="treeData"
-          :props="defaultProps"
-          @node-click="handleNodeClick"
-          :highlight-current="true"
+          :props="props"
+          :load="loadNode"
           :filter-node-method="filterNode"
-        ></el-tree>
+          node-key="name"
+          highlight-current
+          lazy
+          empty-text="暂无数据"
+          @node-click="nodeClick"
+        >
+          <span class="nodeItem" slot-scope="{ node }">
+            <span style="font-size: 13px">{{ node.label }}</span>
+          </span>
+        </el-tree>
       </template>
       <div class="header">
         <el-input
-          v-model="tableConfig.codition.realName"
+          v-model="filterUser"
           size="small"
           placeholder="请输入用户名或真实姓名查询"
           style="width: 250px; margin-right: 10px"
+          clearable
         ></el-input>
-        <el-button type="primary" size="small">查询</el-button>
         <div class="rightWrap">
           <el-button type="primary" size="small">设置上级</el-button>
           <el-button type="warning" size="small">导出Excel</el-button>
@@ -33,7 +40,7 @@
       <table-temp
         ref="table"
         :config="tableConfig"
-        :loading="tableLoading"
+        v-loading="tableLoading"
       ></table-temp>
     </page-frame>
   </div>
@@ -47,67 +54,13 @@ export default {
   components: { pageFrame, TableTemp },
   data() {
     return {
-      treeData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  label: '三级 1-1-1',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1',
-                },
-              ],
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1',
-                },
-              ],
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      defaultProps: {
-        children: 'children',
-        label: 'label',
+      filterUser: '',
+      filterDep: '',
+      props: {
+        label: 'name',
+        isLeaf: 'leaf',
       },
+      fullData: [],
       tableLoading: false,
       tableConfig: {
         tableData: [],
@@ -122,7 +75,7 @@ export default {
             label: '真实姓名',
           },
           {
-            prop: 'departmentName',
+            prop: 'department',
             label: '部门',
           },
           {
@@ -134,38 +87,58 @@ export default {
             label: '邮箱',
           },
         ],
-        codition: {
-          realName: '',
-          departmentName: '',
-        },
-        page: {
-          pageIndex: 1,
-          pageSize: 10,
-          pageSizes: [10, 20, 30, 40],
-          total: 0,
-          map: {
-            index: 'page',
-            size: 'pageSize',
-          },
-        },
-        fetchUrl: 'getUserList',
       },
     }
   },
   created() {},
   watch: {
-    'tableConfig.codition.departmentName'(val) {
-      console.log(val)
+    filterDep(val) {
       this.$refs.tree.filter(val)
+    },
+    filterUser(val) {
+      this.$set(
+        this.tableConfig,
+        'tableData',
+        this.fullData.filter((item) => {
+          if (
+            item.userId.indexOf(val) != -1 ||
+            item.realName.indexOf(val) != -1
+          ) {
+            return item
+          }
+        })
+      )
     },
   },
   methods: {
+    loadNode(node, resolve) {
+      let dn = node.level == 0 ? '' : node.data.dn
+      this.$http('getDepartmentList', { dn: dn }).then((res) => {
+        let temp = []
+        res.data.map((item) => {
+          temp.push({
+            name: item.name,
+            dn: item.dn,
+            leaf: !item.haveChildDepartment,
+          })
+        })
+        resolve(temp)
+      })
+    },
+    nodeClick(node) {
+      this.tableLoading = true
+      this.$http('getDepartmentUserList', { dn: node.dn })
+        .then((res) => {
+          this.fullData = res.data
+          this.tableConfig.tableData = res.data
+        })
+        .finally(() => {
+          this.tableLoading = false
+        })
+    },
     filterNode(value, data) {
       if (!value) return true
-      return data.label.indexOf(value) !== -1
-    },
-    handleNodeClick(data) {
-      console.log(data)
+      return data.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
     },
   },
 }

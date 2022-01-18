@@ -3,30 +3,29 @@
     v-model="tempVal"
     :size="size || 'small'"
     :style="{ width: width || '360px' }"
+    @clear="selectClear"
     clearable
   >
     <template slot="empty">
-      <div class="topBar">
-        <div @click="goBack(depOU)" size="mini" class="goBack">向上一级</div>
-      </div>
+      <div @click="goBack(depOU)" size="mini" class="goBack">向上一级</div>
       <div class="depWrap" v-if="depList.length > 0">
         <div
           class="depItem"
           ref="depItem"
           v-for="(item, index) in depList"
           :key="item.name"
-          :style="item.style"
         >
           <i
             class="el-icon-circle-plus-outline"
             @click="getDepartmentList(item.dn)"
             title="点击获取子部门"
           ></i>
-          <span class="depName" @click="selectDep(index, item)">
+          <div class="depName" :style="item.style" @click="selectDep(index)">
             {{ item.name }}
-          </span>
+          </div>
         </div>
       </div>
+      <div class="noData" v-loading="depLoading" v-else>暂无数据</div>
     </template>
   </el-select>
 </template>
@@ -37,13 +36,18 @@ export default {
   props: ['value', 'size', 'width'],
   data() {
     return {
+      depLoading: false,
       tempVal: '',
       depOU: '',
+      selectInfo: {
+        index: -1,
+        dn: '',
+      },
       selectIndex: -1,
       depList: [],
       selectedStyle: {
         color: '#228be6',
-        fontWeight: 'bolder',
+        fontWeight: '600',
       },
       normalStyle: {
         color: '#495057',
@@ -63,30 +67,105 @@ export default {
     this.getDepartmentList(this.depOU)
   },
   methods: {
-    selectDep(index, val) {
-      console.log(index, val)
-      if (this.selectIndex == index) {
-        this.$set(val, 'style', this.normalStyle)
+    goBack(val) {
+      let OUNum = val.indexOf('OU=')
+      if (OUNum != -1) {
+        this.getDepartmentList(val.substring(val.indexOf(',') + 1))
       } else {
-        this.selectIndex = index
-        this.$set(val, 'style', this.selectedStyle)
+        this.$message.warning('已无上级')
       }
-      // this.$emit('input', this.tempVal)
     },
     getDepartmentList(val) {
-      console.log(val)
+      this.depList = []
+      this.depLoading = true
       this.depOU = val
-      this.$http('getDepartmentList', { dn: val }).then((res) => {
-        if (res.data) {
-          this.depList = res.data.map((item) => {
-            return {
-              ...item,
-              style: this.normalStyle,
-            }
-          })
+      this.$http('getDepartmentList', { dn: val })
+        .then((res) => {
+          if (res.data) {
+            this.depList = res.data.map((item, index) => {
+              if (val == this.selectInfo.dn && index == this.selectInfo.index) {
+                return { ...item, style: this.selectedStyle }
+              } else {
+                return {
+                  ...item,
+                  style: this.normalStyle,
+                }
+              }
+            })
+          }
+        })
+        .finally(() => {
+          this.depLoading = false
+        })
+    },
+    selectDep(i) {
+      this.depList.map((item, index) => {
+        if (index == i) {
+          this.selectInfo.index = i
+          this.selectInfo.dn = this.depOU
+          this.$set(item, 'style', this.selectedStyle)
+          this.$emit('input', item.name)
+          this.$emit('fullPath', item.dn)
+        } else {
+          this.$set(item, 'style', this.normalStyle)
         }
       })
+    },
+    selectClear() {
+      this.$set(this.depList[this.selectInfo.index], 'style', this.normalStyle)
+      this.$emit('fullPath', '')
+      this.selectInfo.index = -1
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.goBack {
+  cursor: pointer;
+  color: #228be6;
+  padding-left: 30px;
+  font-size: 14px;
+  height: 30px;
+  line-height: 30px;
+  border-bottom: 0.5px solid #e9ecef;
+}
+.goBack:hover {
+  background: #f8f9fa;
+  font-weight: bolder;
+}
+.depWrap {
+  font-size: 14px;
+  padding: 5px 0px;
+  .depItem {
+    height: 30px;
+    line-height: 30px;
+    padding: 0px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    i {
+      font-size: 16px;
+    }
+    i:hover {
+      color: #228be6;
+      font-weight: bolder;
+    }
+    .depName {
+      margin-left: 5px;
+      width: calc(100% - 20px);
+    }
+  }
+  .depItem:hover {
+    background: #f5f7fa;
+  }
+}
+.noData {
+  font-size: 0.8rem;
+  color: #bfbfbf;
+  text-align: center;
+  height: 50px;
+  line-height: 50px;
+}
+</style>

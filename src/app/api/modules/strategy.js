@@ -2,8 +2,8 @@ export default {
   setSecurityStrategy: {
     url: '/strategy/setSecurityStrategy',
   },
-  createApprovalStrategy: {
-    url: '/strategy/createApprovalStrategy',
+  createStrategy: {
+    url: '/strategy/createStrategy',
   },
   updateStrategy: {
     url: '/strategy/updateStrategy',
@@ -32,8 +32,8 @@ export default {
   setDepartmentSuperior: {
     url: '/strategy/setDepartmentSuperior',
   },
-  getDeparmentUserTree: {
-    url: '/strategy/getDeparmentUserTree',
+  getDepartmentUserTree: {
+    url: '/strategy/getDepartmentUserTree',
   },
   getLoginStrategy: {
     url: '/strategy/getLoginStrategy',
