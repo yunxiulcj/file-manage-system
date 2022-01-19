@@ -95,7 +95,7 @@ export default {
   flex-direction: row;
 }
 .menuBox {
-  width: 230px;
+  min-width: 200px;
   height: 100%;
   background: white;
   box-shadow: 1px 0 1px #f0f0f0;

@@ -105,13 +105,7 @@ export default {
       this.loading = true
       this.$http('getSetting', { settingId: 3 })
         .then((res) => {
-          let data = res.data
-          this.formObj.emailService = data.emailService
-          this.formObj.emailPort = data.emailPort
-          this.formObj.emailUsername = data.emailUsername
-          this.formObj.emailPassword = data.emailPassword
-          this.formObj.ssllogin = data.ssllogin
-          this.$message.success(res.errMsg)
+          this.formObj = res.data
         })
         .finally(() => {
           this.loading = false

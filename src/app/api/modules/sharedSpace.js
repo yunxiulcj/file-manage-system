@@ -1,4 +1,7 @@
 export default {
+  getFileList: {
+    url: '/personal/getFileList',
+  },
   createDirectory: {
     url: '/personal/createDirectory',
   },

@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
-  outputDir: 'dist',
+  outputDir: 'dsc',
   assetsDir: 'static',
   productionSourceMap: false,
   devServer: {
@@ -9,10 +9,9 @@ module.exports = {
         target: 'http://192.168.1.21:9091/dsc',
         changeOrigin: true,
         pathRewrite: {
-          '/api': '',
+          '^/api': '',
         },
       },
     },
-    port: 9091,
   },
 }

@@ -39,7 +39,6 @@ const routes = [
 
 const router = new vueSystem.router({
   mode: 'hash',
-  // base: process.env.BASE_URL,
   routes,
 })
 

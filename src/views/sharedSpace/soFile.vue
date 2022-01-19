@@ -37,7 +37,7 @@
             suffix-icon="el-icon-search"
             size="small"
             style="width: 220px"
-            v-model="searchName"
+            v-model="tableConfig.condition.fileName"
           ></el-input>
           <i
             class="iconfont icon-caidan"
@@ -105,11 +105,25 @@
                   v-show="!scope.row.isFolder"
                   title="下载"
                 ></i>
-                <i
-                  class="iconfont icon-trash"
-                  @click.stop="delFile([scope.row])"
-                  title="删除"
-                ></i>
+                <el-popconfirm
+                  confirm-button-text="是的"
+                  cancel-button-text="不用了"
+                  icon="el-icon-info"
+                  icon-color="#fa5252"
+                  title="删除后不可恢复，确定删除吗？"
+                  @confirm="confirmDel(scope.row)"
+                  @cancel="cancelDel(scope.row)"
+                >
+                  <i
+                    class="iconfont icon-trash"
+                    :style="{
+                      color: tempDelId == scope.row.id ? '#fa5252' : '#339af0',
+                    }"
+                    @click.stop="tempDelId = scope.row.id"
+                    title="删除"
+                    slot="reference"
+                  ></i>
+                </el-popconfirm>
               </div>
             </div>
           </template>
@@ -321,12 +335,14 @@ export default {
   components: { tableTemp, pageFrame, uploadDialog },
   data() {
     return {
+      tempDelId: '',
       folderName: '',
       selectedList: [],
       isIndeterminate: true,
       uploadDialog: false,
       addFolderDialog: false,
       showNewApply: false,
+      nowPath: '',
       applyForm: {
         applicant: 'admin01',
         email: '',
@@ -356,7 +372,6 @@ export default {
       },
       checkAll: false,
       isTable: true,
-      searchName: '',
       testData: [
         {
           id: 1,
@@ -395,28 +410,28 @@ export default {
           isFolder: false,
         },
         {
-          id: 1,
+          id: 6,
           fileName: 'test001.txt',
           fileSize: '12kb',
           dateChang: '2022-01-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 2,
+          id: 7,
           fileName: 'test002.txt',
           fileSize: '512kb',
           dateChang: '2022-01-12 13:35:12',
           isFolder: false,
         },
         {
-          id: 3,
+          id: 8,
           fileName: 'test003.txt',
           fileSize: '212kb',
           dateChang: '2022-01-13 13:35:12',
           isFolder: true,
         },
         {
-          id: 4,
+          id: 9,
           fileName:
             '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
           fileSize: '312kb',
@@ -424,35 +439,35 @@ export default {
           isFolder: false,
         },
         {
-          id: 5,
+          id: 10,
           fileName: 'test005.txt',
           fileSize: '123MB',
           dateChang: '2022-03-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 1,
+          id: 11,
           fileName: 'test001.txt',
           fileSize: '12kb',
           dateChang: '2022-01-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 2,
+          id: 12,
           fileName: 'test002.txt',
           fileSize: '512kb',
           dateChang: '2022-01-12 13:35:12',
           isFolder: false,
         },
         {
-          id: 3,
+          id: 13,
           fileName: 'test003.txt',
           fileSize: '212kb',
           dateChang: '2022-01-13 13:35:12',
           isFolder: true,
         },
         {
-          id: 4,
+          id: 14,
           fileName:
             '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
           fileSize: '312kb',
@@ -460,35 +475,35 @@ export default {
           isFolder: false,
         },
         {
-          id: 5,
+          id: 15,
           fileName: 'test005.txt',
           fileSize: '123MB',
           dateChang: '2022-03-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 1,
+          id: 16,
           fileName: 'test001.txt',
           fileSize: '12kb',
           dateChang: '2022-01-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 2,
+          id: 17,
           fileName: 'test002.txt',
           fileSize: '512kb',
           dateChang: '2022-01-12 13:35:12',
           isFolder: false,
         },
         {
-          id: 3,
+          id: 18,
           fileName: 'test003.txt',
           fileSize: '212kb',
           dateChang: '2022-01-13 13:35:12',
           isFolder: true,
         },
         {
-          id: 4,
+          id: 19,
           fileName:
             '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
           fileSize: '312kb',
@@ -496,35 +511,35 @@ export default {
           isFolder: false,
         },
         {
-          id: 5,
+          id: 20,
           fileName: 'test005.txt',
           fileSize: '123MB',
           dateChang: '2022-03-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 1,
+          id: 21,
           fileName: 'test001.txt',
           fileSize: '12kb',
           dateChang: '2022-01-11 13:35:12',
           isFolder: false,
         },
         {
-          id: 2,
+          id: 22,
           fileName: 'test002.txt',
           fileSize: '512kb',
           dateChang: '2022-01-12 13:35:12',
           isFolder: false,
         },
         {
-          id: 3,
+          id: 23,
           fileName: 'test003.txt',
           fileSize: '212kb',
           dateChang: '2022-01-13 13:35:12',
           isFolder: true,
         },
         {
-          id: 4,
+          id: 24,
           fileName:
             '的犯得上发射点犯得上发生法大师傅大师傅士大夫发士大夫士大夫.txt',
           fileSize: '312kb',
@@ -532,7 +547,7 @@ export default {
           isFolder: false,
         },
         {
-          id: 5,
+          id: 25,
           fileName: 'test005.txt',
           fileSize: '123MB',
           dateChang: '2022-03-11 13:35:12',
@@ -569,17 +584,50 @@ export default {
             label: '修改日期',
           },
         ],
+        condition: {
+          fileName: '',
+          path: 'C',
+        },
+        fetchUrl: 'getFileList',
       },
       selectData: [],
     }
   },
   created() {
-    this.tableConfig.tableData = this.testData
+    // this.tableConfig.tableData = this.testData
+    this.getData()
   },
   mounted() {
     this.tableConfig.maxHeight = document.body.clientHeight - 220 + 'px'
   },
   methods: {
+    createDirectory() {
+      if (this.folderName) {
+        this.$http('createDirectory', {
+          folderName: this.folderName,
+          path: this.nowPath,
+        }).then((res) => {
+          this.$message.success(res.errMsg)
+        })
+      } else {
+        this.$message.warning('文件夹名称不能为空')
+      }
+    },
+    getData() {
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
+      })
+    },
+    confirmDel(data) {
+      console.log(data)
+      this.tempDelId = ''
+      this.$set(data, 'showOperate', false)
+    },
+    cancelDel(data) {
+      console.log(data)
+      this.tempDelId = ''
+      this.$set(data, 'showOperate', false)
+    },
     handleCheckAllChange(val) {
       console.log(val)
     },
@@ -629,7 +677,9 @@ export default {
       this.$set(val, 'showOperate', true)
     },
     cellMouseLeave(val) {
-      this.$set(val, 'showOperate', false)
+      if (this.tempDelId != val.id) {
+        this.$set(val, 'showOperate', false)
+      }
     },
   },
 }

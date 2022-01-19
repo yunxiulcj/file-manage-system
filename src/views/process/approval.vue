@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       userName: 'admin01',
-      accountType: '1',
+      accountType: '2',
       approvalState: '5',
       applyStatus: {
         1: '已撤回',
@@ -190,7 +190,7 @@ export default {
     } else if (paramNum.length > 0) {
       data = this.$route.params
     }
-    this.getData(data.applyId)
+    this.getData(data)
     this.accountType = data.accountType
     this.approvalState = data.approvalState
   },
@@ -199,8 +199,13 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
-    getData(id) {
-      console.log('id', id)
+    getData(data) {
+      this.$http('getApplyDetail', {
+        applyId: data.applyId,
+        type: data.accountType,
+      }).then((res) => {
+        this.detailData = res.data
+      })
     },
     agreeOrRefuseApply(type) {
       console.log(type)

@@ -11,7 +11,7 @@
     <el-container>
       <el-aside
         v-if="aside"
-        width="185px"
+        :width="asideWidth || '185px'"
         style="border-right: 0.5px solid #d9d9d9"
       >
         <slot name="aside"></slot>
@@ -32,7 +32,7 @@
 <script>
 export default {
   name: 'pageFrame',
-  props: ['aside', 'title', 'icon'],
+  props: ['aside', 'title', 'icon', 'asideWidth'],
   data() {
     return {}
   },

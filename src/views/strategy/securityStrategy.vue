@@ -119,7 +119,7 @@
               登录限制策略
             </span>
             <el-switch
-              v-model="loginForm.limitStrategy"
+              v-model="limitForm.isOpen"
               active-color="#228be6"
               inactive-color="#adb5bd"
             ></el-switch>
@@ -130,7 +130,7 @@
             <span class="limitTips">（无权登录文档管理系统的用户/用户组）</span>
           </div>
           <el-input
-            v-model="loginForm.limitStr"
+            v-model="limitStr"
             size="small"
             style="width: 365px; margin-right: 12px"
             clearable
@@ -139,7 +139,7 @@
           <el-button
             type="primary"
             size="small"
-            @click="addBlacklist(loginForm.limitStr)"
+            @click="addBlacklist(limitStr)"
           >
             添加
           </el-button>
@@ -160,21 +160,21 @@
           </div>
           <div class="limitListBox">
             <div class="limitList">
-              <el-checkbox-group v-model="limitForm.limitDelList">
+              <el-checkbox-group v-model="limitDelList">
                 <el-checkbox
-                  v-for="item in limitForm.limitList"
-                  :key="item.name"
-                  :label="item.name"
+                  v-for="item in limitForm.userList"
+                  :key="item.userId"
+                  :label="item.userId"
                 >
                   <div class="checkBox">
                     <span>
                       <i
                         class="iconfont icon-yonghutianchong"
-                        v-if="item.type == 1"
+                        v-if="!item.isUserGroup"
                       ></i>
                       <i class="iconfont icon-huaban" v-else></i>
                     </span>
-                    {{ item.name }}
+                    {{ item.userId }}
                   </div>
                 </el-checkbox>
               </el-checkbox-group>
@@ -183,7 +183,7 @@
               <el-button
                 type="danger"
                 size="small"
-                @click="delBlacklist(limitForm.limitDelList)"
+                @click="delBlacklist(limitDelList)"
               >
                 删除
               </el-button>
@@ -208,7 +208,7 @@ export default {
   components: { pageFrame, miniMenu },
   data() {
     return {
-      menu: 'passwordPolicy',
+      menu: 'limitStrategy',
       menuList: [
         {
           label: '密码策略',
@@ -237,26 +237,25 @@ export default {
         lockTime: 0,
         logoutTime: 0,
       },
+      limitStr: '',
+      limitDelList: [],
       limitForm: {
-        limitStrategy: false,
-        limitStr: '',
-        limitDelList: [],
-        limitList: [
-          {
-            name: 'test1',
-            type: '1',
-          },
-          {
-            name: 'test2',
-            type: '2',
-          },
-          {
-            name: 'test3',
-            type: '1',
-          },
-        ],
+        isOpen: false,
+        userList: [],
       },
     }
+  },
+  watch: {
+    menu: {
+      immediate: true,
+      handler(val) {
+        if (val == 'limitStrategy') {
+          this.$http('getLoginStrategy').then((res) => {
+            this.limitForm = res.data
+          })
+        }
+      },
+    },
   },
   methods: {
     savePass() {
@@ -266,29 +265,31 @@ export default {
       this.$message.success('保存成功')
     },
     saveLimit() {
-      this.$message.success('保存成功')
+      this.$http('setLoginStrategy', this.limitForm).then((res) => {
+        this.$message.success(res.errMsg)
+      })
     },
     addBlacklist(val) {
       if (val) {
-        let temp = this.limitForm.limitList.filter((item) => {
-          return item.name == val
+        this.$http('checkUserIsGroup', { userId: val }).then((res) => {
+          if (res.data && res.data != 3) {
+            this.limitForm.userList.push({
+              userId: val,
+              isUserGroup: res.data == 1 ? false : true,
+            })
+          } else {
+            this.$message.warning('该用户不存在')
+          }
         })
-        if (temp && temp.length > 0) {
-          this.$message.info('该用户或用户组已在黑名单')
-        } else {
-          this.limitForm.limitList.push({
-            name: val.substring(1),
-            type: val.substring(0, 1),
-          })
-        }
       }
     },
     delBlacklist(val) {
+      console.log(val)
       if (val && val.length > 0) {
-        let temp = this.limitForm.limitList.filter(
-          (item) => val.indexOf(item.name) < 0
+        let temp = this.limitForm.userList.filter(
+          (item) => val.indexOf(item.userId) < 0
         )
-        this.limitForm.limitList = temp
+        this.limitForm.userList = temp
       }
     },
   },

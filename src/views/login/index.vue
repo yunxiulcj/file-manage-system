@@ -100,9 +100,11 @@ export default {
     }
   },
   created() {
-    this.handleRefreshVerify()
     // this.loginForm.username = localStorage.getItem('username') || ''
     // this.loginForm.password = localStorage.getItem('pwdToken') || ''
+  },
+  mounted() {
+    this.handleRefreshVerify()
   },
   methods: {
     handleSubmit() {
@@ -135,7 +137,7 @@ export default {
     },
     handleRefreshVerify() {
       this.refleshLoading = true
-      this.$http('getAuthCode')
+      this.$http('getCaptchaCode')
         .then((res) => {
           this.verifyImg = 'data:image/png;base64,' + res.data
         })

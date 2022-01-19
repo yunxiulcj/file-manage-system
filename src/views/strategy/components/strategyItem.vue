@@ -201,6 +201,7 @@ export default {
       }
     }
     .contentWrap {
+      width: calc(100% - 40px);
       padding: 20px;
       font-size: 14px;
       .condition {

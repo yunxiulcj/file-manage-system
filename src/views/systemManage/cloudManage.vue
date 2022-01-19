@@ -183,18 +183,6 @@ export default {
       this.$http('getSetting', { settingId: type })
         .then((res) => {
           let data = res.data
-          // if (data.defaultDownLoadCount && data.defaultDownLoadCount == 0) {
-          //   data['enableDownLoadCount'] = false
-          //   data.defaultDownLoadCount = 1
-          // } else {
-          //   data['enableDownLoadCount'] = true
-          // }
-          // if (data.defaultDownLoadDay && data.defaultDownLoadDay == 0) {
-          //   data['enableDownLoadDay'] = false
-          //   data.defaultDownLoadDay = 1
-          // } else {
-          //   data['enableDownLoadDay'] = true
-          // }
           if (data.operationFileType) {
             this.fileTypeList = clone(data.operationFileType)
           }
@@ -205,20 +193,7 @@ export default {
         })
     },
     saveFileSetting(data) {
-      // if (!data.enableDownLoadCount) {
-      //   data.defaultDownLoadCount = 0
-      // }
-      // if (!data.enableDownLoadDay) {
-      //   data.defaultDownLoadDay = 0
-      // }
-      this.$http('fileSetting', {
-        uploadFileSize: data.uploadFileSize,
-        operationFileType: data.operationFileType,
-        defaultDownLoadCount: data.defaultDownLoadCount,
-        defaultDownLoadDay: data.defaultDownLoadDay,
-        enableDownLoadCount: data.enableDownLoadCount,
-        enableDownLoadDay: data.enableDownLoadDay,
-      }).then((res) => {
+      this.$http('fileSetting', data).then((res) => {
         this.$message.success(res.errMsg)
       })
     },

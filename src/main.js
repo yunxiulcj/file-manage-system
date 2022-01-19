@@ -11,9 +11,9 @@ import '@/assets/css/index.css'
 import '@/assets/css/element.css'
 
 Vue.use(ElementUI)
-Vue.config.productionTip = false
 Vue.prototype.$http = request
 promiseFinally()
+Vue.config.productionTip = false
 
 new Vue({
   router,

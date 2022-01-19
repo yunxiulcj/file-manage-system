@@ -83,7 +83,7 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 110px 35px;
-  width: 195px;
+  width: 200px;
   height: 60px;
 }
 .menuBox {
