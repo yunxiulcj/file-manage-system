@@ -20,16 +20,21 @@
       </template>
       <div class="fileTreeWrap">
         <el-tree
+          style="width: 300px"
           ref="tree"
-          :data="treeData"
-          :props="defaultProps"
-          @node-click="handleNodeClick"
+          :props="props"
+          :load="loadNode"
+          node-key="name"
           highlight-current
+          lazy
+          empty-text="暂无数据"
+          @node-click="nodeClick"
         >
-          <div class="treeNode" slot-scope="{ node }">
-            <i class="iconfont icon-filePool"></i>
-            <span>{{ node.label }}</span>
-          </div>
+          <span class="nodeItem" slot-scope="{ node }">
+            <span style="font-size: 13px" slot="reference">
+              {{ node.label }}
+            </span>
+          </span>
         </el-tree>
       </div>
       <div class="pathBox">目标路径：{{ targetPath }}</div>
@@ -38,11 +43,13 @@
         <el-upload
           class="upload-demo"
           ref="upload"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
+          :action="uploadUrl"
           :on-remove="handleRemove"
           :file-list="fileList"
+          :on-change="onUploadChange"
+          :before-upload="onBeforeUpload"
           :auto-upload="false"
+          :http-request="uploadFile"
           multiple
         >
           <el-button slot="trigger" size="mini" type="primary">
@@ -78,81 +85,20 @@ export default {
   data() {
     return {
       tempVal: false,
-      targetPath: 'D:\\document\\FrontEnd\\file-manage-system',
-      treeData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  label: '三级 1-1-1',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1',
-                },
-              ],
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1',
-                },
-              ],
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      defaultProps: {
-        children: 'children',
-        label: 'label',
+      uploadUrl: '',
+      targetPath: '',
+      props: {
+        label: 'name',
+        isLeaf: 'leaf',
       },
-      fileList: [
-        {
-          name: 'food.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-        },
-        {
-          name: 'food2.jpeg',
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-        },
-      ],
+      fileList: [],
+      rootPath: '',
+      baseUrl: '',
     }
   },
-  created() {},
+  created() {
+    this.baseUrl = this.$store.getters.symSetting.uploadUrl
+  },
   watch: {
     value: {
       handler(val) {
@@ -162,14 +108,53 @@ export default {
     },
   },
   methods: {
+    loadNode(node, resolve) {
+      let path = node.level == 0 ? '' : node.data.path
+      this.$http('getFileList', { path: path }).then((res) => {
+        let temp = []
+        res.data.map((item) => {
+          if (item.dir) {
+            temp.push({
+              name: item.name,
+              path: item.path,
+              leaf: !item.dir,
+            })
+          }
+        })
+        resolve(temp)
+      })
+    },
+    nodeClick(node) {
+      this.targetPath = node.path
+    },
+    uploadFile(param) {
+      let file = param.file
+      this.$http('createToken', {
+        path: this.targetPath,
+        fileName: file.name,
+        type: 1,
+      }).then((res) => {
+        param.action = this.baseUrl + 'upload?token=' + res.data
+      })
+      console.log('uploadFile', param)
+    },
+    onBeforeUpload(file) {
+      console.log('onBeforeUpload', file)
+    },
+    onUploadChange(file) {
+      if (file.status == 'ready') {
+        console.log(file)
+      }
+    },
     submitUpload() {
+      console.log('submitUpload', this.fileList)
       this.$refs.upload.submit()
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
     handlePreview(file) {
-      console.log(file)
+      console.log('handlePreview', file)
     },
     handleNodeClick(data) {
       this.targetPath = data.label

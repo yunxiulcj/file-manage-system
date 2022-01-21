@@ -62,6 +62,9 @@ export default {
       handler(val) {
         this.currentMenu = val.fullPath
         this.currentModule = this.currentMenu.split('/')[1]
+        if (this.currentModule == 'sharedSpace') {
+          this.getPersonDiskSize()
+        }
         if (this.isCreated) {
           this.activeIndex = this.leftList[this.currentModule][0].path
         }
@@ -82,6 +85,13 @@ export default {
         }
       })
       this.activeIndex = this.currentMenu
+    },
+    getPersonDiskSize() {
+      this.$http('getPersonDiskSize', {
+        userId: localStorage.getItem('username') || '',
+      }).then((res) => {
+        this.capacity = res.data
+      })
     },
   },
 }

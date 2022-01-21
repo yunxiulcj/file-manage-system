@@ -39,7 +39,7 @@
       <table-temp
         :config="tableConfig"
         ref="table"
-        :loading.sync="tableLoading"
+        :loading="tableLoading"
       ></table-temp>
     </page-frame>
     <el-dialog :visible.sync="MultiFileDialog" width="60%">
@@ -55,16 +55,56 @@
           文件夹
         </div>
       </template>
-      <table-temp
-        ref="table1"
-        :config="MultiFileConfig"
-        :loading="tableLoading1"
-      ></table-temp>
+      <table-temp :config="MultiFileConfig"></table-temp>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="MultiFileDialog = false">
+        <el-button size="small" type="primary" @click="MultiFileDialog = false">
+          关 闭
+        </el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :visible.sync="agreeOrRefuseDialog" width="500px">
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          提示
+        </div>
+      </template>
+      <el-form size="small">
+        <el-form-item label="下载次数" v-if="canEdit">
+          <el-input-number
+            v-model="editForm.downloadCount"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <span class="unit">单位：天</span>
+          <el-divider direction="vertical"></el-divider>
+          <span class="tips">注：0表示长期有效</span>
+        </el-form-item>
+        <el-form-item label="申请有效期" v-if="canEdit">
+          <el-input-number
+            v-model="editForm.downloadExpiredDay"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <span class="unit">单位：天</span>
+          <el-divider direction="vertical"></el-divider>
+          <span class="tips">注：0表示长期有效</span>
+        </el-form-item>
+        <el-form-item label="同意理由">
+          <el-input v-model="editForm.comment"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="agreeOrRefuseDialog = false">
           取 消
         </el-button>
-        <el-button size="small" type="primary" @click="MultiFileDialog = false">
+        <el-button size="small" type="primary" @click="confirmEdit">
           确 定
         </el-button>
       </span>
@@ -82,7 +122,15 @@ export default {
   data() {
     return {
       MultiFileDialog: false,
-      tableLoading1: false,
+      agreeOrRefuseDialog: false,
+      canEdit: false,
+      editForm: {
+        applyId: '',
+        applyStatus: 0,
+        downloadCount: 1,
+        downloadExpiredDay: 1,
+        comment: '',
+      },
       pickerOptions: {
         shortcuts: [
           {
@@ -114,73 +162,6 @@ export default {
           },
         ],
       },
-      testData: [
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '5',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '1',
-          sensitivityLevel: '1',
-          applyId: '122gdfg343',
-          fileName: 'qwerrewq',
-          workOrderNum: '2123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '4',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '1',
-          sensitivityLevel: '1',
-          applyId: '122sdfsd343',
-          fileName: 'qwerrewq',
-          workOrderNum: '2123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '3',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '3',
-          sensitivityLevel: '3',
-          applyId: '123',
-          fileName: '多个文件',
-          workOrderNum: '123321789',
-          isMultiFile: true,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '2',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '2',
-          sensitivityLevel: '2',
-          applyId: '123',
-          fileName: 'Testtes',
-          workOrderNum: '3123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '1',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '1',
-          sensitivityLevel: '1',
-          applyId: '123',
-          fileName: 'qwerrewq',
-          workOrderNum: '2123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-      ],
       tableLoading: false,
       times: [],
       stateList: [
@@ -214,62 +195,22 @@ export default {
         border: true,
         tableSetting: [
           {
-            prop: 'workOrderNum',
+            prop: 'applyId',
             label: '工单号',
           },
           {
             prop: 'fileName',
             label: '文件名',
             style: (row) => {
-              return row.isMultiFile
+              return row.multiFile
                 ? { color: '#1890ff', cursor: 'pointer' }
                 : { color: 'none' }
             },
             click: (row) => {
-              if (row.isMultiFile) {
+              if (row.multiFile) {
+                this.$set(this.MultiFileConfig, 'tableData', row.attachmentList)
                 this.MultiFileDialog = true
-                this.$nextTick(() => {})
               }
-            },
-          },
-          {
-            prop: 'sensitivityLevel',
-            label: '敏感级别',
-            style: (row) => {
-              let sty
-              switch (row.sensitivityLevel) {
-                case '1':
-                  sty = { color: '#1890ff' }
-                  break
-                case '2':
-                  sty = { color: '#faad14' }
-                  break
-                case '3':
-                  sty = { color: '#f5222d' }
-                  break
-                default:
-                  sty = { color: '#595959' }
-                  break
-              }
-              return sty
-            },
-            formatter: (row) => {
-              let str
-              switch (row.sensitivityLevel) {
-                case '1':
-                  str = '秘密'
-                  break
-                case '2':
-                  str = '机密'
-                  break
-                case '3':
-                  str = '绝密'
-                  break
-                default:
-                  str = '-'
-                  break
-              }
-              return str
             },
           },
           {
@@ -279,7 +220,7 @@ export default {
               let str
               switch (row.applyType) {
                 case '1':
-                  str = '公网上传申请'
+                  str = '文件下载申请'
                   break
                 case '2':
                   str = '文件外发申请'
@@ -308,19 +249,17 @@ export default {
             style: (row) => {
               let sty
               switch (row.applyStatus) {
-                case '1':
+                case 1:
                   sty = { color: '#fd7e14' }
                   break
-                case '2':
-                case '3':
+                case 2:
+                case 3:
                   sty = { color: '#228be6' }
                   break
-                // sty = { color: '#fcc419' }
-                // break
-                case '4':
+                case 4:
                   sty = { color: '#40c057' }
                   break
-                case '5':
+                case 5:
                   sty = { color: '#f03e3e' }
                   break
                 default:
@@ -332,19 +271,19 @@ export default {
             formatter: (row) => {
               let str
               switch (row.applyStatus) {
-                case '1':
+                case 1:
                   str = '已撤回'
                   break
-                case '2':
+                case 2:
                   str = '待处理'
                   break
-                case '3':
+                case 3:
                   str = '审批中'
                   break
-                case '4':
+                case 4:
                   str = '审批通过'
                   break
-                case '5':
+                case 5:
                   str = '审批拒绝'
                   break
                 default:
@@ -372,14 +311,23 @@ export default {
               style: { color: '#389e0d' },
               type: 'text',
               fn: (row) => {
-                this.$confirm('是否同意当前申请？', '提示', {
-                  confirmButtonText: '确认',
-                  cancelButtonText: '取消',
-                  type: 'info',
-                  center: true,
-                }).then(() => {
-                  this.agreeOrRefuseApply(row, 1)
-                })
+                if (row.canEdit) {
+                  this.editForm.applyId = row.applyId
+                  this.editForm.approvalState = 1
+                  this.editForm.downloadCount = row.downloadCount
+                  this.editForm.downloadExpiredDay = row.downloadDay
+                  this.canEdit = row.canEdit
+                  this.agreeOrRefuseDialog = true
+                } else {
+                  this.$confirm('是否同意当前申请？', '提示', {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'info',
+                    center: true,
+                  }).then(() => {
+                    this.agreeOrRefuseApply(row, 1)
+                  })
+                }
               },
               show: (row) => {
                 return row.applyStatus == 2 || row.applyStatus == 3
@@ -390,14 +338,12 @@ export default {
               style: { color: '#f5222d' },
               type: 'text',
               fn: (row) => {
-                this.$confirm('是否拒绝当前申请？', '提示', {
-                  confirmButtonText: '确认',
-                  cancelButtonText: '取消',
-                  type: 'info',
-                  center: true,
-                }).then(() => {
-                  this.agreeOrRefuseApply(row, 2)
-                })
+                this.editForm.applyId = row.applyId
+                this.editForm.approvalState = 2
+                this.editForm.downloadCount = row.downloadCount
+                this.editForm.downloadExpiredDay = row.downloadDay
+                this.canEdit = false
+                this.agreeOrRefuseDialog = true
               },
               show: (row) => {
                 return row.applyStatus == 2 || row.applyStatus == 3
@@ -435,71 +381,37 @@ export default {
       MultiFileConfig: {
         tableData: [],
         border: true,
+        maxHeight: '400px',
         tableSetting: [
           {
             prop: 'fileName',
             label: '文件名',
           },
           {
-            prop: 'sensitivityLevel',
-            label: '敏感级别',
-            style: (row) => {
-              let sty
-              switch (row.sensitivityLevel) {
-                case '1':
-                  sty = { color: '#1890ff' }
-                  break
-                case '2':
-                  sty = { color: '#fa8c16' }
-                  break
-                case '3':
-                  sty = { color: '#f5222d' }
-                  break
-                default:
-                  sty = { color: '#595959' }
-                  break
-              }
-              return sty
-            },
-            formatter: (row) => {
-              let str
-              switch (row.sensitivityLevel) {
-                case '1':
-                  str = '秘密'
-                  break
-                case '2':
-                  str = '机密'
-                  break
-                case '3':
-                  str = '绝密'
-                  break
-                default:
-                  str = '-'
-                  break
-              }
-              return str
-            },
-          },
-          {
             prop: 'fileSize',
             label: '文件大小',
           },
         ],
-        condition: {
-          applyId: '',
-        },
-        fetchUrl: 'getMultipleFiles',
       },
     }
   },
   created() {
     this.getDefaultTime()
-    this.tableConfig.tableData = this.testData
+    this.getData()
   },
   methods: {
+    agree() {
+      this.$http('agree', this.editForm).then((res) => {
+        this.$message.success(res.errMsg)
+      })
+    },
+    confirmEdit() {},
     getData() {
       this.tableConfig.condition.startTime = this.times[0]
       this.tableConfig.condition.endTime = this.times[1]
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
+      })
     },
     getDefaultTime() {
       this.times = [

@@ -47,4 +47,7 @@ export default {
   updateDepartmentName: {
     url: '/strategy/updateDepartmentName',
   },
+  strategyNameExists: {
+    url: '/strategy/strategyNameExists',
+  },
 }

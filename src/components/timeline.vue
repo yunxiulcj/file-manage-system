@@ -21,10 +21,7 @@
           </div>
           <div class="downloadCount apply">
             <span class="label">下载次数：</span>
-            <span
-              class="canBeModifi"
-              v-if="accountType == 1 && approvalState == 2"
-            >
+            <span class="canBeModifi" v-if="data.canEdit">
               <el-input-number
                 v-model="data.downloadCount"
                 controls-position="right"
@@ -40,12 +37,9 @@
           </div>
           <div class="expiredDay apply">
             <span class="label">申请有效期：</span>
-            <span
-              class="canBeModifi"
-              v-if="accountType == 1 && approvalState == 2"
-            >
+            <span class="canBeModifi" v-if="data.canEdit">
               <el-input-number
-                v-model="data.downloadExpiredDay"
+                v-model="data.downloadDay"
                 controls-position="right"
                 size="small"
                 :min="0"
@@ -54,9 +48,7 @@
               <el-divider direction="vertical"></el-divider>
               <span class="tips">注：0表示长期有效</span>
             </span>
-            <span class="noModifi" v-else>
-              {{ data.downloadExpiredDay }} 天
-            </span>
+            <span class="noModifi" v-else>{{ data.downloadDay }} 天</span>
           </div>
         </div>
       </div>

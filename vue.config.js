@@ -5,13 +5,14 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     proxy: {
-      '/api': {
-        target: 'http://192.168.1.21:9091/dsc',
+      '/dsc': {
+        target: 'http://192.168.1.21:9091/',
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': '',
+        pathRequiresRewrite: {
+          '^/dsc': '',
         },
       },
     },
+    port: 9091,
   },
 }

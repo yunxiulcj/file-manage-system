@@ -21,7 +21,7 @@
       </div>
       <el-tabs v-model="activeName">
         <el-tab-pane label="全部消息" name="1">
-          <div class="itemWrap">
+          <div class="itemWrap" v-loading="loading">
             <message-item :messageList="messageList"></message-item>
           </div>
         </el-tab-pane>
@@ -35,8 +35,15 @@
               class="item"
             ></el-badge>
           </span>
+          <div class="itemWrap" v-loading="loading">
+            <message-item :messageList="messageList"></message-item>
+          </div>
         </el-tab-pane>
-        <el-tab-pane label="已读消息" name="3"></el-tab-pane>
+        <el-tab-pane label="已读消息" name="3">
+          <div class="itemWrap" v-loading="loading">
+            <message-item :messageList="messageList"></message-item>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -44,170 +51,116 @@
 
 <script>
 import messageItem from './components/messageItem.vue'
+import moment from 'moment'
 export default {
   name: 'message',
   components: { messageItem },
   data() {
     return {
-      unread: 123,
+      unread: 0,
       activeName: '1',
-      filterTime: '1',
+      loading: false,
+      filterTime: 5,
       timeRange: [
         {
           label: '最近七天',
-          value: '1',
+          value: 1,
         },
         {
           label: '最近十五天',
-          value: '2',
+          value: 2,
         },
         {
           label: '最近一个月',
-          value: '3',
+          value: 3,
         },
         {
           label: '最近三个月',
-          value: '4',
+          value: 4,
         },
         {
           label: '全部时间',
-          value: '5',
+          value: 5,
         },
       ],
-      messageList: [
-        {
-          id: 1,
-          applyType: '1',
-          state: '1',
-          isRead: true,
-          files: [
-            {
-              fileName: '好东西.txt',
-              fileSize: '12kb',
-              filePath: '',
-            },
-          ],
-          invalidDay: '2',
-          approver: 'approver',
-          describe: '测试啊这是3',
-          title: '用户chenyue进行了公网上传申请',
-          invalidStartDate: '2020-1-12 02:02:02',
-          invalidEndDate: '2021-12-12 12:12:12',
-          applyUser: 'applyUser',
-          receiver: 'receiver',
-          receiverEmail: '123@cc.com',
-          receiverTel: '14234325433',
-          receiverCompany: '天天摸鱼3',
-          applyEmail: '321@aa.com',
-          applyTel: '153245431332',
-        },
-        {
-          id: 2,
-          applyType: 2,
-          state: 2,
-          isRead: false,
-          files: [
-            {
-              fileName: '好东西2.txt',
-              fileIcon: '',
-              fileSize: '12kb',
-              fileLevel: '2',
-            },
-          ],
-          invalidDay: '3',
-          approver: 'approver',
-          describe: '测试啊这是2',
-          title: '管理员Matt同意了您外发文件的申请',
-          invalidStartDate: '2020-1-12 02:02:02',
-          invalidEndDate: '2021-12-12 12:12:12',
-          applyUser: 'applyUser',
-          receiver: 'receiver',
-          receiverEmail: '123@cc.com',
-          receiverTel: '14234325433',
-          receiverCompany: '天天摸鱼2',
-          applyEmail: '321@aa.com',
-          applyTel: '153245431332',
-        },
-        {
-          id: 3,
-          applyType: 3,
-          state: 1,
-          isRead: false,
-          files: [
-            {
-              fileName: '好东西1.txt',
-              fileIcon: '',
-              fileSize: '232kb',
-              fileLevel: '1',
-            },
-            {
-              fileName: '好东西2.txt',
-              fileIcon: '',
-              fileSize: '123kb',
-              fileLevel: '2',
-            },
-            {
-              fileName: '好东西3.txt',
-              fileIcon: '',
-              fileSize: '12kb',
-              fileLevel: '3',
-            },
-            {
-              fileName: '好东西4.txt',
-              fileIcon: '',
-              fileSize: '122kb',
-              fileLevel: '1',
-            },
-            {
-              fileName: '好东西5.txt',
-              fileIcon: '',
-              fileSize: '12kb',
-              fileLevel: '2',
-            },
-          ],
-          invalidDay: '5',
-          approver: 'approver',
-          describe: '测试啊这是1',
-          title: '管理员Matt 拒绝了您文件下载的申请',
-          invalidStartDate: '2020-1-12 02:02:02',
-          invalidEndDate: '2021-12-12 12:12:12',
-          applyUser: 'applyUser',
-          receiver: 'receiver',
-          receiverEmail: '123@cc.com',
-          receiverTel: '14234325433',
-          receiverCompany: '天天摸鱼1',
-          applyEmail: '321@aa.com',
-          applyTel: '153245431332',
-        },
-      ],
+      messageList: [],
     }
   },
   watch: {
     activeName: {
       handler(val) {
-        console.log(val)
+        this.messageList = []
+        this.getNoticeList(val)
       },
       immediate: true,
     },
   },
   created() {},
+  mounted() {
+    this.getUserUnreadNoticeNum()
+  },
   methods: {
     MarkRead() {
-      this.unread = 0
+      let idList = this.messageList.map((item) => {
+        return item.id
+      })
+      this.$http('setNoticeRead', { noticeIdList: idList })
+        .then((res) => {
+          this.$message.success(res.errMsg)
+        })
+        .finally(() => {
+          this.getNoticeList(this.activeName)
+          this.getUserUnreadNoticeNum()
+        })
     },
     getUserUnreadNoticeNum() {
       this.$http('getUserUnreadNoticeNum').then((res) => {
         this.unread = res.data
       })
     },
-    getNoticeList() {
-      this.$http('getNoticeList', { noticeType: this.activeName }).then(
-        (res) => {
+    getNoticeList(type) {
+      this.loading = true
+      let startTime = '',
+        endTime = ''
+      switch (this.timeRange) {
+        case 1:
+          startTime = moment().subtract(7, 'days').format('YYYY-MM-DD HH:mm:ss')
+          endTime = moment().format('YYYY-MM-DD HH:mm:ss')
+          break
+        case 2:
+          startTime = moment()
+            .subtract(15, 'days')
+            .format('YYYY-MM-DD HH:mm:ss')
+          endTime = moment().format('YYYY-MM-DD HH:mm:ss')
+          break
+        case 3:
+          startTime = moment()
+            .subtract(30, 'days')
+            .format('YYYY-MM-DD HH:mm:ss')
+          endTime = moment().format('YYYY-MM-DD HH:mm:ss')
+          break
+        case 4:
+          startTime = moment()
+            .subtract(90, 'days')
+            .format('YYYY-MM-DD HH:mm:ss')
+          endTime = moment().format('YYYY-MM-DD HH:mm:ss')
+          break
+        default:
+          break
+      }
+      this.$http('getNoticeList', {
+        noticeType: type,
+        startTime: startTime,
+        endTime: endTime,
+      })
+        .then((res) => {
           if (res.data) {
             this.messageList = res.data
           }
-        }
-      )
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
   },
 }

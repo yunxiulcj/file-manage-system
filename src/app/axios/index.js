@@ -1,7 +1,7 @@
 import vueSystem from '@/app/vue-system'
 import { requestInterceptor, responseInterceptor, error } from './interceptors'
 import { clone } from '@/utils/obj-operation'
-// import store from '@/app/store/index'
+import store from '@/app/store/index'
 
 /**
  * axios 实例
@@ -12,7 +12,7 @@ let baseSetting = {
   headers: {
     'Content-Type': 'application/json'
   },
-  baseURL:'/api',
+  // baseURL:'/api',
   withCredentials: true
 }
 let instance = vueSystem.axios.create(baseSetting)
@@ -50,11 +50,11 @@ export default function request (config, funcName, data, baseConfig = {}) {
   /**
    * 根据代理设置路径
    */
-  // let url = newConfig.url
-  // let symSetting = store.getters.symSetting
-  // let condev = process.env.NODE_ENV === 'production' ? symSetting.host : '/api'
-  // window.urlHead = condev
-  // newConfig.url = condev + url
+  let url = newConfig.url
+  let symSetting = store.getters.symSetting
+  let condev = process.env.NODE_ENV === 'production' ? symSetting.host : 'http://192.168.1.145:9091/dsc'
+  window.urlHead = condev
+  newConfig.url = condev + url
   if (data != undefined && data.isRestful) {
     newConfig.url = newConfig.url + data.param
   }

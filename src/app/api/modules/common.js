@@ -1,6 +1,6 @@
 export default {
   createToken: {
-    url: '/common/createToken',
+    url: '/file/createToken',
   },
   login: {
     url: '/common/login',

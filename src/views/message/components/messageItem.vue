@@ -3,14 +3,18 @@
     <div v-for="item in messageList" :key="item.id" class="messageWrap">
       <div class="messageBox">
         <div class="topWrap">
-          <div :class="{ isRead: item.isRead }"></div>
+          <div :class="{ isRead: item.read }"></div>
           <div class="topPart">
             <div class="messageTop">
               <div class="title">{{ item.title }}</div>
-              <el-tag :type="tagType[item.state]" size="small" class="state">
-                {{ stateType[item.state] }}
+              <el-tag
+                :type="tagType[item.applyState]"
+                size="small"
+                class="state"
+              >
+                {{ stateType[item.applyState] }}
               </el-tag>
-              <div class="startTime">{{ item.invalidStartDate }}</div>
+              <div class="startTime">{{ item.expiredStartTime }}</div>
             </div>
             <div class="messageContent">
               <div class="infoTop">
@@ -22,12 +26,12 @@
 
                 <div class="periodValidity infoItem">
                   <span class="label">有效期：</span>
-                  {{ item.invalidStartDate }} 至
-                  {{ item.invalidEndDate }}
+                  {{ item.expiredStartTime }} 至
+                  {{ item.expiredEndTime }}
                 </div>
                 <el-divider direction="vertical"></el-divider>
                 <div class="invalidDay infoItem">
-                  申请后{{ item.invalidDay }}天内
+                  申请后{{ item.noticeTime }}天内
                 </div>
                 <el-divider direction="vertical"></el-divider>
                 <div class="detail infoItem" @click="showDetail(item)">
@@ -43,10 +47,10 @@
                 >
                   <div class="describe infoItem">
                     <span class="label">申请描述：</span>
-                    {{ item.describe }}
+                    {{ item.applyDesc }}
                   </div>
                 </div>
-                <div class="btnBox" v-if="item.state == 1">
+                <div class="btnBox" v-if="item.canApproval">
                   <el-button
                     @click="clickOnAgre"
                     type="success"
@@ -71,49 +75,34 @@
           </div>
         </div>
         <el-divider></el-divider>
-        <div class="messageBottom" v-if="item.files && item.files.length > 0">
-          <div class="fileWrap" v-for="file in item.files" :key="file.Name">
+        <div
+          class="messageBottom"
+          v-if="item.attachmentList && item.attachmentList.length > 0"
+        >
+          <div
+            class="fileWrap"
+            v-for="file in item.attachmentList"
+            :key="file.fileName"
+          >
             <div class="fileBox">
               <div class="fileName">{{ file.fileName }}</div>
               <div class="fileInfo">
                 <div class="fileSize">
                   {{ file.fileSize }}
                 </div>
-                <div class="download">下载</div>
+                <div
+                  class="download"
+                  v-if="file.canDownload"
+                  @click="downFile(file)"
+                >
+                  下载
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <el-dialog :visible.sync="dialogVisible" width="55%">
-      <template slot="title">
-        <div
-          style="
-            height: 20px;
-            line-height: 20px;
-            border-left: 4px solid #1890ff;
-            padding-left: 10px;
-          "
-        >
-          审批详情
-        </div>
-      </template>
-      <el-timeline>
-        <el-timeline-item
-          v-for="(activity, index) in activities"
-          :key="index"
-          :timestamp="activity.timestamp"
-        >
-          {{ activity.content }}
-        </el-timeline-item>
-      </el-timeline>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" size="small" @click="dialogVisible = false">
-          关闭
-        </el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -125,26 +114,13 @@ export default {
   },
   data() {
     return {
-      activities: [
-        {
-          content: '活动按期开始',
-          timestamp: '2018-04-15',
-        },
-        {
-          content: '通过审核',
-          timestamp: '2018-04-13',
-        },
-        {
-          content: '创建成功',
-          timestamp: '2018-04-11',
-        },
-      ],
-      yesOrNoDialog: false,
       dialogVisible: false,
       tagType: {
-        1: '',
-        2: 'success',
-        3: 'danger',
+        1: 'warning',
+        2: '',
+        3: '',
+        4: 'success',
+        5: 'danger',
       },
       applyType: {
         1: '公网上传申请',
@@ -158,14 +134,11 @@ export default {
         9: '创建',
       },
       stateType: {
-        1: '待处理',
-        2: '已同意',
-        3: '已拒绝',
-      },
-      fileLevel: {
-        1: '秘密',
-        2: '机密',
-        3: '绝密',
+        1: '已撤回',
+        2: '待处理',
+        3: '审批中',
+        4: '审批通过',
+        5: '审批拒绝',
       },
     }
   },
@@ -176,6 +149,15 @@ export default {
     showDetail(data) {
       this.dialogVisible = true
       console.log(data)
+    },
+    downFile(data) {
+      this.$http('createToken', {
+        path: data.filePath,
+        fileName: data.fileName,
+        type: 2,
+      }).then((res) => {
+        window.open(window.urlHead + res.data)
+      })
     },
     clickOnAgre() {
       this.$prompt('是否同意当前申请，可选择填写同意理由', '提示', {

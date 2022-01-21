@@ -82,9 +82,9 @@ export default {
       refleshLoading: false,
       loading: false,
       loginForm: {
-        username: 'infvditest02',
-        password: 'csot.888',
-        verificationCode: '1245',
+        username: 'liucanjian',
+        password: 'lcj@292837',
+        verificationCode: '',
         isRememberPassowrd: false,
       },
       formRules: {
@@ -116,7 +116,6 @@ export default {
             .then(
               (res) => {
                 let data = res.data
-                console.log(data)
                 localStorage.setItem('username', this.loginForm.username)
                 localStorage.setItem('pwdToken', data.pwdToken)
                 localStorage.setItem('adminRole', data.adminRole)

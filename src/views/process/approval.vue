@@ -51,10 +51,7 @@
 
         <el-divider></el-divider>
       </div>
-      <div
-        class="btnWrap"
-        v-if="accountType == 1 && (approvalState == 2 || approvalState == 3)"
-      >
+      <div class="btnWrap" v-if="detailData.canApproval">
         <el-button
           @click="agreeOrRefuseApply(1)"
           type="primary"
@@ -84,7 +81,7 @@ export default {
   components: { pageFrame, articleSteps, timeline },
   data() {
     return {
-      userName: 'admin01',
+      userName: '',
       accountType: '2',
       approvalState: '5',
       applyStatus: {
@@ -100,88 +97,23 @@ export default {
         3: '依次审批',
       },
       detailData: {
-        fileList: [
-          {
-            fileName: '2test001.avi',
-            fileSize: '412kb',
-            filePath: 'c:\\test',
-          },
-          {
-            fileName: '2test003.avi',
-            fileSize: '512kb',
-            filePath: 'c:\\test',
-          },
-          {
-            fileName: 'test0012.avi',
-            fileSize: '162kb',
-            filePath: 'c:\\test',
-          },
-          {
-            fileName: 'ftest0015.avi',
-            fileSize: '542kb',
-            filePath: 'c:\\test',
-          },
-          {
-            fileName: 'gftest手动阀手动阀004.avi',
-            fileSize: '212kb',
-            filePath: 'c:\\test',
-          },
-          {
-            fileName: 'ftest0015.avi',
-            fileSize: '542kb',
-            filePath: 'c:\\test',
-          },
-          {
-            fileName: 'gftest犯得上发射点发生房贷首付004.avi',
-            fileSize: '212kb',
-            filePath: 'c:\\test',
-          },
-        ],
-        applyTime: '2022-01-11 12:12:12',
-        applyId: '42131398123',
-        applyUser: 'testUser',
-        userDept: '天天摸鱼研究部',
-        applyDesc:
-          '附件四哦啊放假安排房价松动附件是到i附件覅殴打事件佛山第，，。。？！',
-        downloadCount: '12',
-        downloadExpiredDay: '4',
+        fileList: [],
+        applyTime: '',
+        applyId: '',
+        applyUser: '',
+        userDept: '',
+        applyDesc: '',
+        downloadCount: '1',
+        downloadDay: '1',
         state: '1',
-        processList: [
-          {
-            approvalTime: '2022-01-11 13:12:12',
-            reason: '没问题啊',
-            user: 'boss1',
-            state: '3',
-          },
-          {
-            approvalTime: '2022-01-11 14:12:12',
-            reason: '',
-            user: 'boss2',
-            state: '3',
-          },
-          {
-            approvalTime: '2022-01-11 15:12:12',
-            reason: '没问题啊没问题啊没问题啊没问题啊没问题啊没问题啊',
-            user: 'boss3',
-            state: '4',
-          },
-          {
-            approvalTime: '2022-01-11 16:12:12',
-            reason: '很懒啊不写了呀',
-            user: 'boss4',
-            state: '5',
-          },
-          {
-            approvalTime: '2022-01-11 17:12:12',
-            reason: '',
-            user: 'boss5',
-            state: '3',
-          },
-        ],
+        canApproval: false,
+        canEdit: false,
+        processList: [],
       },
     }
   },
   created() {
+    this.userName = localStorage.getItem('username') || ''
     let queryNum = Object.keys(this.$route.query)
     let paramNum = Object.keys(this.$route.params)
     let data

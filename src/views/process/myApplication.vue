@@ -56,7 +56,6 @@
         </div>
       </template>
       <table-temp
-        ref="table1"
         :config="MultiFileConfig"
         :loading="tableLoading1"
       ></table-temp>
@@ -69,29 +68,6 @@
         </el-button>
       </span>
     </el-dialog>
-    <el-drawer :visible.sync="drawerVisible" direction="rtl" size="60%">
-      <template slot="title">
-        <div
-          style="
-            height: 20px;
-            line-height: 20px;
-            border-left: 4px solid #1890ff;
-            padding-left: 10px;
-            color: #1890ff;
-          "
-        >
-          审批详情
-        </div>
-      </template>
-      <el-steps :active="1" simple>
-        <el-step title="步骤 1" icon="el-icon-edit"></el-step>
-        <el-step title="步骤 2" icon="el-icon-upload"></el-step>
-        <el-step title="步骤 3" icon="el-icon-picture"></el-step>
-      </el-steps>
-      <el-divider></el-divider>
-
-      <el-divider></el-divider>
-    </el-drawer>
   </div>
 </template>
 <script>
@@ -103,7 +79,6 @@ export default {
   components: { pageFrame, tableTemp },
   data() {
     return {
-      drawerVisible: false,
       MultiFileDialog: false,
       tableLoading1: false,
       pickerOptions: {
@@ -166,16 +141,7 @@ export default {
         },
       ],
       approvalData: {
-        file: [
-          {
-            fileName: 'testFile1.txt',
-            fileLevel: '1',
-          },
-          {
-            fileName: 'testFile1.txt',
-            fileLevel: '2',
-          },
-        ],
+        file: [],
         applyTime: '',
         applyState: '',
         workOrderNum: '',
@@ -197,79 +163,12 @@ export default {
         receiverCompany: '',
         approvalSuccessTime: '',
       },
-      testData: [
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '3',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '3',
-          sensitivityLevel: '3',
-          applyId: '12sd3',
-          fileName: '多个文件',
-          workOrderNum: '123321789',
-          isMultiFile: true,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '2',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '2',
-          sensitivityLevel: '2',
-          applyId: '12sdfs',
-          fileName: 'Testtes',
-          workOrderNum: '3123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '1',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '1',
-          sensitivityLevel: '1',
-          applyId: '122343',
-          fileName: 'qwerrewq',
-          workOrderNum: '2123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '5',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '1',
-          sensitivityLevel: '1',
-          applyId: '122gdfg343',
-          fileName: 'qwerrewq',
-          workOrderNum: '2123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-        {
-          approvalTime: '2021-12-12 12:12:12',
-          canDownload: '',
-          applyStatus: '4',
-          applyTime: '2021-12-12 12:12:12',
-          applyType: '1',
-          sensitivityLevel: '1',
-          applyId: '122sdfsd343',
-          fileName: 'qwerrewq',
-          workOrderNum: '2123321789',
-          isMultiFile: false,
-          approvalCurrentUserId: '',
-        },
-      ],
       tableConfig: {
         tableData: [],
         border: true,
         tableSetting: [
           {
-            prop: 'workOrderNum',
+            prop: 'applyId',
             label: '工单号',
           },
           {
@@ -282,49 +181,9 @@ export default {
             },
             click: (row) => {
               if (row.isMultiFile) {
+                this.$set(this.MultiFileConfig, 'tableData', row.fileList)
                 this.MultiFileDialog = true
-                this.$nextTick(() => {})
               }
-            },
-          },
-          {
-            prop: 'sensitivityLevel',
-            label: '敏感级别',
-            style: (row) => {
-              let sty
-              switch (row.sensitivityLevel) {
-                case '1':
-                  sty = { color: '#1890ff' }
-                  break
-                case '2':
-                  sty = { color: '#faad14' }
-                  break
-                case '3':
-                  sty = { color: '#f5222d' }
-                  break
-                default:
-                  sty = { color: '#595959' }
-                  break
-              }
-              return sty
-            },
-            formatter: (row) => {
-              let str
-              switch (row.sensitivityLevel) {
-                case '1':
-                  str = '秘密'
-                  break
-                case '2':
-                  str = '机密'
-                  break
-                case '3':
-                  str = '绝密'
-                  break
-                default:
-                  str = '-'
-                  break
-              }
-              return str
             },
           },
           {
@@ -333,13 +192,13 @@ export default {
             formatter: (row) => {
               let str
               switch (row.applyType) {
-                case '1':
-                  str = '公网上传申请'
+                case 1:
+                  str = '文件下载申请'
                   break
-                case '2':
+                case 2:
                   str = '文件外发申请'
                   break
-                case '3':
+                case 3:
                   str = '文件下载申请'
                   break
                 default:
@@ -363,19 +222,17 @@ export default {
             style: (row) => {
               let sty
               switch (row.applyStatus) {
-                case '1':
+                case 1:
                   sty = { color: '#fd7e14' }
                   break
-                case '2':
-                case '3':
+                case 2:
+                case 3:
                   sty = { color: '#228be6' }
                   break
-                // sty = { color: '#fcc419' }
-                // break
-                case '4':
+                case 4:
                   sty = { color: '#40c057' }
                   break
-                case '5':
+                case 5:
                   sty = { color: '#f03e3e' }
                   break
                 default:
@@ -387,20 +244,23 @@ export default {
             formatter: (row) => {
               let str
               switch (row.applyStatus) {
-                case '1':
+                case 1:
                   str = '已撤回'
                   break
-                case '2':
+                case 2:
                   str = '待处理'
                   break
-                case '3':
+                case 3:
                   str = '审批中'
                   break
-                case '4':
+                case 4:
                   str = '审批通过'
                   break
-                case '5':
+                case 5:
                   str = '审批拒绝'
+                  break
+                case 6:
+                  str = '传输异常'
                   break
                 default:
                   str = '-'
@@ -429,7 +289,7 @@ export default {
                 this.$router.push({
                   name: 'approval',
                   params: {
-                    accountType: '0',
+                    accountType: '2',
                     approvalState: row.applyStatus,
                     applyId: row.applyId,
                   },
@@ -446,12 +306,62 @@ export default {
                   type: 'info',
                   center: true,
                 }).then(() => {
-                  console.log(row)
+                  this.$http('back', { applyId: row.applyId }).then((res) => {
+                    this.$message.success(res.errMsg)
+                  })
                 })
               },
               style: { color: '#fd7e14' },
               show: (row) => {
                 return row.applyStatus == 2
+              },
+            },
+            {
+              label: '删除',
+              type: 'text',
+              show: (row) => {
+                return row.canEdit
+              },
+              fn: (row) => {
+                this.$confirm('是否删除该申请记录？', '提示', {
+                  confirmButtonText: '确认',
+                  cancelButtonText: '取消',
+                  type: 'info',
+                  center: true,
+                }).then(() => {
+                  this.$http('deleteApply', { applyId: row.applyId }).then(
+                    (res) => {
+                      this.$message.success(res.errMsg)
+                    }
+                  )
+                })
+              },
+            },
+            {
+              label: '编辑',
+              type: 'text',
+              show: (row) => {
+                return row.canEdit
+              },
+              fn: (row) => {
+                let obj = {
+                  applyUser: localStorage.getItem('username') || '',
+                  applyEmail: row.applyEmail,
+                  applyTheme: row.applyTheme,
+                  describe: row.userDept,
+                  applyType: 1,
+                  downloadDay: row.downloadDay,
+                  downloadCount: row.downloadCount,
+                  fileList: row.fileList,
+                  approvalUserList: [],
+                }
+                this.$router.push({
+                  name: 'newOrEditApply',
+                  params: {
+                    type: 1,
+                    data: obj,
+                  },
+                })
               },
             },
           ],
@@ -471,60 +381,17 @@ export default {
       MultiFileConfig: {
         border: true,
         tableData: [],
+        maxHeight: '400px',
         tableSetting: [
           {
             prop: 'fileName',
             label: '文件名',
           },
           {
-            prop: 'sensitivityLevel',
-            label: '敏感级别',
-            style: (row) => {
-              let sty
-              switch (row.sensitivityLevel) {
-                case '1':
-                  sty = { color: '#1890ff' }
-                  break
-                case '2':
-                  sty = { color: '#fa8c16' }
-                  break
-                case '3':
-                  sty = { color: '#f5222d' }
-                  break
-                default:
-                  sty = { color: '#595959' }
-                  break
-              }
-              return sty
-            },
-            formatter: (row) => {
-              let str
-              switch (row.sensitivityLevel) {
-                case '1':
-                  str = '秘密'
-                  break
-                case '2':
-                  str = '机密'
-                  break
-                case '3':
-                  str = '绝密'
-                  break
-                default:
-                  str = '-'
-                  break
-              }
-              return str
-            },
-          },
-          {
             prop: 'fileSize',
             label: '文件大小',
           },
         ],
-        condition: {
-          applyId: '',
-        },
-        fetchUrl: 'getApplyList',
       },
     }
   },
@@ -534,7 +401,6 @@ export default {
   },
   mounted() {
     this.getData()
-    this.tableConfig.tableData = this.testData
   },
   methods: {
     getData() {

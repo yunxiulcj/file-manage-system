@@ -117,7 +117,7 @@ export default {
     },
     nodeCheck(a, b) {
       this.seleNodeList = b.checkedNodes.filter((item) => {
-        if (item.hasChild) {
+        if (item.leaf) {
           return item
         }
       })

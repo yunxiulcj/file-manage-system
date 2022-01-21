@@ -3,19 +3,16 @@ export default {
     url: '/personal/getFileList',
   },
   createDirectory: {
-    url: '/personal/createDirectory',
+    url: '/personal/mkdir',
   },
   getPersonDiskSize: {
     url: '/personal/getPersonDiskSize',
   },
-  renameFile: {
-    url: '/personal/renameFile',
+  rename: {
+    url: '/personal/rename',
   },
   deleteFile: {
-    url: '/personal/deleteFile',
-  },
-  createApply: {
-    url: '/personal/createApply',
+    url: '/personal/delete',
   },
   getTransferCenterFileList: {
     url: '/personal/getTransferCenterFileList',

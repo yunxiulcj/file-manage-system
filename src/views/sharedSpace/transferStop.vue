@@ -29,7 +29,7 @@
             suffix-icon="el-icon-search"
             size="small"
             style="width: 220px"
-            v-model="searchName"
+            v-model="tableConfig.condition.fileName"
           ></el-input>
         </div>
       </header>
@@ -86,148 +86,6 @@ export default {
       selectData: [],
       downloading: false,
       tableLoading: false,
-      testData: [
-        {
-          fileName: '1test001.txt',
-          downloads: '1/5',
-          fileSize: '14kb',
-          applicationDate: '2022-1-12 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '22te犯得上发射点给法大师傅发生的大师傅士大夫st001.txt',
-          downloads: '2/5',
-          fileSize: '1443kb',
-          applicationDate: '2022-1-17 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '333test001.txt',
-          downloads: '3/5',
-          fileSize: '2143kb',
-          applicationDate: '2022-1-15 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '4444test001.txt',
-          downloads: '4/5',
-          fileSize: '1214kb',
-          applicationDate: '2022-1-13 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '1test001.txt',
-          downloads: '1/5',
-          fileSize: '14kb',
-          applicationDate: '2022-1-12 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '22test001.txt',
-          downloads: '2/5',
-          fileSize: '1443kb',
-          applicationDate: '2022-1-17 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '333test001.txt',
-          downloads: '3/5',
-          fileSize: '2143kb',
-          applicationDate: '2022-1-15 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '4444test001.txt',
-          downloads: '4/5',
-          fileSize: '1214kb',
-          applicationDate: '2022-1-13 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '1test001.txt',
-          downloads: '1/5',
-          fileSize: '14kb',
-          applicationDate: '2022-1-12 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '22test001.txt',
-          downloads: '2/5',
-          fileSize: '1443kb',
-          applicationDate: '2022-1-17 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '333test001.txt',
-          downloads: '3/5',
-          fileSize: '2143kb',
-          applicationDate: '2022-1-15 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '4444test001.txt',
-          downloads: '4/5',
-          fileSize: '1214kb',
-          applicationDate: '2022-1-13 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '1test001.txt',
-          downloads: '1/5',
-          fileSize: '14kb',
-          applicationDate: '2022-1-12 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '22test001.txt',
-          downloads: '2/5',
-          fileSize: '1443kb',
-          applicationDate: '2022-1-17 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '333test001.txt',
-          downloads: '3/5',
-          fileSize: '2143kb',
-          applicationDate: '2022-1-15 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '4444test001.txt',
-          downloads: '4/5',
-          fileSize: '1214kb',
-          applicationDate: '2022-1-13 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '1test001.txt',
-          downloads: '1/5',
-          fileSize: '14kb',
-          applicationDate: '2022-1-12 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '22test001.txt',
-          downloads: '2/5',
-          fileSize: '1443kb',
-          applicationDate: '2022-1-17 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '333test001.txt',
-          downloads: '3/5',
-          fileSize: '2143kb',
-          applicationDate: '2022-1-15 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-        {
-          fileName: '4444test001.txt',
-          downloads: '4/5',
-          fileSize: '1214kb',
-          applicationDate: '2022-1-13 11:22:12',
-          failureTime: '2022-1-18 11:22:12',
-        },
-      ],
       tableConfig: {
         tableData: [],
         selection: true,
@@ -249,7 +107,7 @@ export default {
             minWidth: '300px',
           },
           {
-            prop: 'downloads',
+            prop: 'downloadCount',
             label: '下载次数',
           },
           {
@@ -257,14 +115,20 @@ export default {
             label: '大小',
           },
           {
-            prop: 'applicationDate',
+            prop: 'applyTime',
             label: '申请日期',
           },
           {
-            prop: 'failureTime',
+            prop: 'expiredTime',
             label: '失效时间',
+            formatter: (row) => {
+              return row.isInvaild ? '已失效' : row.expiredTime
+            },
           },
         ],
+        condition: {
+          fileName: '',
+        },
         page: {
           pageIndex: 1,
           pageSize: 10,
@@ -275,42 +139,64 @@ export default {
             size: 'pageSize',
           },
         },
-        fetchUrl: 'getApplyList',
+        fetchUrl: 'getTransferCenterFileList',
       },
     }
   },
-  created() {
-    this.tableConfig.tableData = this.testData
-  },
+  created() {},
   mounted() {
     this.tableConfig.maxHeight = document.body.clientHeight - 260 + 'px'
+    this.getData()
   },
   methods: {
+    getData() {
+      this.$refs.table.fetch()
+    },
     downloadFile(data, type) {
       if (type == 1) {
-        this.downloading = true
-        setTimeout(() => {
-          this.downloading = false
-        }, 1000)
+        data.map((item) => {
+          this.$http('createToken', {
+            path: item.filePath,
+            fileName: item.fileName,
+            type: 3,
+          }).then((res) => {
+            window.open(window.urlHead + res.data)
+          })
+        })
       } else {
         this.$set(data, 'loading', true)
-        setTimeout(() => {
-          this.$set(data, 'loading', false)
-        }, 1000)
+        this.$http('createToken', {
+          path: data.filePath,
+          fileName: data.fileName,
+          type: 3,
+        })
+          .then((res) => {
+            window.open(window.urlHead + res.data)
+          })
+          .finally(() => {
+            this.$set(data, 'loading', false)
+          })
       }
     },
     delFile(val) {
-      console.log(val)
+      let pathList = val.map((item) => {
+        return item.filePath
+      })
       this.$confirm('删除后不可恢复，是否删除所选文件？', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
         center: true,
-      }).then(() => {})
+      }).then(() => {
+        this.$http('deteleTransferCenterFile', { fileIdList: pathList }).then(
+          (res) => {
+            this.$message.success(res.errMsg)
+          }
+        )
+      })
     },
     handleSelectionChange(val) {
       this.selectData = val
-      console.log(val)
     },
     cellMouseEnter(val) {
       this.$set(val, 'showOperate', true)

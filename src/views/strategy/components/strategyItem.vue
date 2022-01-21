@@ -91,19 +91,6 @@
               </div>
             </div>
           </div>
-          <div class="cc">
-            <div class="label">抄送人</div>
-            <div class="content">
-              <template v-for="cc in item.ccList">
-                <div :key="cc" class="ccBox">
-                  <div class="approvalBox">
-                    {{ cc }}
-                    <el-divider direction="vertical"></el-divider>
-                  </div>
-                </div>
-              </template>
-            </div>
-          </div>
         </div>
       </div>
     </div>

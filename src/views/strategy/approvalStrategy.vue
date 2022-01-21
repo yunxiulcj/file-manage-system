@@ -44,6 +44,7 @@
               <el-input
                 v-model="formObj.strategyName"
                 placeholder="请输入策略名称"
+                @blur="strategyNameExists"
                 style="width: 300px"
               ></el-input>
             </el-form-item>
@@ -56,61 +57,55 @@
               ></scope-select>
             </el-form-item>
             <el-form-item label="审批人">
-              <div
-                class="approvalWrap"
-                v-for="(item, index) in formObj.approvalList"
-                :key="index"
-              >
-                <div class="superior" v-if="item.type == 1">
-                  <div class="approvalBox">
-                    <div class="iconBox">
-                      <i class="iconfont icon-yonghutianchong"></i>
+              <div class="approval">
+                <div
+                  class="approvalWrap"
+                  v-for="(item, index) in formObj.approvalList"
+                  :key="index"
+                >
+                  <div class="superior" v-if="item.type == 1">
+                    <div class="approvalBox">
+                      <div class="iconBox">
+                        <i class="iconfont icon-yonghutianchong"></i>
+                      </div>
+                      <span>{{ levelObj[item.superior.level] }}</span>
+                      <span>
+                        （{{ approvalMode[item.superior.approvalType] }}）
+                      </span>
                     </div>
-                    <span>{{ levelObj[item.superior.level] }}</span>
-                    <span>
-                      （{{ approvalMode[item.superior.approvalType] }}）
-                    </span>
                   </div>
-                </div>
-                <div class="member" v-if="item.type == 2">
-                  <div class="memberWrap">
-                    <div class="content">
-                      <template v-for="user in item.member.userList">
-                        <div class="memberBox" :key="user.index">
-                          <div class="iconBox">
-                            <i class="iconfont icon-yonghutianchong"></i>
+                  <div class="member" v-if="item.type == 2">
+                    <div class="memberWrap">
+                      <div class="content">
+                        <template v-for="user in item.member.userList">
+                          <div class="memberBox" :key="user.index">
+                            <div class="iconBox">
+                              <i class="iconfont icon-yonghutianchong"></i>
+                            </div>
+                            <span>{{ user.userId }}</span>
                           </div>
-                          <span>{{ user.userId }}</span>
-                        </div>
-                      </template>
+                        </template>
+                      </div>
+                      <!-- <div class="addBox" @click="showNewApproval = true">
+                        <i class="el-icon-plus"></i>
+                      </div> -->
                     </div>
-                    <div class="addBox" @click="showNewApproval = true">
-                      <i class="el-icon-plus"></i>
+                    <div class="memType">
+                      （{{ approvalMode[item.member.approvalType] }}）
                     </div>
                   </div>
-                  <div class="memType">
-                    （{{ approvalMode[item.member.approvalType] }}）
-                  </div>
-                </div>
-                <div class="iAm" v-if="item.type == 3">
-                  <div class="approvalBox">
-                    <div class="iconBox">
-                      <i class="iconfont icon-yonghutianchong"></i>
+                  <div class="iAm" v-if="item.type == 3">
+                    <div class="approvalBox">
+                      <div class="iconBox">
+                        <i class="iconfont icon-yonghutianchong"></i>
+                      </div>
+                      <span>申请人本人</span>
                     </div>
-                    <span>申请人本人</span>
                   </div>
                 </div>
               </div>
+
               <div class="addBox" @click="showNewApproval = true">
-                <i class="el-icon-plus"></i>
-              </div>
-            </el-form-item>
-            <el-form-item label="抄送人">
-              <div class="ccWrap" v-for="cc in formObj.ccList" :key="cc">
-                <span>{{ cc }}</span>
-                <el-divider direction="vertical"></el-divider>
-              </div>
-              <div class="addBox" @click="showNewCc = true">
                 <i class="el-icon-plus"></i>
               </div>
             </el-form-item>
@@ -191,6 +186,7 @@ export default {
         ],
       },
       strategyList: [],
+      nameUsed: false,
     }
   },
   mounted() {
@@ -215,6 +211,19 @@ export default {
     selectUser(val) {
       this.formObj.ccList = val.map((item) => {
         return item.name
+      })
+    },
+    strategyNameExists() {
+      this.$http('strategyNameExists', {
+        id: this.formObj.id,
+        strategyName: this.formObj.strategyName,
+      }).then((res) => {
+        if (res.data) {
+          this.$message.warning('该策略名称已存在')
+          this.nameUsed = true
+        } else {
+          this.nameUsed = false
+        }
       })
     },
     newStrategy() {
@@ -243,16 +252,20 @@ export default {
       this.formObj.approvalList.push(val)
     },
     saveNewOrEdit() {
-      let url = this.isCreate ? 'createStrategy' : 'updateStrategy'
-      console.log(url, this.formObj)
-      this.$http(url, this.formObj)
-        .then((res) => {
-          this.$message.success(res.errMsg)
-        })
-        .finally(() => {
-          this.showNewStrategy = false
-          this.getData()
-        })
+      if (!this.nameUsed) {
+        let url = this.isCreate ? 'createStrategy' : 'updateStrategy'
+        console.log(url, this.formObj)
+        this.$http(url, this.formObj)
+          .then((res) => {
+            this.$message.success(res.errMsg)
+          })
+          .finally(() => {
+            this.showNewStrategy = false
+            this.getData()
+          })
+      } else {
+        this.$message.warning('该策略名称已存在')
+      }
     },
   },
 }
@@ -307,129 +320,114 @@ export default {
       }
     }
     .content {
-      .approvalWrap {
+      .approval {
         display: flex;
         flex-direction: row;
-        .superior {
-          .approvalBox {
-            display: flex;
-            flex-direction: column;
-            width: 60px;
-            align-items: center;
-            .iconBox {
-              background: #bdccea;
-              width: 40px;
-              height: 40px;
-              border-radius: 5px;
+        align-items: center;
+        width: 60%;
+        flex-wrap: wrap;
+        .approvalWrap {
+          .superior {
+            .approvalBox {
               display: flex;
-              justify-content: center;
+              flex-direction: column;
+              width: 60px;
               align-items: center;
-              i {
-                font-size: 30px;
-                color: #fcfcfc;
+              .iconBox {
+                background: #bdccea;
+                width: 40px;
+                height: 40px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                i {
+                  font-size: 30px;
+                  color: #fcfcfc;
+                }
+              }
+              span {
+                color: #343a40;
+                font-size: 12px;
+                height: 20px;
+                line-height: 20px;
               }
             }
-            span {
-              color: #343a40;
-              font-size: 12px;
-              height: 20px;
-              line-height: 20px;
-            }
           }
-        }
-        .member {
-          .memberWrap {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            .content {
+          .member {
+            .memberWrap {
               display: flex;
               flex-direction: row;
-              flex-wrap: wrap;
-              max-height: 152px;
-              overflow: auto;
-              border: 0.5px solid #d9d9d9;
-              border-radius: 5px;
-              width: 300px;
-              padding-bottom: 10px;
-              .memberBox {
+              align-items: center;
+              .content {
                 display: flex;
-                flex-direction: column;
-                align-items: center;
-                margin: 15px 0px 0px 16px;
-                .iconBox {
-                  background: #bdccea;
-                  width: 40px;
-                  height: 40px;
-                  border-radius: 5px;
+                flex-direction: row;
+                max-height: 152px;
+                overflow: auto;
+                border: 0.5px solid #d9d9d9;
+                border-radius: 5px;
+                width: 300px;
+                padding-bottom: 10px;
+                .memberBox {
                   display: flex;
-                  justify-content: center;
+                  flex-direction: column;
                   align-items: center;
-                  margin-bottom: 5px;
-                  i {
-                    font-size: 30px;
-                    color: #fcfcfc;
+                  margin: 15px 0px 0px 16px;
+                  .iconBox {
+                    background: #bdccea;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 5px;
+                    i {
+                      font-size: 30px;
+                      color: #fcfcfc;
+                    }
+                  }
+                  span {
+                    color: #343a40;
+                    height: 20px;
+                    line-height: 20px;
+                    font-size: 13px;
                   }
                 }
-                span {
-                  color: #343a40;
-                  height: 20px;
-                  line-height: 20px;
-                  font-size: 13px;
-                }
               }
             }
-            .addBox {
-              margin-left: 15px;
-              width: 35px;
-              height: 35px;
-              line-height: 35px;
-              border: 1.5px dotted #d9d9d9;
-              border-radius: 5px;
+            .memType {
+              width: 300px;
+              height: 20px;
+              line-height: 20px;
               text-align: center;
-              color: #ced4da;
-              cursor: pointer;
-              i {
-                font-size: 18px;
-                font-weight: bold;
-              }
-            }
-            .addBox:hover {
-              border: 1px solid #228be6;
-              color: #228be6;
-            }
-          }
-          .memType {
-            width: 300px;
-            height: 20px;
-            line-height: 20px;
-            text-align: center;
-            color: #343a40;
-            font-size: 12px;
-          }
-        }
-        .iAm {
-          .approvalBox {
-            display: flex;
-            flex-direction: column;
-            width: 60px;
-            align-items: center;
-            .iconBox {
-              background: #bdccea;
-              width: 40px;
-              height: 40px;
-              border-radius: 5px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              i {
-                font-size: 30px;
-                color: #fcfcfc;
-              }
-            }
-            span {
               color: #343a40;
               font-size: 12px;
+            }
+          }
+          .iAm {
+            .approvalBox {
+              display: flex;
+              flex-direction: column;
+              width: 60px;
+              align-items: center;
+              .iconBox {
+                background: #bdccea;
+                width: 40px;
+                height: 40px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                i {
+                  font-size: 30px;
+                  color: #fcfcfc;
+                }
+              }
+              span {
+                color: #343a40;
+                font-size: 12px;
+              }
             }
           }
         }
@@ -440,5 +438,23 @@ export default {
       margin-top: 40px;
     }
   }
+}
+.addBox {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  border: 1.5px dotted #d9d9d9;
+  border-radius: 5px;
+  text-align: center;
+  color: #ced4da;
+  cursor: pointer;
+  i {
+    font-size: 18px;
+    font-weight: bold;
+  }
+}
+.addBox:hover {
+  border: 1px solid #228be6;
+  color: #228be6;
 }
 </style>

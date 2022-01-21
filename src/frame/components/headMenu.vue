@@ -39,7 +39,7 @@ export default {
   },
   computed: {},
   created() {
-    this.account = localStorage.getItem('username') || 'admin01'
+    this.account = localStorage.getItem('username') || ''
     this.menuList = defaultRouter
     this.activeIndex = this.$route.path.substring(
       0,
@@ -54,7 +54,7 @@ export default {
         type: 'info',
         center: true,
       }).then(() => {
-        this.$http('logout')
+        this.$http('logout', { userId: this.account })
           .then((res) => {
             this.$message.success(res.errMsg)
           })
