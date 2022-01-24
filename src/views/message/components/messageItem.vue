@@ -3,7 +3,7 @@
     <div v-for="item in messageList" :key="item.id" class="messageWrap">
       <div class="messageBox">
         <div class="topWrap">
-          <div :class="{ isRead: item.read }"></div>
+          <div :class="{ isRead: !item.read }"></div>
           <div class="topPart">
             <div class="messageTop">
               <div class="title">{{ item.title }}</div>
@@ -14,7 +14,7 @@
               >
                 {{ stateType[item.applyState] }}
               </el-tag>
-              <div class="startTime">{{ item.expiredStartTime }}</div>
+              <div class="startTime">{{ item.noticeTime }}</div>
             </div>
             <div class="messageContent">
               <div class="infoTop">
@@ -31,7 +31,7 @@
                 </div>
                 <el-divider direction="vertical"></el-divider>
                 <div class="invalidDay infoItem">
-                  申请后{{ item.noticeTime }}天内
+                  申请后{{ item.downloadCount }}天内
                 </div>
                 <el-divider direction="vertical"></el-divider>
                 <div class="detail infoItem" @click="showDetail(item)">
@@ -52,7 +52,7 @@
                 </div>
                 <div class="btnBox" v-if="item.canApproval">
                   <el-button
-                    @click="clickOnAgre"
+                    @click="clickOnAgree(item)"
                     type="success"
                     size="mini"
                     plain
@@ -61,7 +61,7 @@
                     同意
                   </el-button>
                   <el-button
-                    @click="clickReject"
+                    @click="clickReject(item)"
                     type="warning"
                     size="mini"
                     plain
@@ -103,24 +103,86 @@
         </div>
       </div>
     </div>
+    <el-dialog :visible.sync="agreeOrRefuseDialog" width="500px">
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          提示
+        </div>
+      </template>
+      <el-form size="small">
+        <el-form-item label="下载次数" v-if="canEdit">
+          <el-input-number
+            v-model="editForm.downloadCount"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <span class="unit">单位：天</span>
+          <el-divider direction="vertical"></el-divider>
+          <span class="tips">注：0表示长期有效</span>
+        </el-form-item>
+        <el-form-item label="申请有效期" v-if="canEdit">
+          <el-input-number
+            v-model="editForm.downloadExpiredDay"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <span class="unit">单位：天</span>
+          <el-divider direction="vertical"></el-divider>
+          <span class="tips">注：0表示长期有效</span>
+        </el-form-item>
+        <el-form-item label="理由">
+          <el-input v-model="editForm.comment"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="agreeOrRefuseDialog = false">
+          取 消
+        </el-button>
+        <el-button size="small" type="primary" @click="confirmEdit">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :visible.sync="detailDialog">
+      <timeline :data="detailData" :approvalState="approvalState"></timeline>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import timeline from '../../../components/timeline.vue'
 export default {
   name: 'messageItem',
   props: {
     messageList: Array,
   },
+  components: { timeline },
   data() {
     return {
-      dialogVisible: false,
+      canEdit: false,
+      agreeOrRefuseDialog: false,
+      editForm: {
+        applyId: '',
+        applyStatus: 1,
+        downloadCount: 1,
+        downloadExpiredDay: 1,
+        comment: '',
+      },
+      detailDialog: false,
       tagType: {
         1: 'warning',
         2: '',
         3: '',
         4: 'success',
         5: 'danger',
+        6: 'danger',
       },
       applyType: {
         1: '公网上传申请',
@@ -139,7 +201,10 @@ export default {
         3: '审批中',
         4: '审批通过',
         5: '审批拒绝',
+        6: '传输异常',
       },
+      detailData: {},
+      approvalState: 0,
     }
   },
   computed: {},
@@ -147,7 +212,8 @@ export default {
   created() {},
   methods: {
     showDetail(data) {
-      this.dialogVisible = true
+      this.detailDialog = true
+
       console.log(data)
     },
     downFile(data) {
@@ -159,29 +225,38 @@ export default {
         window.open(window.urlHead + res.data)
       })
     },
-    clickOnAgre() {
-      this.$prompt('是否同意当前申请，可选择填写同意理由', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        center: true,
-      }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '你的同意理由是: ' + value,
+    clickOnAgree(data) {
+      if (data.canEdit) {
+        this.editForm.applyId = data.applyId
+        this.editForm.applyStatus = 1
+        this.editForm.downloadCount = data.downloadCount
+        this.editForm.downloadExpiredDay = data.downloadDay
+        this.canEdit = data.canEdit
+        this.agreeOrRefuseDialog = true
+      } else {
+        this.$confirm('是否同意当前申请？', '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'info',
+          center: true,
+        }).then(() => {
+          this.$http('agree', {
+            applyId: data.applyId,
+            applyStatus: 1,
+            downloadCount: data.downloadCount,
+            downloadExpiredDay: data.downloadDay,
+            comment: '',
+          })
         })
-      })
+      }
     },
-    clickReject() {
-      this.$prompt('是否拒绝当前申请，可选择填写拒绝理由', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        center: true,
-      }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '你的拒绝理由是: ' + value,
-        })
-      })
+    clickReject(data) {
+      this.editForm.applyId = data.applyId
+      this.editForm.approvalState = 2
+      this.editForm.downloadCount = data.downloadCount
+      this.editForm.downloadExpiredDay = data.downloadDay
+      this.canEdit = false
+      this.agreeOrRefuseDialog = true
     },
   },
 }
@@ -269,7 +344,7 @@ export default {
                 }
               }
               .btnBox {
-                width: 140px;
+                min-width: 140px;
                 text-align: right;
               }
             }

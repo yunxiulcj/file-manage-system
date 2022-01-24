@@ -53,9 +53,11 @@
           ></i>
         </div>
       </header>
-      <div class="title">所有文件</div>
       <div class="breadCrumbBox">
-        <bread-crumb :path="nowPath" @clickPath="clickPath"></bread-crumb>
+        <bread-crumb
+          v-model="nowPath"
+          @startGetData="startGetData"
+        ></bread-crumb>
       </div>
       <div class="tableWrap" v-if="isTable">
         <table-temp
@@ -219,7 +221,7 @@ export default {
       isIndeterminate: true,
       uploadDialog: false,
       addFolderDialog: false,
-      nowPath: '/',
+      nowPath: '',
       checkAll: false,
       isTable: true,
       tableLoading: false,
@@ -256,11 +258,9 @@ export default {
       selectData: [],
     }
   },
-  created() {
-    this.getData(this.nowPath)
-  },
   mounted() {
     this.tableConfig.maxHeight = document.body.clientHeight - 220 + 'px'
+    this.getData(this.nowPath)
   },
   watch: {
     filterName(val) {
@@ -313,16 +313,19 @@ export default {
         this.$message.warning('文件夹名称不能为空')
       }
     },
-    clickPath(index, path) {
-      let test = this.nowPath
-        .split('/')
-        .slice(0, index + 1)
-        .join('/')
-      console.log('test', test)
-      console.log(index, path)
+    startGetData(val) {
+      if (val) {
+        this.getData(this.nowPath)
+      }
     },
-    getData(path) {
+    getData(val) {
       this.tableLoading = true
+      let path
+      if (val) {
+        path = val[val.length - 1] == '/' ? val : val + '/'
+      } else {
+        path = '/'
+      }
       this.$http('getFileList', { path: path })
         .then((res) => {
           this.tableConfig.tableData = res.data
@@ -352,7 +355,7 @@ export default {
         this.$set(data, 'checked', true)
       }
     },
-    delFile(val) {
+    clickDel(val) {
       let pathList = val.map((item) => {
         return item.path
       })
@@ -362,8 +365,19 @@ export default {
         type: 'warning',
         center: true,
       }).then(() => {
-        this.$http('deleteFile', { filePaths: pathList }).then((res) => {
-          this.$message.success(res.errMsg)
+        this.delFile(pathList)
+      })
+    },
+    delFile(pathList) {
+      pathList.map((item, index) => {
+        this.$http('delete', {
+          path: this.nowPath,
+          fileName: item.dir ? item.name + '/' : item.name,
+        }).then((res) => {
+          if (index == pathList.length - 1) {
+            this.getData(this.nowPath)
+            this.$message(res.errMsg)
+          }
         })
       })
     },
@@ -378,12 +392,12 @@ export default {
       } else {
         this.$http('rename', {
           newName: val.tempName,
-          path: '/',
+          path: this.nowPath,
           fileName: val.name,
         })
           .then((res) => {
             this.$message.success(res.errMsg)
-            this.getData()
+            this.getData(this.nowPath)
           })
           .finally(() => {
             this.$set(val, 'isEdit', false)

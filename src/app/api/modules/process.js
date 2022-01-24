@@ -26,4 +26,7 @@ export default {
   getCurrentApprovalUser: {
     url: '/process/getCurrentApprovalUser',
   },
+  deleteApply: {
+    url: '/process/deleteApply',
+  },
 }

@@ -308,6 +308,7 @@ export default {
                 }).then(() => {
                   this.$http('back', { applyId: row.applyId }).then((res) => {
                     this.$message.success(res.errMsg)
+                    this.getData()
                   })
                 })
               },
@@ -320,7 +321,7 @@ export default {
               label: '删除',
               type: 'text',
               show: (row) => {
-                return row.canEdit
+                return row.applyStatus == 1
               },
               fn: (row) => {
                 this.$confirm('是否删除该申请记录？', '提示', {
@@ -332,6 +333,7 @@ export default {
                   this.$http('deleteApply', { applyId: row.applyId }).then(
                     (res) => {
                       this.$message.success(res.errMsg)
+                      this.getData()
                     }
                   )
                 })
@@ -341,27 +343,37 @@ export default {
               label: '编辑',
               type: 'text',
               show: (row) => {
-                return row.canEdit
+                return row.applyStatus == 1
               },
               fn: (row) => {
                 let obj = {
+                  applyId: row.applyId,
                   applyUser: localStorage.getItem('username') || '',
-                  applyEmail: row.applyEmail,
-                  applyTheme: row.applyTheme,
-                  describe: row.userDept,
                   applyType: 1,
-                  downloadDay: row.downloadDay,
-                  downloadCount: row.downloadCount,
-                  fileList: row.fileList,
-                  approvalUserList: [],
                 }
-                this.$router.push({
-                  name: 'newOrEditApply',
-                  params: {
-                    type: 1,
-                    data: obj,
-                  },
+                this.$http('getApplyDetail', {
+                  applyId: row.applyId,
+                  type: '2',
                 })
+                  .then((res) => {
+                    let data = res.data
+                    obj['applyEmail'] = data.applyEmail
+                    obj['applyTheme'] = data.applyTheme
+                    obj['describe'] = data.applyDesc
+                    obj['fileList'] = data.fileList
+                    obj['downloadDay'] = data.downloadDay
+                    obj['downloadCount'] = data.downloadCount
+                    obj['approvalUserList'] = data.approvalUserList
+                  })
+                  .finally(() => {
+                    this.$router.push({
+                      name: 'newOrEditApply',
+                      params: {
+                        type: 1,
+                        data: obj,
+                      },
+                    })
+                  })
               },
             },
           ],

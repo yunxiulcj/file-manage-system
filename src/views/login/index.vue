@@ -48,7 +48,7 @@
         </el-form-item>
         <div style="margin-bottom: 25px">
           <el-checkbox
-            v-model="loginForm.isRememberPassowrd"
+            v-model="loginForm.rememberPassword"
             size="mini"
             style="font-size: 8px"
           >
@@ -85,7 +85,7 @@ export default {
         username: 'liucanjian',
         password: 'lcj@292837',
         verificationCode: '',
-        isRememberPassowrd: false,
+        rememberPassword: false,
       },
       formRules: {
         username: [
@@ -100,8 +100,14 @@ export default {
     }
   },
   created() {
-    // this.loginForm.username = localStorage.getItem('username') || ''
-    // this.loginForm.password = localStorage.getItem('pwdToken') || ''
+    this.loginForm.username = localStorage.getItem('username') || ''
+    if (localStorage.getItem('rememberPassword')) {
+      this.loginForm.password = localStorage.getItem('pwdToken') || ''
+      this.loginForm.rememberPassword = true
+    } else {
+      this.loginForm.rememberPassword = false
+      this.loginForm.password = ''
+    }
   },
   mounted() {
     this.handleRefreshVerify()
@@ -120,6 +126,10 @@ export default {
                 localStorage.setItem('pwdToken', data.pwdToken)
                 localStorage.setItem('adminRole', data.adminRole)
                 localStorage.setItem('menuList', data.menuList)
+                localStorage.setItem(
+                  'rememberPassword',
+                  this.loginForm.rememberPassword
+                )
                 this.$message.success(res.errMsg)
                 this.$router.push('/')
               },

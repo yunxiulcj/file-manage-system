@@ -77,6 +77,7 @@
 
 <script>
 import tableTemp from '../../components/table-temp.vue'
+// import axios from 'axios'
 export default {
   name: 'transferStop',
   components: { tableTemp },
@@ -126,6 +127,10 @@ export default {
             },
           },
         ],
+        map: {
+          data: 'data.data',
+          total: 'data.totalCount',
+        },
         condition: {
           fileName: '',
         },
@@ -141,9 +146,13 @@ export default {
         },
         fetchUrl: 'getTransferCenterFileList',
       },
+      baseUrl: '',
     }
   },
-  created() {},
+  created() {
+    this.baseUrl = this.$store.getters.symSetting.uploadUrl
+    console.log(this.baseUrl)
+  },
   mounted() {
     this.tableConfig.maxHeight = document.body.clientHeight - 260 + 'px'
     this.getData()
@@ -155,23 +164,27 @@ export default {
     downloadFile(data, type) {
       if (type == 1) {
         data.map((item) => {
-          this.$http('createToken', {
-            path: item.filePath,
+          this.$http('download', {
+            path: '/' + item.fileName,
             fileName: item.fileName,
-            type: 3,
+            fileId: data.fileId,
           }).then((res) => {
-            window.open(window.urlHead + res.data)
+            window.open(res)
           })
         })
       } else {
         this.$set(data, 'loading', true)
-        this.$http('createToken', {
-          path: data.filePath,
+        this.$http('download', {
+          path: '/' + data.fileName,
           fileName: data.fileName,
-          type: 3,
+          fileId: data.fileId,
         })
           .then((res) => {
-            window.open(window.urlHead + res.data)
+            var a = document.createElement('a')
+            var t = new Blob(res)
+            a.href = URL.createObjectURL(t)
+            a.download = data.fileName
+            a.click()
           })
           .finally(() => {
             this.$set(data, 'loading', false)

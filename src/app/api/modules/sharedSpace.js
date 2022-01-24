@@ -11,7 +11,7 @@ export default {
   rename: {
     url: '/personal/rename',
   },
-  deleteFile: {
+  delete: {
     url: '/personal/delete',
   },
   getTransferCenterFileList: {

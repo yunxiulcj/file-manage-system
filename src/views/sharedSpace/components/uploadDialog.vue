@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+// import qs from 'qs'
 export default {
   name: 'uploadDialog',
   props: {
@@ -128,15 +130,19 @@ export default {
       this.targetPath = node.path
     },
     uploadFile(param) {
-      let file = param.file
+      var formData = new FormData()
+      formData.append('file', param.file, param.file.name)
       this.$http('createToken', {
         path: this.targetPath,
-        fileName: file.name,
+        fileName: param.file.name,
         type: 1,
       }).then((res) => {
-        param.action = this.baseUrl + 'upload?token=' + res.data
+        axios.post(this.baseUrl + 'upload?token=' + res.data, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
       })
-      console.log('uploadFile', param)
     },
     onBeforeUpload(file) {
       console.log('onBeforeUpload', file)

@@ -140,6 +140,7 @@
           添加文件
         </div>
       </template>
+      <bread-crumb></bread-crumb>
       <div class="tableWrap">
         <table-temp
           :config="tableConfig"
@@ -171,15 +172,18 @@
 <script>
 import pageFrame from './pageFrame.vue'
 import tableTemp from './table-temp.vue'
+import breadCrumb from '../components/breadCrumb.vue'
 export default {
   name: 'newOrEditApply',
-  components: { pageFrame, tableTemp },
+  components: { pageFrame, tableTemp, breadCrumb },
   props: [],
   data() {
     return {
+      nowPath: '/',
       isDownloads: false,
       isPeriodValidity: false,
       showFileDialog: false,
+      type: 0,
       applyForm: {
         applyUser: '',
         applyEmail: '',
@@ -236,9 +240,10 @@ export default {
   created() {
     let data = this.$route.params
     this.applyTitle = data.type == 0 ? '新建下载申请' : '编辑下载申请'
-    console.log(data)
+    console.log('我的申请点击编辑', data)
     this.$nextTick(() => {
       this.applyForm = this.initForm(data.data)
+      this.type = data.type
     })
   },
   mounted() {
@@ -270,13 +275,23 @@ export default {
       this.getData('')
     },
     addDownloadApply(data) {
-      this.$http('createApply', data)
-        .then((res) => {
-          this.$message.success(res.errMsg)
-        })
-        .finally(() => {
-          this.showNewApply = false
-        })
+      if (this.type == 0) {
+        this.$http('createApply', data)
+          .then((res) => {
+            this.$message.success(res.errMsg)
+          })
+          .finally(() => {
+            this.showNewApply = false
+          })
+      } else {
+        this.$http('updateApply', data)
+          .then((res) => {
+            this.$message.success(res.errMsg)
+          })
+          .finally(() => {
+            this.showNewApply = false
+          })
+      }
     },
     handleSelectionChange(data) {
       this.selectFiles = data.filter((item) => {

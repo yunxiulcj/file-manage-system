@@ -1,15 +1,17 @@
 <template>
-  <div class="pathWrap">
-    <span class="goBack item" @click="goBack">返回上一级</span>
-    <el-divider direction="vertical"></el-divider>
-    <span
-      v-for="(item, index) in path.substring(0, path.length - 2).split('/')"
-      :key="item.index"
-    >
-      <span class="fileName item" @click="clickName(item, index)">
-        {{ item == '' ? '所有文件' : item }}
+  <div class="breadCrumb">
+    <span class="goBack" @click="goBack" v-if="pathList.length > 1">
+      返回上一级
+    </span>
+    <el-divider direction="vertical" v-if="pathList.length > 1"></el-divider>
+    <span class="pathBox" v-for="(item, index) in pathList" :key="index">
+      <span
+        :class="{ pathName: pathList.length - 1 !== index }"
+        @click="pathList.length - 1 !== index && clickItem(index, item)"
+      >
+        {{ item == '' ? '全部文件' : item }}
       </span>
-      <i class="el-icon-arrow-right"></i>
+      <i class="el-icon-arrow-right" v-if="index != pathList.length - 1"></i>
     </span>
   </div>
 </template>
@@ -17,35 +19,65 @@
 <script>
 export default {
   name: 'breadCrumb',
-  props: ['path'],
+  props: ['value'],
   data() {
-    return {}
+    return {
+      tempPath: '',
+    }
   },
-  created() {},
-  methods: {
-    clickName(path, index) {
-      this.$emit('clickPath', index, path)
+  computed: {
+    pathList() {
+      if (this.tempPath[this.tempPath.length - 1] == '/') {
+        return this.tempPath.substring(0, this.tempPath.length - 1).split('/')
+      } else {
+        return this.tempPath.split('/')
+      }
     },
-    goBack() {},
+  },
+  watch: {
+    value: {
+      handler(val) {
+        this.tempPath = val
+      },
+      immediate: true,
+    },
+  },
+  methods: {
+    goBack() {
+      this.$emit(
+        'input',
+        this.pathList.slice(0, this.pathList.length - 1).join('/')
+      )
+      this.$emit('startGetData', true)
+    },
+    clickItem(index) {
+      this.$emit(
+        'input',
+        this.tempPath
+          .split('/')
+          .slice(0, index + 1)
+          .join('/')
+      )
+      this.$emit('startGetData', true)
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.pathWrap {
-  color: #228be6;
+.breadCrumb {
+  color: #495057;
   font-size: 13px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  .item {
+  .goBack,
+  .pathName {
+    color: #228be6;
     cursor: pointer;
   }
-  .item:hover {
+  .pathName:hover {
     color: #4dabf7;
   }
-  i {
-    margin: 0 3px;
+  .goBack:hover {
+    color: #4dabf7;
   }
 }
 </style>

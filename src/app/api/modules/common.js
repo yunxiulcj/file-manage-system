@@ -11,4 +11,7 @@ export default {
   getCaptchaCode: {
     url: '/common/getCaptchaCode',
   },
+  download: {
+    url: '/file/download',
+  },
 }

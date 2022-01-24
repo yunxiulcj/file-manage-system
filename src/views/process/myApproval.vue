@@ -96,7 +96,7 @@
           <el-divider direction="vertical"></el-divider>
           <span class="tips">注：0表示长期有效</span>
         </el-form-item>
-        <el-form-item label="同意理由">
+        <el-form-item label="理由">
           <el-input v-model="editForm.comment"></el-input>
         </el-form-item>
       </el-form>
@@ -126,7 +126,7 @@ export default {
       canEdit: false,
       editForm: {
         applyId: '',
-        applyStatus: 0,
+        applyStatus: 1,
         downloadCount: 1,
         downloadExpiredDay: 1,
         comment: '',
@@ -295,7 +295,7 @@ export default {
           },
         ],
         map: {
-          data: 'data.items',
+          data: 'data.data',
           total: 'data.totalCount',
         },
         condition: {
@@ -311,23 +311,12 @@ export default {
               style: { color: '#389e0d' },
               type: 'text',
               fn: (row) => {
-                if (row.canEdit) {
-                  this.editForm.applyId = row.applyId
-                  this.editForm.approvalState = 1
-                  this.editForm.downloadCount = row.downloadCount
-                  this.editForm.downloadExpiredDay = row.downloadDay
-                  this.canEdit = row.canEdit
-                  this.agreeOrRefuseDialog = true
-                } else {
-                  this.$confirm('是否同意当前申请？', '提示', {
-                    confirmButtonText: '确认',
-                    cancelButtonText: '取消',
-                    type: 'info',
-                    center: true,
-                  }).then(() => {
-                    this.agreeOrRefuseApply(row, 1)
-                  })
-                }
+                this.editForm.applyId = row.applyId
+                this.editForm.applyStatus = 1
+                this.editForm.downloadCount = row.downloadCount
+                this.editForm.downloadExpiredDay = row.downloadDay
+                this.canEdit = row.canEdit
+                this.agreeOrRefuseDialog = true
               },
               show: (row) => {
                 return row.applyStatus == 2 || row.applyStatus == 3
@@ -397,6 +386,8 @@ export default {
   },
   created() {
     this.getDefaultTime()
+  },
+  mounted() {
     this.getData()
   },
   methods: {
@@ -405,7 +396,11 @@ export default {
         this.$message.success(res.errMsg)
       })
     },
-    confirmEdit() {},
+    confirmEdit() {
+      this.$http('agree', this.editForm).then((res) => {
+        this.$message.success(res.errMsg)
+      })
+    },
     getData() {
       this.tableConfig.condition.startTime = this.times[0]
       this.tableConfig.condition.endTime = this.times[1]

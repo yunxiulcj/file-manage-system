@@ -6,7 +6,7 @@
           type="text"
           style="font-weight: 600; margin-right: 20px"
           @click="MarkRead"
-          v-show="activeName == 2"
+          v-show="activeName == 0"
         >
           全部标记为已读
         </el-button>
@@ -20,12 +20,12 @@
         </el-select>
       </div>
       <el-tabs v-model="activeName">
-        <el-tab-pane label="全部消息" name="1">
+        <el-tab-pane label="全部消息" name="2">
           <div class="itemWrap" v-loading="loading">
             <message-item :messageList="messageList"></message-item>
           </div>
         </el-tab-pane>
-        <el-tab-pane name="2">
+        <el-tab-pane name="0">
           <span slot="label">
             未读消息
             <el-badge
@@ -39,7 +39,7 @@
             <message-item :messageList="messageList"></message-item>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="已读消息" name="3">
+        <el-tab-pane label="已读消息" name="1">
           <div class="itemWrap" v-loading="loading">
             <message-item :messageList="messageList"></message-item>
           </div>
@@ -58,9 +58,9 @@ export default {
   data() {
     return {
       unread: 0,
-      activeName: '1',
+      activeName: '2',
       loading: false,
-      filterTime: 5,
+      filterTime: 1,
       timeRange: [
         {
           label: '最近七天',
@@ -77,10 +77,6 @@ export default {
         {
           label: '最近三个月',
           value: 4,
-        },
-        {
-          label: '全部时间',
-          value: 5,
         },
       ],
       messageList: [],
@@ -122,7 +118,7 @@ export default {
       this.loading = true
       let startTime = '',
         endTime = ''
-      switch (this.timeRange) {
+      switch (this.filterTime) {
         case 1:
           startTime = moment().subtract(7, 'days').format('YYYY-MM-DD HH:mm:ss')
           endTime = moment().format('YYYY-MM-DD HH:mm:ss')

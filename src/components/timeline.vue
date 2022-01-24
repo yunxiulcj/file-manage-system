@@ -70,11 +70,13 @@
         class="state"
         :style="{
           color:
-            item.state == 3
+            item.state == 3 || item.state == 2
               ? '#228be6'
               : item.state == 4
               ? '#40c057'
-              : '#f03e3e',
+              : item.state == 5 || item.state == 6
+              ? '#f03e3e'
+              : '#868e96',
         }"
       >
         {{ state[item.state] }}

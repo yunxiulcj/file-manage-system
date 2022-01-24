@@ -17,17 +17,13 @@
       <div class="capacityView" v-if="currentModule == 'sharedSpace'">
         <div class="progressWrap">
           <el-progress
-            :percentage="
-              Math.round((capacity.used / capacity.remainingSize) * 100)
-            "
+            :percentage="Math.round((capacity.used / capacity.totalSize) * 100)"
             color="#228be6"
             :stroke-width="20"
             :text-inside="true"
           ></el-progress>
         </div>
-        <div class="info">
-          {{ capacity.used }}GB / {{ capacity.remainingSize }}GB
-        </div>
+        <div class="info">{{ capacity.used }} / {{ capacity.totalSize }}</div>
       </div>
     </div>
     <div class="contentBox">
@@ -47,8 +43,8 @@ export default {
   data() {
     return {
       capacity: {
-        used: 22.12,
-        remainingSize: 50,
+        used: 0,
+        totalSize: 0,
       },
       leftList: {},
       currentModule: '',
@@ -91,6 +87,12 @@ export default {
         userId: localStorage.getItem('username') || '',
       }).then((res) => {
         this.capacity = res.data
+        // this.$set(this.capacity, 'used', Math.round(data.used / Math.r))
+        // this.$set(
+        //   this.capacity,
+        //   'totalSize',
+        //   Math.round(data.totalSize / 1000 / 1000)
+        // )
       })
     },
   },
