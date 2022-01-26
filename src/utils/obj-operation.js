@@ -27,9 +27,9 @@ const clone = function (obj) {
  * @return <Boolean, String>
  */
 
-function typeTest (obj, type) {
+function typeTest(obj, type) {
   if (type) {
-    type = type.replace(/\w/, $1 => $1.toUpperCase())
+    type = type.replace(/\w/, ($1) => $1.toUpperCase())
     return Object.prototype.toString.call(obj) === `[object ${type}]`
   } else {
     let typeStr = Object.prototype.toString.call(obj)
@@ -42,7 +42,7 @@ function typeTest (obj, type) {
  * @param {*} a 作用域的对象
  * @param {*} b 默认对象参数
  */
-function merge (a, b) {
+function merge(a, b) {
   try {
     for (let key in b) {
       if (Object.prototype.hasOwnProperty.call(a, key)) {
@@ -68,4 +68,30 @@ function merge (a, b) {
   }
 }
 
-export { merge, typeTest, clone }
+function unitSetUp(val) {
+  let unit = ''
+  let value = 0
+  if (typeof val == 'number') {
+    if (val < 1024) {
+      value = 1
+      unit = 'KB'
+    } else if (val < Math.pow(1024, 2)) {
+      value = Math.round((val / 1024) * 100) / 100
+      unit = 'KB'
+    } else if (val < Math.pow(1024, 3)) {
+      value = Math.round((val / Math.pow(1024, 2)) * 100) / 100
+      unit = 'MB'
+    } else if (val < Math.pow(1024, 4)) {
+      value = Math.round((val / Math.pow(1024, 3)) * 100) / 100
+      unit = 'GB'
+    } else {
+      value = Math.round((val / Math.pow(1024, 4)) * 100) / 100
+      unit = 'TB'
+    }
+  } else {
+    return val
+  }
+  return value + unit
+}
+
+export { merge, typeTest, clone, unitSetUp }

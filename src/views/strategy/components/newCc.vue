@@ -47,15 +47,9 @@
         </div>
         <div class="seleWrap">
           <template v-for="(item, index) in seleNodeList">
-            <div :key="item.name" class="seleItem">
-              <i
-                :class="
-                  item.type == 'user'
-                    ? 'iconfont icon-yonghutianchong'
-                    : 'iconfont icon-huaban'
-                "
-              ></i>
-              <span>{{ item.name }}</span>
+            <div :key="item" class="seleItem">
+              <i class="iconfont icon-yonghutianchong"></i>
+              <span>{{ item }}</span>
               <i class="el-icon-close" @click="delMember(index, item)"></i>
             </div>
           </template>
@@ -77,6 +71,7 @@ export default {
   props: {
     type: Number,
     value: Boolean,
+    userList: Array,
   },
   data() {
     return {
@@ -94,6 +89,12 @@ export default {
         this.tempVal = val
       },
       immediate: true,
+    },
+    userList: {
+      immediate: true,
+      handler(val) {
+        this.seleNodeList = val
+      },
     },
   },
   methods: {
@@ -113,12 +114,19 @@ export default {
           })
         }
         resolve(temp)
+        if (this.userList) {
+          temp.map((item) => {
+            if (this.userList.includes(item.name)) {
+              this.$refs['tree'].setChecked(item.name, true)
+            }
+          })
+        }
       })
     },
     nodeCheck(a, b) {
-      this.seleNodeList = b.checkedNodes.filter((item) => {
-        if (item.leaf) {
-          return item
+      b.checkedNodes.map((item) => {
+        if (item.leaf && !this.seleNodeList.includes(item.name)) {
+          this.seleNodeList.push(item.name)
         }
       })
     },
@@ -129,7 +137,7 @@ export default {
     },
     delMember(val, data) {
       this.seleNodeList.splice(val, 1)
-      this.$refs['tree'].setChecked(data.name, false)
+      this.$refs['tree'].setChecked(data, false)
     },
     cancel() {
       this.$emit('input', false)

@@ -25,6 +25,7 @@
       @cell-mouse-enter="cellMouseEnter"
       @cell-mouse-leave="cellMouseLeave"
       @cell-click="cellClick"
+      @toggleRowSelection="toggleRowSelection"
     >
       <el-table-column
         v-if="cloneConfig.selection"
@@ -244,6 +245,9 @@ export default {
     },
     cellMouseLeave(val) {
       this.$emit('cellMouseLeave', val)
+    },
+    toggleRowSelection(val) {
+      this.$emit('toggleRowSelection', val)
     },
     cellClick(val, event, column) {
       this.$emit('cellClick', val, event, column)

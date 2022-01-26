@@ -81,13 +81,17 @@
       >
         {{ state[item.state] }}
       </span>
+      <span class="reason" v-if="item.reason">
+        <span class="label">理由：</span>
+        {{ item.reason }}
+      </span>
     </el-timeline-item>
     <el-timeline-item
       v-if="approvalState == 4 || approvalState == 5"
       :type="approvalState == 4 ? 'success' : 'danger'"
     >
       <span class="labelBox">{{ state[approvalState] }}</span>
-      <div class="timeBox">{{ data.applyTime }}</div>
+      <div class="timeBox">{{ data.approvalTime }}</div>
     </el-timeline-item>
   </el-timeline>
 </template>
@@ -95,7 +99,7 @@
 <script>
 export default {
   name: 'timeline',
-  props: ['data', 'accountType', 'approvalState'],
+  props: ['data', 'approvalState'],
   data() {
     return {
       state: {
@@ -157,5 +161,11 @@ export default {
 .state {
   font-weight: bolder;
   font-size: 13px;
+}
+.reason {
+  margin-left: 10px;
+  .label {
+    font-weight: bolder;
+  }
 }
 </style>

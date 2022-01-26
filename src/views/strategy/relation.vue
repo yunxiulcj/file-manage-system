@@ -54,7 +54,9 @@
           <el-button type="primary" size="small" @click="setSuperior(tempDn)">
             设置上级
           </el-button>
-          <el-button type="warning" size="small">导出Excel</el-button>
+          <el-button type="warning" size="small" @click="exported">
+            导出Excel
+          </el-button>
         </div>
       </div>
       <table-temp ref="table" :config="tableConfig" v-loading="tableLoading">
@@ -128,6 +130,32 @@
         </el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="editNameDialog" width="450px">
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          编辑部门名称
+        </div>
+      </template>
+      <div>新部门名称</div>
+      <el-input
+        v-model="editInfo.name"
+        size="small"
+        placeholder="请输入名称"
+      ></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelEdit" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="alterName">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -139,11 +167,14 @@ export default {
   components: { pageFrame, TableTemp },
   data() {
     return {
+      oldName: '',
+      editNameDialog: false,
       setSuperiorDialog: false,
       filterUser1: '',
       filterUser: '',
       filterDep: '',
       tempDn: '',
+      editInfo: {},
       props: {
         label: 'name',
         isLeaf: 'leaf',
@@ -198,8 +229,10 @@ export default {
         'tableData',
         this.fullData.filter((item) => {
           if (
-            item.userId.indexOf(val) != -1 ||
-            item.realName.indexOf(val) != -1
+            (item.userId &&
+              item.userId.toLowerCase().indexOf(val.toLowerCase()) != -1) ||
+            (item.realName &&
+              item.realName.toLowerCase().indexOf(val.toLowerCase()) != -1)
           ) {
             return item
           }
@@ -215,6 +248,31 @@ export default {
     },
   },
   methods: {
+    cancelEdit() {
+      this.editNameDialog = false
+      this.editInfo.name = this.oldName
+    },
+    alterName() {
+      if (this.editInfo.name) {
+        this.$http('updateDepartmentName', {
+          dn: this.editInfo.dn,
+          name: this.editInfo.name,
+        }).then((res) => {
+          this.$message.success(res.errMsg)
+          this.editNameDialog = false
+        })
+      } else {
+        this.$message.warning('名称不能为空')
+      }
+    },
+    exported() {
+      this.$http('exportDepartmentUserList', { dn: this.tempDn }).then(
+        (res) => {
+          this.$message.success(res.errMsg)
+          window.open(window.urlHead + res.data)
+        }
+      )
+    },
     confirmSuperior() {
       if (this.tempSuperior.length > 0) {
         this.$http('setDepartmentSuperior', {
@@ -238,9 +296,12 @@ export default {
       })
     },
     changeName(data) {
-      console.log(data)
+      this.editNameDialog = true
+      this.editInfo = data
+      this.oldName = data.name
     },
     setSuperior(val) {
+      this.filterUser1 = ''
       if (val) {
         this.tempDn = val
         this.tempSuperior = []
@@ -271,9 +332,13 @@ export default {
           })
         })
         resolve(temp)
+        if (node.level == 0) {
+          this.getData(res.data[0].dn)
+        }
       })
     },
     getData(val) {
+      this.tableLoading = true
       this.$http('getDepartmentUserList', { dn: val })
         .then((res) => {
           this.fullData = res.data

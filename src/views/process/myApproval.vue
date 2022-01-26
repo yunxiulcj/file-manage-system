@@ -28,7 +28,7 @@
         <el-form-item>
           <el-input
             v-model="tableConfig.condition.searchStr"
-            placeholder="请输入搜索内容"
+            placeholder="请输入工单号"
             clear
           ></el-input>
         </el-form-item>
@@ -96,7 +96,7 @@
           <el-divider direction="vertical"></el-divider>
           <span class="tips">注：0表示长期有效</span>
         </el-form-item>
-        <el-form-item label="理由">
+        <el-form-item label="理由*">
           <el-input v-model="editForm.comment"></el-input>
         </el-form-item>
       </el-form>
@@ -189,6 +189,10 @@ export default {
           label: '审批拒绝',
           value: '5',
         },
+        {
+          label: '传输异常',
+          value: '6',
+        },
       ],
       tableConfig: {
         tableData: [],
@@ -214,18 +218,22 @@ export default {
             },
           },
           {
+            prop: 'applyUser',
+            label: '申请人',
+          },
+          {
             prop: 'applyType',
             label: '行为',
             formatter: (row) => {
               let str
               switch (row.applyType) {
-                case '1':
+                case 1:
                   str = '文件下载申请'
                   break
-                case '2':
+                case 2:
                   str = '文件外发申请'
                   break
-                case '3':
+                case 3:
                   str = '文件下载申请'
                   break
                 default:
@@ -313,6 +321,7 @@ export default {
               fn: (row) => {
                 this.editForm.applyId = row.applyId
                 this.editForm.applyStatus = 1
+                this.editForm.comment = ''
                 this.editForm.downloadCount = row.downloadCount
                 this.editForm.downloadExpiredDay = row.downloadDay
                 this.canEdit = row.canEdit
@@ -328,9 +337,10 @@ export default {
               type: 'text',
               fn: (row) => {
                 this.editForm.applyId = row.applyId
-                this.editForm.approvalState = 2
+                this.editForm.applyStatus = 2
                 this.editForm.downloadCount = row.downloadCount
                 this.editForm.downloadExpiredDay = row.downloadDay
+                this.editForm.comment = ''
                 this.canEdit = false
                 this.agreeOrRefuseDialog = true
               },
@@ -391,14 +401,12 @@ export default {
     this.getData()
   },
   methods: {
-    agree() {
-      this.$http('agree', this.editForm).then((res) => {
-        this.$message.success(res.errMsg)
-      })
-    },
     confirmEdit() {
-      this.$http('agree', this.editForm).then((res) => {
+      let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
+      this.$http(url, this.editForm).then((res) => {
         this.$message.success(res.errMsg)
+        this.agreeOrRefuseDialog = false
+        this.getData()
       })
     },
     getData() {
@@ -413,15 +421,6 @@ export default {
         moment().subtract(7, 'days').format('YYYY-MM-DD HH:mm:ss'),
         moment().format('YYYY-MM-DD HH:mm:ss'),
       ]
-    },
-    agreeOrRefuseApply(row, status) {
-      this.$http('agreeOrRefuseApply', {
-        applyId: row.applyId,
-        applyType: row.applyType,
-        applyStatus: status,
-      }).then((res) => {
-        this.$message.success(res.errMsg)
-      })
     },
   },
 }

@@ -69,6 +69,7 @@ export default {
   },
   created() {
     this.initSteps()
+    console.log(this.approvalState)
   },
   methods: {
     initSteps() {

@@ -15,7 +15,7 @@
             size="mini"
             type="primary"
             style="background: #0eafc0"
-            @click="createApply"
+            @click="createApply(selectData)"
           >
             <i class="iconfont icon-fileDownload"></i>
             下载申请
@@ -70,7 +70,22 @@
         >
           <template slot="file" slot-scope="scope">
             <div class="fileWrap">
-              <div class="fileIcon">iiiiiiii</div>
+              <div
+                class="fileIcon"
+                v-if="scope.row.dir"
+                :style="{
+                  background: 'url(' + iconPath.folder + ')',
+                  backgroundSize: '100% 100%',
+                }"
+              ></div>
+              <div
+                class="fileIcon"
+                v-else
+                :style="{
+                  background: 'url(' + iconPath.file + ')',
+                  backgroundSize: '100% 100%',
+                }"
+              ></div>
               <div class="fileName">
                 <el-input
                   ref="editInput"
@@ -107,7 +122,7 @@
                 ></i>
                 <i
                   class="iconfont icon-xiazai"
-                  @click.stop="createApply"
+                  @click.stop="createApply([scope.row])"
                   v-show="!scope.row.dir"
                   title="下载"
                 ></i>
@@ -200,7 +215,10 @@
         </el-button>
       </span>
     </el-dialog>
-    <upload-dialog v-model="uploadDialog"></upload-dialog>
+    <upload-dialog
+      v-model="uploadDialog"
+      @goGetData="goGetData"
+    ></upload-dialog>
   </div>
 </template>
 
@@ -208,11 +226,17 @@
 import tableTemp from '../../components/table-temp.vue'
 import uploadDialog from './components/uploadDialog.vue'
 import breadCrumb from '../../components/breadCrumb.vue'
+import { unitSetUp } from '../../utils/obj-operation'
+
 export default {
   name: 'soFile',
   components: { tableTemp, uploadDialog, breadCrumb },
   data() {
     return {
+      iconPath: {
+        file: require('../../assets/img/page/file.png'),
+        folder: require('../../assets/img/page/folder.png'),
+      },
       filterName: '',
       fullData: [],
       tempDelId: '',
@@ -248,6 +272,9 @@ export default {
           {
             prop: 'size',
             label: '大小',
+            formatter: (row) => {
+              return row.dir ? '-' : unitSetUp(row.size)
+            },
           },
           {
             prop: 'lastModified',
@@ -258,6 +285,7 @@ export default {
       selectData: [],
     }
   },
+  created() {},
   mounted() {
     this.tableConfig.maxHeight = document.body.clientHeight - 220 + 'px'
     this.getData(this.nowPath)
@@ -276,9 +304,14 @@ export default {
     },
   },
   methods: {
-    createApply() {
-      let fileList = this.selectData.map((item) => {
-        return { fileSize: item.size, filePath: item.path, fileName: item.name }
+    createApply(data) {
+      let fileList = data.map((item) => {
+        return {
+          fileSize: item.size,
+          filePath: item.path,
+          fileName: item.name,
+          size: unitSetUp(item.size),
+        }
       })
       let obj = {
         applyUser: localStorage.getItem('username') || '',
@@ -376,7 +409,7 @@ export default {
         }).then((res) => {
           if (index == pathList.length - 1) {
             this.getData(this.nowPath)
-            this.$message(res.errMsg)
+            this.$message.success(res.errMsg)
           }
         })
       })
@@ -384,6 +417,11 @@ export default {
     showEditName(val) {
       this.$set(val, 'tempName', val.name)
       this.$set(val, 'isEdit', true)
+    },
+    goGetData(val) {
+      if (val) {
+        this.getData(this.nowPath)
+      }
     },
     editFileName(val) {
       if (val.tempName == '') {
@@ -477,7 +515,6 @@ export default {
           width: 25px;
           height: 25px;
           margin-right: 20px;
-          background: cornflowerblue;
         }
         .operate {
           color: #339af0;

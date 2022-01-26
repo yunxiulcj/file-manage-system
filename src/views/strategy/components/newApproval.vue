@@ -70,7 +70,7 @@
               </div>
             </template>
           </div>
-          <div class="addBox" @click="showAddMember = true">
+          <div class="addBox" @click="addUser">
             <i class="el-icon-plus"></i>
           </div>
         </div>
@@ -107,7 +107,11 @@
         </el-button>
       </span>
     </el-dialog>
-    <new-cc v-model="showAddMember" @selectUser="selectUser"></new-cc>
+    <new-cc
+      v-model="showAddMember"
+      :userList="userList"
+      @selectUser="selectUser"
+    ></new-cc>
   </div>
 </template>
 
@@ -118,26 +122,16 @@ export default {
   name: 'newApproval',
   props: {
     value: Boolean,
+    formObj: Object,
+    editOrNew: Number,
   },
   components: { newCc },
   data() {
     return {
+      userList: [],
       type: 'superior',
       showAddMember: false,
       tempVal: false,
-      formObj: {
-        superior: {
-          levelType: 1,
-          level: 1,
-          noSuperior: false,
-          approvalType: 1,
-        },
-        member: {
-          approvalType: 1,
-          userList: [],
-        },
-        type: 1,
-      },
       approvalType: [
         {
           label: '指定上级',
@@ -211,12 +205,21 @@ export default {
       },
       immediate: true,
     },
+    'formObj.type'(val) {
+      this.type = val == 1 ? 'superior' : 'member'
+    },
   },
   methods: {
     selectUser(val) {
       this.formObj.member.userList = val.map((item, index) => {
-        return { userId: item.name, index: index }
+        return { userId: item, index: index }
       })
+    },
+    addUser() {
+      this.userList = this.formObj.member.userList.map((item) => {
+        return item.userId
+      })
+      this.showAddMember = true
     },
     typeChange(val) {
       this.type = val == 1 ? 'superior' : 'member'
@@ -226,7 +229,7 @@ export default {
     },
     confirm() {
       this.$emit('input', false)
-      this.$emit('addApproval', clone(this.formObj))
+      this.$emit('addApproval', clone(this.formObj), this.editOrNew)
     },
     dialogClose() {
       this.$emit('input', false)

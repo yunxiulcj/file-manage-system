@@ -147,6 +147,7 @@ export default {
       this.operateId = id
     },
     editItem(data) {
+      console.log(data)
       this.$emit('passSignal', true, data)
     },
   },
@@ -326,8 +327,6 @@ export default {
   }
   .strategyWrap:hover {
     background: #f8f9fa;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
   }
 }
 </style>

@@ -6,7 +6,13 @@
       </template>
       <div class="file" v-if="menu == 'file'" v-loading="loading">
         <div class="uploadBox fileBox">
-          <div class="title">上传文件限制</div>
+          <span class="title">上传文件限制</span>
+          <el-switch
+            v-model="formObj.enableUploadFileSize"
+            active-color="#228be6"
+            inactive-color="#adb5bd"
+            style="margin-bottom: 2px; margin-left: 20px"
+          ></el-switch>
           <div class="contentBox">
             <div class="subtitle">设置单个文件上传的大小上限</div>
             <div class="count">
@@ -93,7 +99,7 @@
                   size="mini"
                   v-model="formObj.defaultDownLoadDay"
                 ></el-input-number>
-                天内邮箱
+                天内有效
               </span>
             </div>
           </div>
@@ -142,6 +148,7 @@ export default {
   components: { pageFrame, miniMenu },
   data() {
     return {
+      isOpen: false,
       menu: 'file',
       menuList: [
         {
@@ -159,6 +166,7 @@ export default {
         operationFileType: [],
         enableDownLoadCount: false,
         enableDownLoadDay: false,
+        enableUploadFileSize: false,
         defaultDownLoadCount: 1,
         defaultDownLoadDay: 1,
         diskRootPath: '',
@@ -186,6 +194,9 @@ export default {
           if (data.operationFileType) {
             this.fileTypeList = clone(data.operationFileType)
           }
+          data.operationFileType = data.operationFileType
+            ? data.operationFileType
+            : []
           this.formObj = data
         })
         .finally(() => {

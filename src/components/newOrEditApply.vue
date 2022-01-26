@@ -47,7 +47,7 @@
                   :key="item.fileName"
                 >
                   <span class="fileName">{{ item.fileName }}</span>
-                  <span class="fileSize">{{ item.fileSize }}</span>
+                  <span class="fileSize">{{ item.size }}</span>
                   <i class="el-icon-close" @click="delFile(index)"></i>
                   <el-divider
                     direction="vertical"
@@ -120,7 +120,7 @@
               size="small"
               @click="addDownloadApply(applyForm)"
             >
-              保存
+              确定
             </el-button>
             <el-button type="info" size="small" @click="goBack">取消</el-button>
           </div>
@@ -140,10 +140,16 @@
           添加文件
         </div>
       </template>
-      <bread-crumb></bread-crumb>
+      <div class="breadCrumbBox">
+        <bread-crumb
+          v-model="nowPath"
+          @startGetData="startGetData"
+        ></bread-crumb>
+      </div>
       <div class="tableWrap">
         <table-temp
           :config="tableConfig"
+          v-loading="tableLoading"
           ref="table"
           @selection-change="handleSelectionChange"
         >
@@ -166,6 +172,23 @@
         </el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="tipsDialog" width="450px">
+      <div class="tipsWrap">
+        <i class="el-icon-success"></i>
+        <div class="label">文件下载申请成功</div>
+        <div>
+          点击调度编号
+          <span class="applyId" @click="jumpDetail(tipInfo)">
+            <!-- {{ tipInfo }} -->
+            dsfsdfsdfsd214235435
+          </span>
+          查看调度结果
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="tipsDialog = false" size="small">关 闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -173,16 +196,20 @@
 import pageFrame from './pageFrame.vue'
 import tableTemp from './table-temp.vue'
 import breadCrumb from '../components/breadCrumb.vue'
+import { unitSetUp } from '../utils/obj-operation'
 export default {
   name: 'newOrEditApply',
   components: { pageFrame, tableTemp, breadCrumb },
   props: [],
   data() {
     return {
+      tipInfo: '',
+      tipsDialog: false,
       nowPath: '/',
       isDownloads: false,
       isPeriodValidity: false,
       showFileDialog: false,
+      tableLoading: false,
       type: 0,
       applyForm: {
         applyUser: '',
@@ -209,6 +236,9 @@ export default {
           {
             prop: 'size',
             label: '大小',
+            formatter: (row) => {
+              return row.dir ? '-' : unitSetUp(row.size)
+            },
           },
           {
             prop: 'lastModified',
@@ -240,7 +270,6 @@ export default {
   created() {
     let data = this.$route.params
     this.applyTitle = data.type == 0 ? '新建下载申请' : '编辑下载申请'
-    console.log('我的申请点击编辑', data)
     this.$nextTick(() => {
       this.applyForm = this.initForm(data.data)
       this.type = data.type
@@ -248,50 +277,85 @@ export default {
   },
   mounted() {
     this.getCurrentApprovalUser()
-    // this.getRootPath()
   },
   methods: {
+    jumpDetail(val) {
+      this.$router.push({
+        name: 'approval',
+        params: {
+          accountType: '2',
+          approvalState: 2,
+          applyId: val,
+        },
+      })
+    },
+    startGetData(val) {
+      if (val) {
+        this.getData(this.nowPath)
+      }
+    },
     goBack() {
       this.$router.go(-1)
     },
     delFile(val) {
       this.applyForm.fileList.splice(val, 1)
     },
-    getData(path) {
-      this.$http('getFileList', { path: path }).then((res) => {
-        this.tableConfig.tableData = res.data
-      })
+    getData(val) {
+      this.tableLoading = true
+      let path
+      if (val) {
+        path = val[val.length - 1] == '/' ? val : val + '/'
+      } else {
+        path = '/'
+      }
+      this.$http('getFileList', { path: path })
+        .then((res) => {
+          this.tableConfig.tableData = res.data
+          this.nowPath = path
+        })
+        .finally(() => {
+          this.tableLoading = false
+        })
     },
     addFile() {
       let fileList = this.selectFiles.map((item) => {
-        return { fileSize: item.size, filePath: item.path, fileName: item.name }
+        return {
+          fileSize: item.size,
+          size: unitSetUp(item.size),
+          filePath: item.path,
+          fileName: item.name,
+        }
       })
-      console.log(fileList)
       this.$set(this.applyForm, 'fileList', fileList)
       this.showFileDialog = false
     },
     getFileList() {
       this.showFileDialog = true
-      this.getData('')
+      this.getData('/')
     },
     addDownloadApply(data) {
-      if (this.type == 0) {
-        this.$http('createApply', data)
-          .then((res) => {
-            this.$message.success(res.errMsg)
-          })
-          .finally(() => {
-            this.showNewApply = false
-          })
-      } else {
-        this.$http('updateApply', data)
-          .then((res) => {
-            this.$message.success(res.errMsg)
-          })
-          .finally(() => {
-            this.showNewApply = false
-          })
-      }
+      this.tipsDialog = true
+      console.log(data)
+      // if (this.type == 0) {
+      //   this.$http('createApply', data)
+      //     .then((res) => {
+      //       this.tipsDialog = true
+      //       this.tipInfo = res.data
+      //       // this.goBack()
+      //     })
+      //     .finally(() => {
+      //       this.showNewApply = false
+      //     })
+      // } else {
+      //   this.$http('updateApply', data)
+      //     .then((res) => {
+      //       this.$message.success(res.errMsg)
+      //       this.goBack()
+      //     })
+      //     .finally(() => {
+      //       this.showNewApply = false
+      //     })
+      // }
     },
     handleSelectionChange(data) {
       this.selectFiles = data.filter((item) => {
@@ -300,11 +364,6 @@ export default {
         }
       })
     },
-    // getRootPath() {
-    //   this.$http('getSetting', { settingId: 2 }).then((res) => {
-    //     this.rootPath = res.data.diskRootPath
-    //   })
-    // },
     initForm(data) {
       return data
     },
@@ -477,6 +536,9 @@ export default {
     }
   }
 }
+.breadCrumbBox {
+  margin-bottom: 10px;
+}
 .tableWrap {
   .clickable {
     cursor: pointer;
@@ -489,6 +551,7 @@ export default {
 .fileWrap {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   padding-left: 10px;
   .fileBox {
     .fileName {
@@ -507,6 +570,27 @@ export default {
     i:hover {
       color: #228be6;
     }
+  }
+}
+.tipsWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  i {
+    font-size: 40px;
+    color: #37b24d;
+  }
+  .label {
+    font-size: 16px;
+    margin: 15px 0px;
+  }
+  .applyId {
+    text-decoration: underline;
+    color: chocolate;
+    cursor: pointer;
+  }
+  .applyId:hover {
+    color: #fab005;
   }
 }
 </style>

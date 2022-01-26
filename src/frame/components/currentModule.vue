@@ -17,7 +17,7 @@
       <div class="capacityView" v-if="currentModule == 'sharedSpace'">
         <div class="progressWrap">
           <el-progress
-            :percentage="Math.round((capacity.used / capacity.totalSize) * 100)"
+            :percentage="parseFloat(capacity.usagePercent)"
             color="#228be6"
             :stroke-width="20"
             :text-inside="true"
@@ -35,17 +35,14 @@
 </template>
 
 <script>
-import { defaultRouter } from '@/app/router/index.js'
+import { listRouter } from '@/app/router/index.js'
 
 export default {
   name: 'currentModule',
   components: {},
   data() {
     return {
-      capacity: {
-        used: 0,
-        totalSize: 0,
-      },
+      capacity: {},
       leftList: {},
       currentModule: '',
       currentMenu: '',
@@ -72,10 +69,11 @@ export default {
   created() {
     this.initLeftMenuList()
     this.isCreated = true
+    // console.log('getters.capacity', this.$store.getters.capacity)
   },
   methods: {
     initLeftMenuList() {
-      defaultRouter.map((item) => {
+      listRouter.map((item) => {
         if (item.children && item.children.length > 0) {
           this.leftList[item.name] = item.children
         }
@@ -87,12 +85,7 @@ export default {
         userId: localStorage.getItem('username') || '',
       }).then((res) => {
         this.capacity = res.data
-        // this.$set(this.capacity, 'used', Math.round(data.used / Math.r))
-        // this.$set(
-        //   this.capacity,
-        //   'totalSize',
-        //   Math.round(data.totalSize / 1000 / 1000)
-        // )
+        // this.$store.commit('SET_CAPACITY', res.data)
       })
     },
   },

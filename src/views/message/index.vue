@@ -6,7 +6,7 @@
           type="text"
           style="font-weight: 600; margin-right: 20px"
           @click="MarkRead"
-          v-show="activeName == 0"
+          v-show="activeName == 0 || activeName == 2"
         >
           全部标记为已读
         </el-button>
@@ -21,9 +21,14 @@
       </div>
       <el-tabs v-model="activeName">
         <el-tab-pane label="全部消息" name="2">
-          <div class="itemWrap" v-loading="loading">
+          <div
+            class="itemWrap"
+            v-loading="loading"
+            v-if="messageList.length > 0"
+          >
             <message-item :messageList="messageList"></message-item>
           </div>
+          <el-empty v-else description="暂无数据"></el-empty>
         </el-tab-pane>
         <el-tab-pane name="0">
           <span slot="label">
@@ -35,14 +40,24 @@
               class="item"
             ></el-badge>
           </span>
-          <div class="itemWrap" v-loading="loading">
+          <div
+            class="itemWrap"
+            v-loading="loading"
+            v-if="messageList.length > 0"
+          >
             <message-item :messageList="messageList"></message-item>
           </div>
+          <el-empty v-else description="暂无数据"></el-empty>
         </el-tab-pane>
         <el-tab-pane label="已读消息" name="1">
-          <div class="itemWrap" v-loading="loading">
+          <div
+            class="itemWrap"
+            v-loading="loading"
+            v-if="messageList.length > 0"
+          >
             <message-item :messageList="messageList"></message-item>
           </div>
+          <el-empty v-else description="暂无数据"></el-empty>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -52,6 +67,7 @@
 <script>
 import messageItem from './components/messageItem.vue'
 import moment from 'moment'
+import { unitSetUp } from '../../utils/obj-operation'
 export default {
   name: 'message',
   components: { messageItem },
@@ -151,7 +167,13 @@ export default {
       })
         .then((res) => {
           if (res.data) {
+            res.data.map((item) => {
+              item.attachmentList.map((file) => {
+                file['fileSize'] = unitSetUp(file.fileSize)
+              })
+            })
             this.messageList = res.data
+            console.log(this.messageList)
           }
         })
         .finally(() => {

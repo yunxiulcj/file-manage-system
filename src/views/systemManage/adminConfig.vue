@@ -15,7 +15,9 @@
           </el-button>
         </div>
         <div class="rightBtn">
-          <el-button type="warning" size="small">权限预览</el-button>
+          <el-button type="warning" size="small" @click="powerPreview">
+            权限预览
+          </el-button>
           <el-button
             type="primary"
             size="small"
@@ -101,12 +103,40 @@
         </el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="previewDialog">
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          权限预览
+        </div>
+      </template>
+      <div class="leftBox">
+        <!-- <el-tree
+          :data="normalData"
+          show-checkbox
+          node-key="id"
+          default-expand-all
+          :props="defaultProps"
+        ></el-tree> -->
+      </div>
+      <div class="rightBox"></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="previewDialog = false">关 闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import pageFrame from '../../components/pageFrame.vue'
 import tableTemp from '../../components/table-temp.vue'
+// import { defaultRouter } from '@/app/router/index.js'
 export default {
   name: 'adminConfig',
   components: { pageFrame, tableTemp },
@@ -124,6 +154,7 @@ export default {
       })
     }
     return {
+      normalData: [],
       newOrEdit: '',
       showNewOrEdit: false,
       tableLoading: false,
@@ -219,6 +250,7 @@ export default {
         },
         fetchUrl: 'getAccountList',
       },
+      previewDialog: false,
     }
   },
   mounted() {
@@ -228,8 +260,19 @@ export default {
     getData() {
       this.$refs.table.fetch()
     },
+    powerPreview() {
+      // console.log(defaultRouter)
+      // defaultRouter.map((item) => {
+      //   let temp = { label: item.meta.title }
+      //   if (item.children && item.children.length > 0) {
+      //     item.children.map((child) => {})
+      //   }
+      // })
+      this.previewDialog = true
+    },
     showNew() {
       this.newOrEdit = '新建账号'
+      this.formObj['id'] = ''
       this.formObj.userId = ''
       this.formObj.username = ''
       this.formObj.roleId = 1

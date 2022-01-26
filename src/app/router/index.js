@@ -7,7 +7,7 @@ import message from './modules/message'
 import process from './modules/process'
 import strategy from './modules/strategy'
 import systemManage from './modules/systemManage'
-
+import { clone } from '../../utils/obj-operation'
 Vue.use(vueSystem.router)
 
 let defaultRouter = [
@@ -17,13 +17,37 @@ let defaultRouter = [
   ...strategy,
   ...systemManage,
 ]
+let listRouter
+let refreshRouter = function () {
+  listRouter = clone(defaultRouter)
+  let routerAuth
+  if (localStorage.getItem('menuList')) {
+    routerAuth = JSON.parse(localStorage.getItem('menuList'))
+  }
+  if (routerAuth) {
+    let setHidden = function (item) {
+      if (routerAuth && !routerAuth.includes(item.id)) {
+        item.hidden = true
+      }
+      if (item.children) {
+        item.children.map((obj) => {
+          setHidden(obj)
+        })
+      }
+    }
+    listRouter.map((item) => {
+      setHidden(item)
+    })
+  }
+}
+refreshRouter()
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: () => import('@/frame/index.vue'),
     redirect: '/sharedSpace',
-    children: [...defaultRouter],
+    children: [...listRouter],
   },
   {
     path: '/login',
@@ -56,9 +80,9 @@ router.registerInitScript(() => {
 router.beforeEach((to, from, next) => {
   // request.reqManage && request.reqManage.cancelRouterReq(from.path)
   if (from.path == '/login') {
-    console.log('login')
+    refreshRouter()
   }
   next()
 })
-export { defaultRouter }
+export { listRouter }
 export default router

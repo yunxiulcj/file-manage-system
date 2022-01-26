@@ -11,7 +11,7 @@
         router
       >
         <template v-for="item in menuList">
-          <el-menu-item :key="item.name" :index="item.path">
+          <el-menu-item :key="item.name" :index="item.path" v-if="!item.hidden">
             {{ item.meta.title }}
           </el-menu-item>
         </template>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { defaultRouter } from '@/app/router/index.js'
+import { listRouter } from '@/app/router/index.js'
 
 export default {
   name: 'headMenu',
@@ -40,7 +40,7 @@ export default {
   computed: {},
   created() {
     this.account = localStorage.getItem('username') || ''
-    this.menuList = defaultRouter
+    this.menuList = listRouter
     this.activeIndex = this.$route.path.substring(
       0,
       this.$route.path.lastIndexOf('/')

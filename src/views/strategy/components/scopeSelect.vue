@@ -33,7 +33,7 @@
 <script>
 export default {
   name: 'scopeSelect',
-  props: ['value', 'size', 'width'],
+  props: ['value', 'setPath', 'size', 'width'],
   data() {
     return {
       depLoading: false,
@@ -62,15 +62,35 @@ export default {
         this.tempVal = val
       },
     },
+    setPath: {
+      immediate: true,
+      handler(val) {
+        let path
+        if (val) {
+          if (val.indexOf('OU=') < 0) {
+            path = ''
+          } else {
+            path = val.split(',').splice(1).join(',')
+          }
+          this.getDepartmentList(path)
+        }
+        // this.getDepartmentList(path)
+      },
+    },
   },
   mounted() {
     this.getDepartmentList(this.depOU)
   },
   methods: {
     goBack(val) {
-      let OUNum = val.indexOf('OU=')
-      if (OUNum != -1) {
-        this.getDepartmentList(val.substring(val.indexOf(',') + 1))
+      if (val) {
+        let OUNum = val.indexOf('OU=')
+        if (OUNum != -1) {
+          console.log(val)
+          this.getDepartmentList(val.substring(val.indexOf(',') + 1))
+        } else {
+          this.getDepartmentList('')
+        }
       } else {
         this.$message.warning('已无上级')
       }

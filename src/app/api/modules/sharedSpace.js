@@ -18,6 +18,6 @@ export default {
     url: '/personal/getTransferCenterFileList',
   },
   deteleTransferCenterFile: {
-    url: '/personal/deteleTransferCenterFile',
+    url: '/personal/deleteTransferCenterFile',
   },
 }

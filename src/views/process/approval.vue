@@ -13,14 +13,11 @@
         </div>
         <div class="approvalInfo">
           <div class="approvalState">
-            {{ applyStatus[approvalState] }}（{{
-              approvalMode[detailData.state]
-            }}）
+            {{ applyStatus[approvalState] }}
           </div>
           <div class="timelineWrap">
             <timeline
               :data="detailData"
-              :accountType="accountType"
               :approvalState="approvalState"
             ></timeline>
           </div>
@@ -52,16 +49,11 @@
         <el-divider></el-divider>
       </div>
       <div class="btnWrap" v-if="detailData.canApproval">
-        <el-button
-          @click="agreeOrRefuseApply(1)"
-          type="primary"
-          size="small"
-          plain
-        >
+        <el-button @click="agree(detailData)" type="primary" size="small" plain>
           同意
         </el-button>
         <el-button
-          @click="agreeOrRefuseApply(2)"
+          @click="refuse(detailData)"
           type="warning"
           size="small"
           plain
@@ -70,20 +62,77 @@
         </el-button>
       </div>
     </page-frame>
+    <el-dialog :visible.sync="agreeOrRefuseDialog" width="500px">
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          提示
+        </div>
+      </template>
+      <el-form size="small">
+        <el-form-item label="下载次数" v-if="canEdit">
+          <el-input-number
+            v-model="editForm.downloadCount"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <span class="unit">单位：天</span>
+          <el-divider direction="vertical"></el-divider>
+          <span class="tips">注：0表示长期有效</span>
+        </el-form-item>
+        <el-form-item label="申请有效期" v-if="canEdit">
+          <el-input-number
+            v-model="editForm.downloadExpiredDay"
+            controls-position="right"
+            :min="0"
+          ></el-input-number>
+          <span class="unit">单位：天</span>
+          <el-divider direction="vertical"></el-divider>
+          <span class="tips">注：0表示长期有效</span>
+        </el-form-item>
+        <el-form-item label="理由*">
+          <el-input v-model="editForm.comment"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="agreeOrRefuseDialog = false">
+          取 消
+        </el-button>
+        <el-button size="small" type="primary" @click="confirmEdit">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import pageFrame from '../../components/pageFrame.vue'
 import articleSteps from './components/articleSteps.vue'
 import timeline from '../../components/timeline.vue'
+import { unitSetUp } from '../../utils/obj-operation'
 export default {
   name: 'approval',
   components: { pageFrame, articleSteps, timeline },
   data() {
     return {
       userName: '',
+      canEdit: false,
+      agreeOrRefuseDialog: false,
       accountType: '2',
-      approvalState: '5',
+      approvalState: 0,
+      editForm: {
+        applyId: '',
+        applyStatus: 1,
+        downloadCount: 1,
+        downloadExpiredDay: 1,
+        comment: '',
+      },
       applyStatus: {
         1: '已撤回',
         2: '待处理',
@@ -91,11 +140,6 @@ export default {
         4: '审批通过',
         5: '审批不通过',
         6: '传输异常',
-      },
-      approvalMode: {
-        1: '会签',
-        2: '或签',
-        3: '依次审批',
       },
       detailData: {
         fileList: [],
@@ -111,21 +155,21 @@ export default {
         canEdit: false,
         processList: [],
       },
+      tempData: {},
     }
   },
   created() {
     this.userName = localStorage.getItem('username') || ''
     let queryNum = Object.keys(this.$route.query)
     let paramNum = Object.keys(this.$route.params)
-    let data
     if (queryNum.length > 0) {
-      data = this.$route.query
+      this.tempData = this.$route.query
     } else if (paramNum.length > 0) {
-      data = this.$route.params
+      this.tempData = this.$route.params
     }
-    this.getData(data)
-    this.accountType = data.accountType
-    this.approvalState = data.approvalState
+    this.getData(this.tempData)
+    this.accountType = this.tempData.accountType
+    this.approvalState = this.tempData.approvalState
   },
   mounted() {},
   methods: {
@@ -137,11 +181,38 @@ export default {
         applyId: data.applyId,
         type: data.accountType,
       }).then((res) => {
+        if (res.data) {
+          this.approvalState = res.data.state
+          res.data.fileList.map((file) => {
+            file['fileSize'] = unitSetUp(file.fileSize)
+          })
+        }
         this.detailData = res.data
       })
     },
-    agreeOrRefuseApply(type) {
-      console.log(type)
+    agree(data) {
+      this.editForm.applyId = data.applyId
+      this.editForm.applyStatus = 1
+      this.editForm.downloadCount = data.downloadCount
+      this.editForm.downloadExpiredDay = data.downloadDay
+      this.canEdit = data.canEdit
+      this.agreeOrRefuseDialog = true
+    },
+    refuse(data) {
+      this.editForm.applyId = data.applyId
+      this.editForm.approvalState = 2
+      this.editForm.downloadCount = data.downloadCount
+      this.editForm.downloadExpiredDay = data.downloadDay
+      this.canEdit = false
+      this.agreeOrRefuseDialog = true
+    },
+    confirmEdit() {
+      let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
+      this.$http(url, this.editForm).then((res) => {
+        this.$message.success(res.errMsg)
+        this.agreeOrRefuseDialog = false
+        this.getData(this.tempData)
+      })
     },
   },
 }

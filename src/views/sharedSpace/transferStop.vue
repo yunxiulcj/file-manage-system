@@ -28,9 +28,12 @@
             placeholder="请输入文件名"
             suffix-icon="el-icon-search"
             size="small"
-            style="width: 220px"
+            style="width: 220px; margin-right: 10px"
             v-model="tableConfig.condition.fileName"
           ></el-input>
+          <el-button size="small" type="primary" @click="getData">
+            查询
+          </el-button>
         </div>
       </header>
       <div class="title">文件中转站</div>
@@ -45,7 +48,13 @@
         >
           <template slot="file" slot-scope="scope">
             <div class="fileWrap">
-              <div class="fileIcon">xxxx</div>
+              <div
+                class="fileIcon"
+                :style="{
+                  background: 'url(' + fileIcon + ')',
+                  backgroundSize: '100% 100%',
+                }"
+              ></div>
               <div class="fileName">
                 <span :title="scope.row.fileName">
                   {{ scope.row.fileName }}
@@ -77,12 +86,14 @@
 
 <script>
 import tableTemp from '../../components/table-temp.vue'
+import { unitSetUp } from '../../utils/obj-operation'
 // import axios from 'axios'
 export default {
   name: 'transferStop',
   components: { tableTemp },
   data() {
     return {
+      fileIcon: require('../../assets/img/page/file.png'),
       searchName: '',
       selectData: [],
       downloading: false,
@@ -110,10 +121,16 @@ export default {
           {
             prop: 'downloadCount',
             label: '下载次数',
+            formatter: (row) => {
+              return row.countUnlimited ? '无限' : 'row.downloadCount'
+            },
           },
           {
             prop: 'fileSize',
             label: '大小',
+            formatter: (row) => {
+              return unitSetUp(row.fileSize)
+            },
           },
           {
             prop: 'applyTime',
@@ -123,7 +140,11 @@ export default {
             prop: 'expiredTime',
             label: '失效时间',
             formatter: (row) => {
-              return row.isInvaild ? '已失效' : row.expiredTime
+              return row.dayUnlimited
+                ? '永久'
+                : row.isInvaild
+                ? '已失效'
+                : row.expiredTime
             },
           },
         ],
@@ -167,9 +188,13 @@ export default {
           this.$http('download', {
             path: '/' + item.fileName,
             fileName: item.fileName,
-            fileId: data.fileId,
+            fileId: item.fileId,
           }).then((res) => {
-            window.open(res)
+            var a = document.createElement('a')
+            var t = new Blob(res)
+            a.href = URL.createObjectURL(t)
+            a.download = data.fileName
+            a.click()
           })
         })
       } else {
@@ -263,7 +288,6 @@ export default {
           width: 25px;
           height: 25px;
           margin-right: 20px;
-          background: #37b24d;
         }
         .operate {
           color: #339af0;

@@ -64,7 +64,6 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             format="yyyy-MM-dd HH:mm:ss"
             placeholder="选择日期时间"
-            :picker-options="pickerOptions2"
             align="right"
           ></el-date-picker>
         </el-form-item>
@@ -122,7 +121,8 @@ export default {
             onClick(picker) {
               const end = new Date()
               const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+
+              end.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
               picker.$emit('pick', [start, end])
             },
           },
@@ -131,7 +131,7 @@ export default {
             onClick(picker) {
               const end = new Date()
               const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 548)
+              end.setTime(start.getTime() - 3600 * 1000 * 24 * 548)
               picker.$emit('pick', [start, end])
             },
           },
@@ -140,7 +140,7 @@ export default {
             onClick(picker) {
               const end = new Date()
               const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 730)
+              end.setTime(start.getTime() - 3600 * 1000 * 24 * 730)
               picker.$emit('pick', [start, end])
             },
           },

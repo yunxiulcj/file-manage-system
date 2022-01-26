@@ -50,4 +50,7 @@ export default {
   strategyNameExists: {
     url: '/strategy/strategyNameExists',
   },
+  exportDepartmentUserList: {
+    url: '/strategy/exportDepartmentUserList',
+  },
 }

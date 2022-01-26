@@ -26,12 +26,10 @@
 
                 <div class="periodValidity infoItem">
                   <span class="label">有效期：</span>
-                  {{ item.expiredStartTime }} 至
-                  {{ item.expiredEndTime }}
-                </div>
-                <el-divider direction="vertical"></el-divider>
-                <div class="invalidDay infoItem">
-                  申请后{{ item.downloadCount }}天内
+                  <span v-if="!item.dayUnlimited">
+                    {{ item.expiredStartTime }} 至 {{ item.expiredEndTime }}
+                  </span>
+                  <span v-else>永久</span>
                 </div>
                 <el-divider direction="vertical"></el-divider>
                 <div class="detail infoItem" @click="showDetail(item)">
@@ -151,13 +149,28 @@
       </span>
     </el-dialog>
     <el-dialog :visible.sync="detailDialog">
-      <timeline :data="detailData" :approvalState="approvalState"></timeline>
+      <template slot="title">
+        <div
+          style="
+            height: 20px;
+            line-height: 20px;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+          "
+        >
+          审批详情
+        </div>
+      </template>
+      <div class="contentBox">
+        <timeline :data="detailData" :approvalState="approvalState"></timeline>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import timeline from '../../../components/timeline.vue'
+import { unitSetUp } from '../../../utils/obj-operation'
 export default {
   name: 'messageItem',
   props: {
@@ -211,18 +224,38 @@ export default {
   watch: {},
   created() {},
   methods: {
+    confirmEdit() {
+      let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
+      this.$http(url, this.editForm).then((res) => {
+        this.$message.success(res.errMsg)
+      })
+    },
     showDetail(data) {
+      this.$http('getApplyDetail', {
+        applyId: data.applyId,
+        type: data.applyDetailType,
+      }).then((res) => {
+        if (res.data) {
+          res.data.fileList.map((item) => {
+            item.fileSize = unitSetUp(item.fileSize)
+          })
+          this.detailData = res.data
+        }
+      })
       this.detailDialog = true
-
       console.log(data)
     },
     downFile(data) {
-      this.$http('createToken', {
-        path: data.filePath,
+      this.$http('download', {
+        path: '/' + data.fileName,
         fileName: data.fileName,
-        type: 2,
+        fileId: data.fileId,
       }).then((res) => {
-        window.open(window.urlHead + res.data)
+        var a = document.createElement('a')
+        var t = new Blob(res)
+        a.href = URL.createObjectURL(t)
+        a.download = data.fileName
+        a.click()
       })
     },
     clickOnAgree(data) {
@@ -388,6 +421,7 @@ export default {
             color: #f03e3e;
           }
           .download {
+            margin-left: 8px;
             text-decoration: underline;
             cursor: pointer;
           }
@@ -402,13 +436,18 @@ export default {
     }
     .messageBox:hover {
       background: #f8f9fa;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+      // border: none;
+      // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
     }
   }
 }
 
 .el-divider--horizontal {
   margin: 14px 0px;
+}
+.contentBox {
+  min-height: 200px;
+  position: relative;
+  left: 40px;
 }
 </style>

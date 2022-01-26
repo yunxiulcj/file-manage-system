@@ -28,7 +28,7 @@
         <el-form-item>
           <el-input
             v-model="tableConfig.condition.searchStr"
-            placeholder="请输入搜索内容"
+            placeholder="请输入工单号"
             clear
           ></el-input>
         </el-form-item>
@@ -61,10 +61,7 @@
       ></table-temp>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="MultiFileDialog = false">
-          取 消
-        </el-button>
-        <el-button size="small" type="primary" @click="MultiFileDialog = false">
-          确 定
+          关 闭
         </el-button>
       </span>
     </el-dialog>
@@ -74,6 +71,7 @@
 import pageFrame from '../../components/pageFrame.vue'
 import tableTemp from '../../components/table-temp.vue'
 import moment from 'moment'
+import { unitSetUp } from '../../utils/obj-operation'
 export default {
   name: 'myApplication',
   components: { pageFrame, tableTemp },
@@ -139,6 +137,10 @@ export default {
           label: '审批拒绝',
           value: '5',
         },
+        {
+          label: '传输异常',
+          value: '6',
+        },
       ],
       approvalData: {
         file: [],
@@ -175,13 +177,13 @@ export default {
             prop: 'fileName',
             label: '文件名',
             style: (row) => {
-              return row.isMultiFile
+              return row.multiFile
                 ? { color: '#1890ff', cursor: 'pointer' }
                 : { color: 'none' }
             },
             click: (row) => {
-              if (row.isMultiFile) {
-                this.$set(this.MultiFileConfig, 'tableData', row.fileList)
+              if (row.multiFile) {
+                this.$set(this.MultiFileConfig, 'tableData', row.attachmentList)
                 this.MultiFileDialog = true
               }
             },
@@ -402,6 +404,9 @@ export default {
           {
             prop: 'fileSize',
             label: '文件大小',
+            formatter: (row) => {
+              return unitSetUp(row.fileSize)
+            },
           },
         ],
       },

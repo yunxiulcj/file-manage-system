@@ -82,8 +82,8 @@ export default {
       refleshLoading: false,
       loading: false,
       loginForm: {
-        username: 'liucanjian',
-        password: 'lcj@292837',
+        username: '',
+        password: '',
         verificationCode: '',
         rememberPassword: false,
       },
@@ -101,7 +101,8 @@ export default {
   },
   created() {
     this.loginForm.username = localStorage.getItem('username') || ''
-    if (localStorage.getItem('rememberPassword')) {
+    let isRemember = JSON.parse(localStorage.getItem('rememberPassword'))
+    if (isRemember) {
       this.loginForm.password = localStorage.getItem('pwdToken') || ''
       this.loginForm.rememberPassword = true
     } else {
@@ -122,10 +123,13 @@ export default {
             .then(
               (res) => {
                 let data = res.data
-                localStorage.setItem('username', this.loginForm.username)
+                localStorage.setItem('username', data.userId)
                 localStorage.setItem('pwdToken', data.pwdToken)
                 localStorage.setItem('adminRole', data.adminRole)
-                localStorage.setItem('menuList', data.menuList)
+                localStorage.setItem(
+                  'menuList',
+                  JSON.stringify(data.showMenuListId)
+                )
                 localStorage.setItem(
                   'rememberPassword',
                   this.loginForm.rememberPassword
