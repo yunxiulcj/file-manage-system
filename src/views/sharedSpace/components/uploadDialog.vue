@@ -18,6 +18,9 @@
           文件上传
         </div>
       </template>
+      <div style="margin-bottom: 5px; font-size: 13px">
+        请选择路径（再次点击选中路径取消选中）
+      </div>
       <div class="fileTreeWrap">
         <el-tree
           style="width: 300px"
@@ -31,6 +34,7 @@
         >
           <span class="nodeItem" slot-scope="{ node }">
             <span style="font-size: 13px" slot="reference">
+              <i class="iconfont icon-filePool" style="margin-right: 2px"></i>
               {{ node.label }}
             </span>
           </span>
@@ -144,7 +148,6 @@ export default {
       })
     },
     nodeClick(node) {
-      console.log(this.$refs.tree.getCurrentKey)
       if (this.targetPath != node.path) {
         this.targetPath = node.path
       } else {
@@ -177,9 +180,13 @@ export default {
             if (obj.data.errCode == 0) {
               this.$set(this.fileList[fileIndex], 'status', 'success')
               this.$set(this.fileList[fileIndex], 'loading', false)
+              this.$message.success(
+                file.name + '上传到' + this.targetPath + '路径成功'
+              )
             } else {
               this.$set(this.fileList[fileIndex], 'status', 'error')
               this.$set(this.fileList[fileIndex], 'loading', false)
+              this.$message.warning(file.name + '：' + obj.data.errMsg)
             }
           })
       })

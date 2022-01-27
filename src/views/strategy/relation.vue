@@ -54,7 +54,12 @@
           <el-button type="primary" size="small" @click="setSuperior(tempDn)">
             设置上级
           </el-button>
-          <el-button type="warning" size="small" @click="exported">
+          <el-button
+            type="warning"
+            size="small"
+            :loading="exportLoading"
+            @click="exported"
+          >
             导出Excel
           </el-button>
         </div>
@@ -213,6 +218,7 @@ export default {
           },
         ],
       },
+      exportLoading: false,
     }
   },
   created() {},
@@ -266,29 +272,28 @@ export default {
       }
     },
     exported() {
-      this.$http('exportDepartmentUserList', { dn: this.tempDn }).then(
-        (res) => {
+      this.exportLoading = true
+      this.$http('exportDepartmentUserList', { dn: this.tempDn })
+        .then((res) => {
           this.$message.success(res.errMsg)
           window.open(window.urlHead + res.data)
-        }
-      )
+        })
+        .finally(() => {
+          this.exportLoading = false
+        })
     },
     confirmSuperior() {
-      if (this.tempSuperior.length > 0) {
-        this.$http('setDepartmentSuperior', {
-          dn: this.tempDn,
-          userList: this.tempSuperior,
+      this.$http('setDepartmentSuperior', {
+        dn: this.tempDn,
+        userList: this.tempSuperior,
+      })
+        .then((res) => {
+          this.$message.success(res.errMsg)
         })
-          .then((res) => {
-            this.$message.success(res.errMsg)
-          })
-          .finally(() => {
-            this.setSuperiorDialog = false
-            this.getData(this.tempDn)
-          })
-      } else {
-        this.$message.warning('请选择至少一个为上级')
-      }
+        .finally(() => {
+          this.setSuperiorDialog = false
+          this.getData(this.tempDn)
+        })
     },
     delSuperior(val) {
       this.tempSuperior = this.tempSuperior.filter((item) => {
@@ -333,6 +338,7 @@ export default {
         })
         resolve(temp)
         if (node.level == 0) {
+          this.tempDn = res.data[0].dn
           this.getData(res.data[0].dn)
         }
       })

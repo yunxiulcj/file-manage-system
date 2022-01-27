@@ -15,23 +15,25 @@
             label-position="right"
             size="small"
             style="width: 95%"
+            :model="applyForm"
+            :rules="formRule"
           >
             <el-form-item label="申请人">
               <div class="applyUser">{{ applyForm.applyUser }}</div>
             </el-form-item>
-            <el-form-item label="申请人邮箱">
+            <el-form-item label="申请人邮箱" prop="applyEmail">
               <el-input
                 v-model="applyForm.applyEmail"
                 placeholder="请输入邮箱"
               ></el-input>
             </el-form-item>
-            <el-form-item label="主题">
+            <el-form-item label="主题" prop="applyTheme">
               <el-input
                 v-model="applyForm.applyTheme"
                 placeholder="请输入主题"
               ></el-input>
             </el-form-item>
-            <el-form-item label="描述">
+            <el-form-item label="描述" prop="describe">
               <el-input
                 type="textarea"
                 :rows="3"
@@ -63,16 +65,22 @@
             <el-form-item label="审批人">
               <div class="member">
                 <div class="content">
-                  <template v-for="user in applyForm.approvalUserList">
-                    <div :key="user">
-                      <div class="memberBox">
-                        <div class="iconBox">
-                          <i class="iconfont icon-yonghutianchong"></i>
-                        </div>
-                        <span>{{ user }}</span>
+                  <div v-for="user in applyForm.approvalUserList" :key="user">
+                    <el-tooltip placement="top">
+                      <div slot="content">
+                        {{ user }}
                       </div>
-                    </div>
-                  </template>
+                      <div class="contentBox">
+                        <div class="memberBox">
+                          <div class="iconBox">
+                            <i class="iconfont icon-yonghutianchong"></i>
+                          </div>
+                          <span class="userBox">{{ user }}</span>
+                        </div>
+                        <div class="interval"></div>
+                      </div>
+                    </el-tooltip>
+                  </div>
                 </div>
               </div>
             </el-form-item>
@@ -118,6 +126,7 @@
             <el-button
               type="primary"
               size="small"
+              :loading="loading"
               @click="addDownloadApply(applyForm)"
             >
               确定
@@ -177,16 +186,15 @@
         <i class="el-icon-success"></i>
         <div class="label">文件下载申请成功</div>
         <div>
-          点击调度编号
+          点击审批单号
           <span class="applyId" @click="jumpDetail(tipInfo)">
-            <!-- {{ tipInfo }} -->
-            dsfsdfsdfsd214235435
+            {{ tipInfo }}
           </span>
-          查看调度结果
+          查看审批详情
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="tipsDialog = false" size="small">关 闭</el-button>
+        <el-button @click="goBack" size="small">关 闭</el-button>
       </span>
     </el-dialog>
   </div>
@@ -200,9 +208,9 @@ import { unitSetUp } from '../utils/obj-operation'
 export default {
   name: 'newOrEditApply',
   components: { pageFrame, tableTemp, breadCrumb },
-  props: [],
   data() {
     return {
+      loading: false,
       tipInfo: '',
       tipsDialog: false,
       nowPath: '/',
@@ -221,6 +229,15 @@ export default {
         downloadCount: 1,
         fileList: [],
         approvalUserList: [],
+      },
+      formRule: {
+        applyEmail: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+        ],
+        applyTheme: [
+          { required: true, message: '请输入主题', trigger: 'blur' },
+        ],
+        describe: [{ required: true, message: '请输入描述', trigger: 'blur' }],
       },
       tableConfig: {
         tableData: [],
@@ -267,15 +284,14 @@ export default {
       rootPath: '',
     }
   },
-  created() {
+  created() {},
+  mounted() {
     let data = this.$route.params
     this.applyTitle = data.type == 0 ? '新建下载申请' : '编辑下载申请'
     this.$nextTick(() => {
-      this.applyForm = this.initForm(data.data)
+      this.applyForm = data.data
       this.type = data.type
     })
-  },
-  mounted() {
     this.getCurrentApprovalUser()
   },
   methods: {
@@ -334,28 +350,36 @@ export default {
       this.getData('/')
     },
     addDownloadApply(data) {
-      this.tipsDialog = true
-      console.log(data)
-      // if (this.type == 0) {
-      //   this.$http('createApply', data)
-      //     .then((res) => {
-      //       this.tipsDialog = true
-      //       this.tipInfo = res.data
-      //       // this.goBack()
-      //     })
-      //     .finally(() => {
-      //       this.showNewApply = false
-      //     })
-      // } else {
-      //   this.$http('updateApply', data)
-      //     .then((res) => {
-      //       this.$message.success(res.errMsg)
-      //       this.goBack()
-      //     })
-      //     .finally(() => {
-      //       this.showNewApply = false
-      //     })
-      // }
+      this.$refs['applyForm'].validate((valid) => {
+        if (valid) {
+          if (this.applyForm.fileList.length > 0) {
+            this.loading = true
+            if (this.type == 0) {
+              this.$http('createApply', data)
+                .then((res) => {
+                  this.tipsDialog = true
+                  this.tipInfo = res.data
+                })
+                .finally(() => {
+                  this.loading = false
+                  this.showNewApply = false
+                })
+            } else {
+              this.$http('updateApply', data)
+                .then((res) => {
+                  this.$message.success(res.errMsg)
+                  this.goBack()
+                })
+                .finally(() => {
+                  this.loading = false
+                  this.showNewApply = false
+                })
+            }
+          } else {
+            this.$message.warning('请选择至少一个文件')
+          }
+        }
+      })
     },
     handleSelectionChange(data) {
       this.selectFiles = data.filter((item) => {
@@ -363,9 +387,6 @@ export default {
           return item
         }
       })
-    },
-    initForm(data) {
-      return data
     },
     getCurrentApprovalUser() {
       this.$http('getCurrentApprovalUser').then((res) => {
@@ -467,34 +488,51 @@ export default {
         flex-direction: column;
         align-items: center;
         position: absolute;
-        left: 20px;
+        left: 10px;
         .content {
           display: flex;
           flex-direction: row;
-          .memberBox {
+          flex-wrap: wrap;
+          .contentBox {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-right: 30px;
-            justify-content: center;
-            .iconBox {
-              background: #bdccea;
-              width: 40px;
-              height: 40px;
-              border-radius: 5px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              text-align: center;
-              i {
-                margin-left: 5px;
-                font-size: 30px;
-                color: #fcfcfc;
-              }
+            flex-direction: row;
+            .interval {
+              width: 1px;
+              margin: 0px 5px;
+              height: 62px;
+              background: #e9ecef;
             }
-            span {
-              color: #343a40;
-              font-size: 13px;
+            .memberBox {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              .iconBox {
+                background: #bdccea;
+                width: 40px;
+                height: 40px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                i {
+                  margin-left: 5px;
+                  font-size: 30px;
+                  color: #fcfcfc;
+                }
+              }
+              .userBox {
+                width: 65px;
+                text-align: center;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+              }
+              span {
+                color: #343a40;
+                font-size: 13px;
+              }
             }
           }
         }

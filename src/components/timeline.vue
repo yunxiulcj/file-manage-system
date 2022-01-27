@@ -57,7 +57,11 @@
       v-for="(item, index) in data.processList"
       :key="index"
       :type="
-        item.state == 3 ? 'primary' : item.state == 4 ? 'success' : 'danger'
+        item.state == 3 || item.state == 2
+          ? 'primary'
+          : item.state == 4
+          ? 'success'
+          : 'danger'
       "
     >
       <span class="labelBox" v-if="index == 0">审批中</span>

@@ -13,7 +13,7 @@
           class="depItem"
           ref="depItem"
           v-for="(item, index) in depList"
-          :key="item.name"
+          :key="item.dn"
         >
           <i
             class="el-icon-circle-plus-outline"

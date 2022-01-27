@@ -380,6 +380,11 @@ export default {
           noSuperior: false,
           approvalType: 1,
         }
+      } else {
+        data.member = {
+          userList: [],
+          approvalType: 1,
+        }
       }
       this.editIndex = index
       this.editOrNew = 1

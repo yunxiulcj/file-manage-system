@@ -122,7 +122,7 @@ export default {
             prop: 'downloadCount',
             label: '下载次数',
             formatter: (row) => {
-              return row.countUnlimited ? '无限' : 'row.downloadCount'
+              return row.countUnlimited ? '无限' : row.downloadCount
             },
           },
           {

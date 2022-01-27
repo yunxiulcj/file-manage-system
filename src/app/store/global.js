@@ -1,6 +1,8 @@
 const state = {
   symSetting: {},
   capacity: {},
+  downloadForm: {},
+  approvalForm: {},
 }
 const getters = {
   symSetting: (state) => {
@@ -9,6 +11,12 @@ const getters = {
   capacity: (state) => {
     return state.capacity
   },
+  downloadForm: (state) => {
+    return state.downloadForm
+  },
+  approvalForm: (state) => {
+    return state.approvalForm
+  },
 }
 const mutations = {
   SET_SYM_SETTING(state, symSetting) {
@@ -16,6 +24,13 @@ const mutations = {
   },
   SET_CAPACITY(state, capacity) {
     state.capacity = capacity
+  },
+  SET_DOWNLOADFORM(state, downloadForm) {
+    console.log('store初始化下载表单', state, downloadForm)
+    state.capacity = downloadForm
+  },
+  SET_APPROVALFORM(state, approvalForm) {
+    state.approvalForm = approvalForm
   },
 }
 const actions = {}

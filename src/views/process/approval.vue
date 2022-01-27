@@ -34,7 +34,13 @@
                 :content="'文件路径：' + item.filePath"
               >
                 <div class="fileBox">
-                  <div class="icon"></div>
+                  <div
+                    class="icon"
+                    :style="{
+                      background: 'url(' + iconPath + ')',
+                      backgroundSize: '100% 100%',
+                    }"
+                  ></div>
                   <div class="fileInfo">
                     <div class="fileName">{{ item.fileName }}</div>
                     <div class="fileSize">{{ item.fileSize }}</div>
@@ -121,6 +127,7 @@ export default {
   components: { pageFrame, articleSteps, timeline },
   data() {
     return {
+      iconPath: require('../../assets/img/page/file.png'),
       userName: '',
       canEdit: false,
       agreeOrRefuseDialog: false,

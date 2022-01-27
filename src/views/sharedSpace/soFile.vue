@@ -3,7 +3,7 @@
     <div class="contentBox">
       <header>
         <div class="headLeft">
-          <el-button size="mini" type="primary" @click="addFolderDialog = true">
+          <el-button size="mini" type="primary" @click="createFolder">
             <i class="iconfont icon-xinjianwenjian"></i>
             新建文件夹
           </el-button>
@@ -72,7 +72,7 @@
             <div class="fileWrap">
               <div
                 class="fileIcon"
-                v-if="scope.row.dir"
+                v-show="scope.row.dir"
                 :style="{
                   background: 'url(' + iconPath.folder + ')',
                   backgroundSize: '100% 100%',
@@ -80,7 +80,7 @@
               ></div>
               <div
                 class="fileIcon"
-                v-else
+                v-show="!scope.row.dir"
                 :style="{
                   background: 'url(' + iconPath.file + ')',
                   backgroundSize: '100% 100%',
@@ -151,15 +151,15 @@
         </table-temp>
       </div>
       <div class="isIconWrap" v-else>
-        <el-checkbox
+        <!-- <el-checkbox
           v-model="checkAll"
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
         >
           全选
-        </el-checkbox>
+        </el-checkbox> -->
         <el-divider></el-divider>
-        <div class="fileWrap">
+        <div class="fileWrap" v-if="tableConfig.tableData.length > 0">
           <template v-for="(item, index) in tableConfig.tableData">
             <el-tooltip
               :key="index"
@@ -175,18 +175,34 @@
               <div
                 class="fileBox"
                 :class="{ checked: item.checked }"
-                @click="selectedFile(item)"
+                @click="!item.dir ? selectedFile(item) : getData(item.path)"
               >
                 <i class="el-icon-success" v-if="item.checked"></i>
-                <div class="fileIcon"></div>
+                <div
+                  class="fileIcon"
+                  v-show="item.dir"
+                  :style="{
+                    background: 'url(' + iconPath.folder + ')',
+                    backgroundSize: '100% 100%',
+                  }"
+                ></div>
+                <div
+                  class="fileIcon"
+                  v-show="!item.dir"
+                  :style="{
+                    background: 'url(' + iconPath.file + ')',
+                    backgroundSize: '100% 100%',
+                  }"
+                ></div>
                 <div class="fileName">{{ item.name }}</div>
               </div>
             </el-tooltip>
           </template>
         </div>
+        <el-empty v-else description="暂无数据"></el-empty>
       </div>
     </div>
-    <el-dialog :visible.sync="addFolderDialog" width="30%">
+    <el-dialog :visible.sync="addFolderDialog" width="500px">
       <template slot="title">
         <div
           style="
@@ -199,7 +215,27 @@
           新建文件夹
         </div>
       </template>
-      <span>文件夹名称</span>
+      <div style="margin-bottom: 5px; font-size: 13px">请选择路径</div>
+      <div class="fileTreeWrap">
+        <el-tree
+          style="width: 300px"
+          ref="tree"
+          :props="props"
+          :load="loadNode"
+          node-key="label"
+          lazy
+          empty-text="暂无数据"
+          @node-click="nodeClick"
+        >
+          <span class="nodeItem" slot-scope="{ node }">
+            <span style="font-size: 13px" slot="reference">
+              <i class="iconfont icon-filePool" style="margin-right: 2px"></i>
+              {{ node.label }}
+            </span>
+          </span>
+        </el-tree>
+      </div>
+      <div class="pathBox">目标路径：{{ targetPath }}</div>
       <el-input
         v-model="folderName"
         size="small"
@@ -216,6 +252,7 @@
       </span>
     </el-dialog>
     <upload-dialog
+      v-if="uploadDialog"
       v-model="uploadDialog"
       @goGetData="goGetData"
     ></upload-dialog>
@@ -242,6 +279,10 @@ export default {
       tempDelId: '',
       folderName: '',
       selectedList: [],
+      props: {
+        label: 'name',
+        isLeaf: 'leaf',
+      },
       isIndeterminate: true,
       uploadDialog: false,
       addFolderDialog: false,
@@ -272,9 +313,9 @@ export default {
           {
             prop: 'size',
             label: '大小',
-            formatter: (row) => {
-              return row.dir ? '-' : unitSetUp(row.size)
-            },
+            // formatter: (row) => {
+            //   return row.dir ? '-' : unitSetUp(row.size)
+            // },
           },
           {
             prop: 'lastModified',
@@ -283,6 +324,9 @@ export default {
         ],
       },
       selectData: [],
+      targetPath: '/',
+      node: '',
+      resolve: '',
     }
   },
   created() {},
@@ -304,6 +348,38 @@ export default {
     },
   },
   methods: {
+    nodeClick(node) {
+      if (this.targetPath != node.path) {
+        this.targetPath = node.path
+      } else {
+        this.targetPath = '/'
+      }
+    },
+    loadNode(node, resolve) {
+      let path = node.level == 0 ? '' : node.data.path
+      this.$http('getFileList', { path: path }).then((res) => {
+        let temp = []
+        res.data.map((item) => {
+          if (item.dir) {
+            temp.push({
+              name: item.name,
+              path: item.path,
+              leaf: !item.dir,
+            })
+          }
+        })
+        resolve(temp)
+        this.node = node
+        this.resolve = resolve
+      })
+    },
+    createFolder() {
+      this.folderName = ''
+      if (this.node && this.resolve) {
+        this.loadNode(this.node, this.resolve)
+      }
+      this.addFolderDialog = true
+    },
     createApply(data) {
       let fileList = data.map((item) => {
         return {
@@ -324,6 +400,7 @@ export default {
         fileList: fileList,
         approvalUserList: [],
       }
+      this.$store.commit('SET_DOWNLOADFORM', obj)
       this.$router.push({
         name: 'newOrEditApply',
         params: { type: 0, data: obj },
@@ -333,7 +410,7 @@ export default {
       if (this.folderName) {
         this.$http('createDirectory', {
           fileName: this.folderName,
-          path: this.nowPath,
+          path: this.targetPath,
         })
           .then((res) => {
             this.$message.success(res.errMsg)
@@ -361,6 +438,9 @@ export default {
       }
       this.$http('getFileList', { path: path })
         .then((res) => {
+          res.data.map((item) => {
+            item.size = unitSetUp(item.size)
+          })
           this.tableConfig.tableData = res.data
           this.fullData = res.data
           this.nowPath = path
@@ -544,7 +624,7 @@ export default {
         display: grid;
         grid-template-columns: repeat(auto-fill, 116px);
         grid-template-rows: repeat(auto-fill, 116px);
-        grid-gap: 15px 8px;
+        grid-gap: 4px 2px;
         .fileBox {
           width: 115px;
           height: 115px;
@@ -612,5 +692,29 @@ export default {
       margin: 5px 0px;
     }
   }
+}
+.fileTreeWrap {
+  width: 420px;
+  padding: 20px;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 10px #ced4da inset;
+  border-radius: 5px;
+  .el-tree {
+    width: 470px;
+    max-height: 250px;
+    overflow: auto;
+    .treeNode {
+      i {
+        margin-right: 5px;
+      }
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+.pathBox {
+  font-size: 12px;
+  font-weight: bolder;
 }
 </style>

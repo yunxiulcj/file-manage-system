@@ -48,45 +48,47 @@
           </div>
           <div class="approval">
             <div class="label">审批人</div>
-            <div
-              class="approvalWrap"
-              v-for="(approval, index1) in item.approvalList"
-              :key="index1"
-            >
-              <div class="superior" v-if="approval.type == 1">
-                <div class="approvalBox">
-                  <div class="iconBox">
-                    <i class="iconfont icon-yonghutianchong"></i>
-                  </div>
-                  <span>{{ levelObj[approval.superior.level] }}</span>
-                  <span>
-                    （{{ approvalMode[approval.superior.approvalType] }}）
-                  </span>
-                </div>
-              </div>
-              <div class="member" v-if="approval.type == 2">
-                <div class="content">
-                  <template v-for="user in approval.member.userList">
-                    <div :key="user.index">
-                      <div class="memberBox">
-                        <div class="iconBox">
-                          <i class="iconfont icon-yonghutianchong"></i>
-                        </div>
-                        <span>{{ user.userId }}</span>
-                      </div>
+            <div class="approvalRound">
+              <div
+                class="approvalWrap"
+                v-for="(approval, index1) in item.approvalList"
+                :key="index1"
+              >
+                <div class="superior" v-if="approval.type == 1">
+                  <div class="approvalBox">
+                    <div class="iconBox">
+                      <i class="iconfont icon-yonghutianchong"></i>
                     </div>
-                  </template>
-                </div>
-                <div class="memType">
-                  （{{ approvalMode[approval.member.approvalType] }}）
-                </div>
-              </div>
-              <div class="iAm" v-if="approval.type == 3">
-                <div class="approvalBox">
-                  <div class="iconBox">
-                    <i class="iconfont icon-yonghutianchong"></i>
+                    <span>{{ levelObj[approval.superior.level] }}</span>
+                    <span>
+                      （{{ approvalMode[approval.superior.approvalType] }}）
+                    </span>
                   </div>
-                  <span>申请人本人</span>
+                </div>
+                <div class="member" v-if="approval.type == 2">
+                  <div class="content">
+                    <template v-for="user in approval.member.userList">
+                      <div :key="user.index">
+                        <div class="memberBox">
+                          <div class="iconBox">
+                            <i class="iconfont icon-yonghutianchong"></i>
+                          </div>
+                          <span>{{ user.userId }}</span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="memType">
+                    （{{ approvalMode[approval.member.approvalType] }}）
+                  </div>
+                </div>
+                <div class="iAm" v-if="approval.type == 3">
+                  <div class="approvalBox">
+                    <div class="iconBox">
+                      <i class="iconfont icon-yonghutianchong"></i>
+                    </div>
+                    <span>申请人本人</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -209,118 +211,110 @@ export default {
         display: flex;
         flex-direction: row;
         .label {
-          width: 50px;
+          min-width: 50px;
           color: #868e96;
-          margin-right: 35px;
+          margin-right: 25px;
         }
-        .superior {
-          .approvalBox {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0px 10px;
-            .iconBox {
-              background: #bdccea;
-              width: 40px;
-              height: 40px;
-              border-radius: 5px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              margin-bottom: 5px;
-              i {
-                font-size: 30px;
-                color: #fcfcfc;
-              }
-            }
-            span {
-              color: #343a40;
-              font-size: 12px;
-              margin: 1px 0px;
-            }
-          }
-        }
-        .member {
+        .approvalRound {
           display: flex;
-          flex-direction: column;
-          align-items: center;
-          .content {
+          flex-direction: row;
+          flex-wrap: wrap;
+          .approvalWrap {
             display: flex;
             flex-direction: row;
-            .memberBox {
+            .superior {
+              .approvalBox {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0px 10px;
+                .iconBox {
+                  background: #bdccea;
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 5px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  margin-bottom: 5px;
+                  i {
+                    font-size: 30px;
+                    color: #fcfcfc;
+                  }
+                }
+                span {
+                  color: #343a40;
+                  font-size: 12px;
+                  margin: 1px 0px;
+                }
+              }
+            }
+            .member {
               display: flex;
               flex-direction: column;
               align-items: center;
-              margin-right: 30px;
-              .iconBox {
-                background: #bdccea;
-                width: 40px;
-                height: 40px;
-                border-radius: 5px;
+              .content {
                 display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-bottom: 5px;
-                i {
-                  font-size: 30px;
-                  color: #fcfcfc;
+                flex-direction: row;
+                .memberBox {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  margin-right: 30px;
+                  .iconBox {
+                    background: #bdccea;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 5px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 5px;
+                    i {
+                      font-size: 30px;
+                      color: #fcfcfc;
+                    }
+                  }
+                  span {
+                    color: #343a40;
+                    font-size: 13px;
+                  }
                 }
               }
-              span {
+              .memType {
+                position: relative;
+                left: -15px;
                 color: #343a40;
-                font-size: 13px;
+                font-size: 12px;
+              }
+            }
+            .iAm {
+              .approvalBox {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                .iconBox {
+                  background: #bdccea;
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 5px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  margin-bottom: 5px;
+                  i {
+                    font-size: 30px;
+                    color: #fcfcfc;
+                  }
+                }
+                span {
+                  color: #343a40;
+                  font-size: 12px;
+                  margin: 1px 0px;
+                }
               }
             }
           }
-          .memType {
-            position: relative;
-            left: -15px;
-            color: #343a40;
-            font-size: 12px;
-          }
-        }
-        .iAm {
-          .approvalBox {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            .iconBox {
-              background: #bdccea;
-              width: 40px;
-              height: 40px;
-              border-radius: 5px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              margin-bottom: 5px;
-              i {
-                font-size: 30px;
-                color: #fcfcfc;
-              }
-            }
-            span {
-              color: #343a40;
-              font-size: 12px;
-              margin: 1px 0px;
-            }
-          }
-        }
-      }
-      .cc {
-        display: flex;
-        flex-direction: row;
-        .label {
-          width: 50px;
-          color: #868e96;
-          margin-right: 35px;
-        }
-        .content {
-          display: flex;
-          flex-direction: row;
-          color: #343a40;
-          // .ccBox {
-          //   margin-right: 30px;
-          // }
         }
       }
     }
