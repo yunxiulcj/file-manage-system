@@ -217,8 +217,8 @@ export default {
       }
     },
     delFile(val) {
-      let pathList = val.map((item) => {
-        return item.filePath
+      let IdList = val.map((item) => {
+        return item.fileId
       })
       this.$confirm('删除后不可恢复，是否删除所选文件？', '提示', {
         confirmButtonText: '确认',
@@ -226,9 +226,10 @@ export default {
         type: 'warning',
         center: true,
       }).then(() => {
-        this.$http('deteleTransferCenterFile', { fileIdList: pathList }).then(
+        this.$http('deteleTransferCenterFile', { fileIdList: IdList }).then(
           (res) => {
             this.$message.success(res.errMsg)
+            this.getData()
           }
         )
       })

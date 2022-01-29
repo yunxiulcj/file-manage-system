@@ -110,7 +110,12 @@
         <el-button size="small" @click="agreeOrRefuseDialog = false">
           取 消
         </el-button>
-        <el-button size="small" type="primary" @click="confirmEdit">
+        <el-button
+          size="small"
+          type="primary"
+          @click="confirmEdit"
+          :loading="loading"
+        >
           确 定
         </el-button>
       </span>
@@ -127,6 +132,7 @@ export default {
   components: { pageFrame, articleSteps, timeline },
   data() {
     return {
+      loading: false,
       iconPath: require('../../assets/img/page/file.png'),
       userName: '',
       canEdit: false,
@@ -176,7 +182,7 @@ export default {
     }
     this.getData(this.tempData)
     this.accountType = this.tempData.accountType
-    this.approvalState = this.tempData.approvalState
+    // this.approvalState = this.tempData.approvalState
   },
   mounted() {},
   methods: {
@@ -189,7 +195,10 @@ export default {
         type: data.accountType,
       }).then((res) => {
         if (res.data) {
-          this.approvalState = res.data.state
+          this.$nextTick(() => {
+            this.approvalState = res.data.state
+          })
+
           res.data.fileList.map((file) => {
             file['fileSize'] = unitSetUp(file.fileSize)
           })
@@ -203,6 +212,7 @@ export default {
       this.editForm.downloadCount = data.downloadCount
       this.editForm.downloadExpiredDay = data.downloadDay
       this.canEdit = data.canEdit
+
       this.agreeOrRefuseDialog = true
     },
     refuse(data) {
@@ -214,12 +224,17 @@ export default {
       this.agreeOrRefuseDialog = true
     },
     confirmEdit() {
+      this.loading = true
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
-      this.$http(url, this.editForm).then((res) => {
-        this.$message.success(res.errMsg)
-        this.agreeOrRefuseDialog = false
-        this.getData(this.tempData)
-      })
+      this.$http(url, this.editForm)
+        .then((res) => {
+          this.$message.success(res.errMsg)
+          this.agreeOrRefuseDialog = false
+          this.getData(this.tempData)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
   },
 }

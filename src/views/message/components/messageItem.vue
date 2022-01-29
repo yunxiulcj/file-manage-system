@@ -82,6 +82,13 @@
             v-for="file in item.attachmentList"
             :key="file.fileName"
           >
+            <div
+              class="fileIcon"
+              :style="{
+                background: 'url(' + iconPath + ')',
+                backgroundSize: '100% 100%',
+              }"
+            ></div>
             <div class="fileBox">
               <div class="fileName">{{ file.fileName }}</div>
               <div class="fileInfo">
@@ -179,6 +186,7 @@ export default {
   components: { timeline },
   data() {
     return {
+      iconPath: require('../../../assets/img/page/file.png'),
       canEdit: false,
       agreeOrRefuseDialog: false,
       editForm: {

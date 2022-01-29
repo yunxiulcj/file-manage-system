@@ -173,7 +173,6 @@ export default {
               })
             })
             this.messageList = res.data
-            console.log(this.messageList)
           }
         })
         .finally(() => {

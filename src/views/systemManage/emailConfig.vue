@@ -12,7 +12,7 @@
           style="width: 420px"
         >
           <div style="height: 60px"></div>
-          <el-form-item label="SMTP服务器" prop="emailSerivce">
+          <el-form-item label="SMTP服务器" prop="emailService">
             <el-input
               v-model="formObj.emailService"
               placeholder="请输入SMTP服务器"
@@ -56,8 +56,10 @@
             >
               保存
             </el-button>
-            <el-button type="danger">重置</el-button>
-            <el-button type="info">测试邮件</el-button>
+            <el-button type="danger" @click="resetForm">重置</el-button>
+            <el-button type="info" @click="testEmail" :loading="testLoading">
+              测试邮件
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -74,6 +76,7 @@ export default {
     return {
       loading: false,
       saveLoading: false,
+      testLoading: false,
       inputType: 'password',
       inputIcon: 'iconfont icon-show',
       formObj: {
@@ -101,6 +104,24 @@ export default {
     this.getData()
   },
   methods: {
+    testEmail() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.testLoading = true
+          this.$http('testEmail', this.formObj)
+            .then((res) => {
+              this.$message.success(res.errMsg)
+            })
+            .finally(() => {
+              this.testLoading = false
+            })
+        }
+      })
+    },
+    resetForm() {
+      this.$refs['form'].resetFields()
+      this.formObj.ssllogin = false
+    },
     getData() {
       this.loading = true
       this.$http('getSetting', { settingId: 3 })

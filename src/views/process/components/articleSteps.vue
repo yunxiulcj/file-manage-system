@@ -67,20 +67,24 @@ export default {
       tempSteps: [],
     }
   },
-  created() {
-    this.initSteps()
-    console.log(this.approvalState)
+  watch: {
+    approvalState: {
+      handler(val) {
+        this.initSteps(val)
+      },
+    },
   },
+  created() {},
   methods: {
-    initSteps() {
-      for (let i = 0; i <= this.approvalState; i++) {
-        if (this.approvalState != 1 && i == 1) {
+    initSteps(val) {
+      for (let i = 0; i <= val; i++) {
+        if (val != 1 && i == 1) {
           continue
         }
-        if (this.approvalState != 2 && i == 2) {
+        if (val != 2 && i == 2) {
           continue
         }
-        if (this.approvalState != 4 && i == 4) {
+        if (val != 4 && i == 4) {
           continue
         }
         this.tempSteps.push(this.stepList[i])

@@ -61,14 +61,22 @@
         </div>
         <div class="memberWrap">
           <div class="content" v-if="formObj.member.userList.length > 0">
-            <template v-for="user in formObj.member.userList">
-              <div class="memberBox" :key="user.index">
-                <div class="iconBox">
-                  <i class="iconfont icon-yonghutianchong"></i>
+            <div
+              v-for="(user, userIndex) in formObj.member.userList"
+              :key="user.index"
+              class="userBox"
+            >
+              <el-tooltip placement="top">
+                <div slot="content">{{ user.userId }}</div>
+                <div class="memberBox">
+                  <div class="iconBox">
+                    <i class="el-icon-error" @click="delUser(userIndex)"></i>
+                    <i class="iconfont icon-yonghutianchong"></i>
+                  </div>
+                  <span class="userName">{{ user.userId }}</span>
                 </div>
-                <span>{{ user.userId }}</span>
-              </div>
-            </template>
+              </el-tooltip>
+            </div>
           </div>
           <div class="addBox" @click="addUser">
             <i class="el-icon-plus"></i>
@@ -109,6 +117,7 @@
     </el-dialog>
     <new-cc
       v-model="showAddMember"
+      ref="newCC"
       :userList="userList"
       @selectUser="selectUser"
     ></new-cc>
@@ -122,12 +131,26 @@ export default {
   name: 'newApproval',
   props: {
     value: Boolean,
-    formObj: Object,
     editOrNew: Number,
+    userType: Number,
+    info: Object,
   },
   components: { newCc },
   data() {
     return {
+      formObj: {
+        superior: {
+          levelType: 1,
+          level: 1,
+          noSuperior: false,
+          approvalType: 1,
+        },
+        member: {
+          approvalType: 1,
+          userList: [],
+        },
+        type: 1,
+      },
       userList: [],
       type: 'superior',
       showAddMember: false,
@@ -205,11 +228,49 @@ export default {
       },
       immediate: true,
     },
-    'formObj.type'(val) {
-      this.type = val == 1 ? 'superior' : 'member'
+    userType: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.formObj.type = val
+          if (val == 1) {
+            this.formObj.superior = clone(this.info)
+            this.formObj.member = this.formObj.member = {
+              approvalType: 1,
+              userList: [],
+            }
+          } else if (val == 2) {
+            this.formObj.member = clone(this.info)
+            this.formObj.superior = {
+              levelType: 1,
+              level: 1,
+              noSuperior: false,
+              approvalType: 1,
+            }
+          }
+        }
+      },
     },
   },
   methods: {
+    initData() {
+      this.formObj = {
+        superior: {
+          levelType: 1,
+          level: 1,
+          noSuperior: false,
+          approvalType: 1,
+        },
+        member: {
+          approvalType: 1,
+          userList: [],
+        },
+        type: 1,
+      }
+    },
+    delUser(index) {
+      this.formObj.member.userList.splice(index, 1)
+    },
     selectUser(val) {
       this.formObj.member.userList = val.map((item, index) => {
         return { userId: item, index: index }
@@ -220,6 +281,9 @@ export default {
         return item.userId
       })
       this.showAddMember = true
+      this.$nextTick(() => {
+        this.$refs['newCC'].setNodeCheck()
+      })
     },
     typeChange(val) {
       this.type = val == 1 ? 'superior' : 'member'
@@ -262,36 +326,51 @@ export default {
       flex-direction: row;
       flex-wrap: wrap;
       padding-bottom: 10px;
-      .memberBox {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 15px 0px 0px 16px;
-        .iconBox {
-          background: #bdccea;
-          width: 40px;
-          height: 40px;
-          border-radius: 5px;
+      .userBox {
+        .memberBox {
           display: flex;
-          justify-content: center;
+          flex-direction: column;
           align-items: center;
-          margin-bottom: 5px;
-          i {
-            font-size: 30px;
-            color: #fcfcfc;
+          margin: 15px 0px 0px 16px;
+          .iconBox {
+            position: relative;
+            background: #bdccea;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            .iconfont {
+              font-size: 30px;
+              color: #fcfcfc;
+            }
+            .el-icon-error {
+              position: absolute;
+              top: -5px;
+              right: -5px;
+              font-size: 14px;
+              cursor: pointer;
+            }
           }
-        }
-        span {
-          color: #343a40;
-          height: 20px;
-          line-height: 20px;
-          font-size: 13px;
+          .userName {
+            color: #343a40;
+            height: 20px;
+            line-height: 20px;
+            font-size: 13px;
+            width: 65px;
+            text-align: center;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
         }
       }
     }
     .addBox {
       margin: 15px;
-      width: 35px;
+      min-width: 35px;
       height: 35px;
       line-height: 35px;
       border: 1px dotted #ced4da;

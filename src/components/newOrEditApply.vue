@@ -46,7 +46,7 @@
                 <div
                   class="fileBox"
                   v-for="(item, index) in applyForm.fileList"
-                  :key="item.fileName"
+                  :key="item.filePath"
                 >
                   <span class="fileName">{{ item.fileName }}</span>
                   <span class="fileSize">{{ item.size }}</span>
@@ -57,7 +57,7 @@
                   ></el-divider>
                 </div>
               </div>
-              <div class="addFile" @click="getFileList()">
+              <div class="addFile" @click="getFileList">
                 <i class="el-icon-plus"></i>
                 <span>添加文件</span>
               </div>
@@ -90,7 +90,7 @@
           <div class="senior">
             <div class="seniorTitle">高级选项</div>
             <div class="seniorItem">
-              <el-checkbox v-model="applyForm.isPeriodValidity">
+              <el-checkbox v-model="isPeriodValidity">
                 文件下载有效期
               </el-checkbox>
               <div class="seniorContent">
@@ -98,7 +98,7 @@
                 <el-input-number
                   v-model="applyForm.downloadDay"
                   controls-position="right"
-                  :min="1"
+                  :min="0"
                   size="mini"
                   style="width: 100px; margin-left: 25px; margin-right: 10px"
                 ></el-input-number>
@@ -106,15 +106,13 @@
               </div>
             </div>
             <div class="seniorItem">
-              <el-checkbox v-model="applyForm.isDownloads">
-                总下载次数
-              </el-checkbox>
+              <el-checkbox v-model="isDownloads">总下载次数</el-checkbox>
               <div class="seniorContent">
                 文件下载次数
                 <el-input-number
                   v-model="applyForm.downloadCount"
                   controls-position="right"
-                  :min="1"
+                  :min="0"
                   size="mini"
                   style="width: 100px; margin: 0px 10px"
                 ></el-input-number>
@@ -160,7 +158,8 @@
           :config="tableConfig"
           v-loading="tableLoading"
           ref="table"
-          @selection-change="handleSelectionChange"
+          @handleSelect="handleSelect"
+          @handleSelectAll="handleSelectAll"
         >
           <template slot="file" slot-scope="scope">
             <span
@@ -241,7 +240,7 @@ export default {
       },
       tableConfig: {
         tableData: [],
-        maxHeight: '550px',
+        maxHeight: '450px',
         selection: true,
         border: false,
         tableSetting: [
@@ -282,6 +281,8 @@ export default {
       },
       selectFiles: [],
       rootPath: '',
+      tempSelectFile: {},
+      parentPath: '',
     }
   },
   created() {},
@@ -290,6 +291,20 @@ export default {
     this.applyTitle = data.type == 0 ? '新建下载申请' : '编辑下载申请'
     this.$nextTick(() => {
       this.applyForm = data.data
+      this.tempSelectFile = {}
+      if (data.data.fileList && data.data.fileList.length > 0) {
+        data.data.fileList.map((item) => {
+          let parentPath = item.filePath.substring(
+            0,
+            item.filePath.lastIndexOf('/')
+          )
+          if (this.tempSelectFile[parentPath]) {
+            this.tempSelectFile[parentPath].push(item)
+          } else {
+            this.tempSelectFile[parentPath] = [item]
+          }
+        })
+      }
       this.type = data.type
     })
     this.getCurrentApprovalUser()
@@ -326,23 +341,30 @@ export default {
       }
       this.$http('getFileList', { path: path })
         .then((res) => {
+          this.parentPath = path.substring(0, path.lastIndexOf('/'))
           this.tableConfig.tableData = res.data
           this.nowPath = path
+          if (this.tempSelectFile[this.parentPath]) {
+            res.data.map((item) => {
+              this.tempSelectFile[this.parentPath].map((file) => {
+                if (file.filePath == item.path) {
+                  this.$refs['table'].toggleRowSelection([item])
+                }
+              })
+            })
+          }
         })
         .finally(() => {
           this.tableLoading = false
         })
     },
     addFile() {
-      let fileList = this.selectFiles.map((item) => {
-        return {
-          fileSize: item.size,
-          size: unitSetUp(item.size),
-          filePath: item.path,
-          fileName: item.name,
-        }
-      })
-      this.$set(this.applyForm, 'fileList', fileList)
+      this.applyForm.fileList = []
+      for (let i in this.tempSelectFile) {
+        this.tempSelectFile[i].map((item) => {
+          this.applyForm.fileList.push(item)
+        })
+      }
       this.showFileDialog = false
     },
     getFileList() {
@@ -354,6 +376,12 @@ export default {
         if (valid) {
           if (this.applyForm.fileList.length > 0) {
             this.loading = true
+            if (!this.isDownloads) {
+              this.applyForm.downloadCount = 0
+            }
+            if (!this.isPeriodValidity) {
+              this.applyForm.downloadDay = 0
+            }
             if (this.type == 0) {
               this.$http('createApply', data)
                 .then((res) => {
@@ -381,10 +409,34 @@ export default {
         }
       })
     },
-    handleSelectionChange(data) {
-      this.selectFiles = data.filter((item) => {
-        if (!item.dir) {
-          return item
+    handleSelect(selection, row) {
+      if (this.tempSelectFile[this.parentPath]) {
+        let isExist = false
+        this.tempSelectFile[this.parentPath].map((item, index) => {
+          if (item.filePath == row.path) {
+            isExist = true
+            this.tempSelectFile[this.parentPath].splice(index, 1)
+          }
+        })
+        if (!isExist) {
+          this.tempSelectFile[this.parentPath].push({
+            fileSize: row.size,
+            size: unitSetUp(row.size),
+            filePath: row.path,
+            fileName: row.name,
+          })
+        }
+      } else {
+        this.tempSelectFile[this.parentPath] = [row]
+      }
+    },
+    handleSelectAll(selection) {
+      this.tempSelectFile[this.parentPath] = selection.map((item) => {
+        return {
+          fileSize: item.size,
+          size: unitSetUp(item.size),
+          filePath: item.path,
+          fileName: item.name,
         }
       })
     },

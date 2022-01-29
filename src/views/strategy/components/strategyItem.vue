@@ -67,16 +67,20 @@
                 </div>
                 <div class="member" v-if="approval.type == 2">
                   <div class="content">
-                    <template v-for="user in approval.member.userList">
-                      <div :key="user.index">
+                    <div
+                      v-for="user in approval.member.userList"
+                      :key="user.index"
+                    >
+                      <el-tooltip placement="top">
+                        <div slot="content">{{ user.userId }}</div>
                         <div class="memberBox">
                           <div class="iconBox">
                             <i class="iconfont icon-yonghutianchong"></i>
                           </div>
                           <span>{{ user.userId }}</span>
                         </div>
-                      </div>
-                    </template>
+                      </el-tooltip>
+                    </div>
                   </div>
                   <div class="memType">
                     （{{ approvalMode[approval.member.approvalType] }}）
@@ -149,7 +153,23 @@ export default {
       this.operateId = id
     },
     editItem(data) {
-      console.log(data)
+      if (data.approvalList && data.approvalList.length > 0) {
+        data.approvalList.map((item) => {
+          if (item.type == 1) {
+            item.member = {
+              approvalType: 1,
+              userList: [],
+            }
+          } else if (item.type == 2) {
+            item.superior = {
+              levelType: 1,
+              level: 1,
+              noSuperior: false,
+              approvalType: 1,
+            }
+          }
+        })
+      }
       this.$emit('passSignal', true, data)
     },
   },
@@ -260,7 +280,7 @@ export default {
                   display: flex;
                   flex-direction: column;
                   align-items: center;
-                  margin-right: 30px;
+                  margin-right: 15px;
                   .iconBox {
                     background: #bdccea;
                     width: 40px;
@@ -278,6 +298,11 @@ export default {
                   span {
                     color: #343a40;
                     font-size: 13px;
+                    width: 65px;
+                    text-align: center;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                   }
                 }
               }

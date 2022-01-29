@@ -45,7 +45,7 @@
                 v-model="formObj.strategyName"
                 placeholder="请输入策略名称"
                 @blur="strategyNameExists"
-                style="width: 300px"
+                style="width: 335px"
               ></el-input>
             </el-form-item>
             <el-form-item label="应用范围">
@@ -54,87 +54,131 @@
                 @fullPath="fullPath"
                 :setPath="setPath"
                 size="small"
-                width="300px"
+                width="335px"
               ></scope-select>
             </el-form-item>
             <el-form-item label="审批人">
-              <div class="approval">
+              <div class="approvalWrap">
                 <div
-                  class="approvalWrap"
+                  class="approval"
                   v-for="(item, index) in formObj.approvalList"
                   :key="index"
                 >
                   <div
-                    class="superior"
+                    class="approvalBox"
                     v-if="item.type == 1"
+                    title="点击编辑"
                     @mouseenter="setShowEdit(item)"
                     @mouseleave="setHideEdit(item)"
+                    @click="editApproval(item, index)"
                   >
-                    <div class="EditWrap" v-if="item.showEdit">
-                      <span class="edit" @click="editApproval(item, index)">
-                        编辑
-                      </span>
-                      <span class="del" @click="delApproval(index, 1)">
-                        删除
-                      </span>
-                    </div>
-                    <div class="approvalBox">
-                      <div class="iconBox">
-                        <i class="iconfont icon-yonghutianchong"></i>
-                      </div>
-                      <span>{{ levelObj[item.superior.level] }}</span>
-                      <span>
-                        （{{ approvalMode[item.superior.approvalType] }}）
-                      </span>
-                    </div>
-                  </div>
-                  <div class="member" v-if="item.type == 2">
                     <div
-                      class="memberWrap"
-                      @mouseenter="setShowEdit(item)"
-                      @mouseleave="setHideEdit(item)"
+                      class="del"
+                      v-if="item.showEdit"
+                      @click.stop="delApproval(index)"
                     >
-                      <div class="EditWrap" v-if="item.showEdit">
-                        <span class="edit" @click="editApproval(item, index)">
-                          编辑
-                        </span>
-                        <span class="del" @click="delApproval(index, 2)">
-                          删除
-                        </span>
+                      <i class="el-icon-close"></i>
+                    </div>
+                    <div class="edit">
+                      <i
+                        class="el-icon-arrow-right"
+                        :style="{
+                          color: item.showEdit ? '#228be6' : '#bfbfbf',
+                        }"
+                      ></i>
+                    </div>
+                    <div class="itemWrap">
+                      {{ approvalType[item.type]
+                      }}{{ approvalMode[item.superior.approvalType] }}
+                      ：
+                      <div class="itemBox">
+                        <div class="itemName">
+                          {{ levelObj[item.superior.level] }}
+                        </div>
                       </div>
+                    </div>
+                    <div class="approvalMode"></div>
+                  </div>
+                  <div
+                    class="approvalBox"
+                    v-if="item.type == 2"
+                    title="点击编辑"
+                    @mouseenter="setShowEdit(item)"
+                    @mouseleave="setHideEdit(item)"
+                    @click="editApproval(item, index)"
+                  >
+                    <div
+                      class="del"
+                      v-if="item.showEdit"
+                      @click.stop="delApproval(index)"
+                    >
+                      <i class="el-icon-close"></i>
+                    </div>
+                    <div class="edit">
+                      <i
+                        class="el-icon-arrow-right"
+                        :style="{
+                          color: item.showEdit ? '#228be6' : '#bfbfbf',
+                        }"
+                      ></i>
+                    </div>
+
+                    <div class="itemWrap">
+                      {{ approvalType[item.type]
+                      }}{{ approvalMode[item.superior.approvalType] }}
+                      ：
                       <div
+                        class="itemBox"
                         v-for="(user, userIndex) in item.member.userList"
                         :key="user.index"
-                        class="content"
                       >
-                        <div class="memberBox">
-                          <div class="iconBox">
-                            <i class="iconfont icon-yonghutianchong"></i>
-                          </div>
-                          <span>{{ user.userId }}</span>
+                        <div class="itemName">
+                          {{ user.userId }}
+                          <span
+                            v-if="userIndex != item.member.userList.length - 1"
+                          >
+                            、
+                          </span>
                         </div>
-                        <div
-                          class="interval"
-                          v-if="userIndex != item.member.userList.length - 1"
-                        ></div>
                       </div>
                     </div>
-                    <div class="memType">
-                      （{{ approvalMode[item.member.approvalType] }}）
-                    </div>
+                    <div class="approvalMode"></div>
                   </div>
-                  <div class="iAm" v-if="item.type == 3">
-                    <div class="approvalBox">
-                      <div class="iconBox">
-                        <i class="iconfont icon-yonghutianchong"></i>
+                  <div
+                    class="approvalBox"
+                    v-if="item.type == 3"
+                    title="点击编辑"
+                    @mouseenter="setShowEdit(item)"
+                    @mouseleave="setHideEdit(item)"
+                    @click="editApproval(item, index)"
+                  >
+                    <div
+                      class="del"
+                      v-if="item.showEdit"
+                      @click.stop="delApproval(index)"
+                    >
+                      <i class="el-icon-close"></i>
+                    </div>
+                    <div
+                      class="edit"
+                      :style="{ color: item.showEdit ? '#228be6' : '#bfbfbf' }"
+                    >
+                      <i class="el-icon-arrow-right"></i>
+                    </div>
+                    <div class="itemWrap">
+                      <div class="itemBox">
+                        <div class="itemName">申请人本人</div>
                       </div>
-                      <span>申请人本人</span>
                     </div>
+                    <div class="approvalMode"></div>
                   </div>
+                  <!-- <div class="addBox" @click="clickAddBox(index)">
+                    <i class="el-icon-plus"></i>
+                  </div> -->
                 </div>
-              </div>
-              <div class="addBox" @click="clickAddBox">
-                <i class="el-icon-plus"></i>
+                <div class="addBox" @click="clickAddBox(-1)">
+                  <i class="el-icon-plus"></i>
+                </div>
               </div>
             </el-form-item>
           </el-form>
@@ -150,12 +194,13 @@
       </div>
     </page-frame>
     <new-approval
+      ref="newApproval"
       v-model="showNewApproval"
-      :formObj="approvalObj1"
       :editOrNew="editOrNew"
+      :userType="userType"
+      :info="userInfo"
       @addApproval="addApproval"
     ></new-approval>
-    <new-cc v-model="showNewCc" @selectUser="selectUser"></new-cc>
   </div>
 </template>
 
@@ -163,26 +208,31 @@
 import pageFrame from '../../components/pageFrame.vue'
 import strategyItem from './components/strategyItem.vue'
 import newApproval from './components/newApproval.vue'
-import newCc from './components/newCc.vue'
 import scopeSelect from './components/scopeSelect.vue'
 import { clone } from '../../utils/obj-operation'
 
 export default {
   name: 'approvalStrategy',
-  components: { pageFrame, strategyItem, newApproval, newCc, scopeSelect },
+  components: { pageFrame, strategyItem, newApproval, scopeSelect },
   data() {
     return {
+      userInfo: {},
+      userType: 0,
       setPath: '',
       editIndex: -1,
-      showEdit: true,
+      showEdit: false,
       rows: 14,
       showScope: '',
       loading: false,
       isCreate: false,
       showNewStrategy: false,
       showNewApproval: false,
-      showNewCc: false,
       newOrEditTitle: '',
+      approvalType: {
+        1: '指定上级',
+        2: '指定成员',
+        3: '申请人本人',
+      },
       approvalMode: {
         1: '会签',
         2: '或签',
@@ -209,7 +259,6 @@ export default {
         },
         type: 1,
       },
-      approvalObj1: {},
       formObj: {
         id: null,
         scope: '',
@@ -235,6 +284,7 @@ export default {
       strategyList: [],
       nameUsed: false,
       editOrNew: 0,
+      createIndex: -1,
     }
   },
   mounted() {
@@ -277,7 +327,6 @@ export default {
     },
     newStrategy() {
       this.newOrEditTitle = '新建策略'
-      this.approvalObj1 = clone(this.approvalObj)
       this.isCreate = true
       this.showScope = ''
       this.formObj.strategyType = 1
@@ -289,7 +338,7 @@ export default {
       this.showNewStrategy = true
     },
     passSignal(val, data) {
-      console.log('passSignal', data)
+      console.log('passSignal', data.approvalList)
       this.isCreate = false
       this.setPath = data.scope
       this.showNewStrategy = val
@@ -303,50 +352,73 @@ export default {
         this.getData()
       }
     },
-    addApproval(val, type) {
-      console.log(val)
-      if (type == 2) {
-        this.formObj.approvalList.push(val)
+    alterOrder(index, data, type) {
+      let temp = clone(data)
+      if (type == 1) {
+        this.$set(this.formObj.approvalList[index])
+        this.formObj.approvalList[index] = clone(
+          this.formObj.approvalList[index + 1]
+        )
+        this.formObj.approvalList[index + 1] = temp
       } else {
-        if (val.type == 1) {
+        this.formObj.approvalList[index] = clone(
+          this.formObj.approvalList[index - 1]
+        )
+        this.formObj.approvalList[index - 1] = temp
+      }
+    },
+    addApproval(val, type) {
+      let temp = clone(val)
+      if (type == 2) {
+        if (this.createIndex != -1) {
+          this.formObj.approvalList.splice(this.createIndex + 1, 0, temp)
+        } else {
+          this.formObj.approvalList.push(temp)
+        }
+      } else {
+        if (temp.type == 1) {
+          this.$set(this.formObj.approvalList[this.editIndex], 'type', 1)
           this.$set(
             this.formObj.approvalList[this.editIndex].superior,
             'levelType',
-            val.superior.levelType
+            temp.superior.levelType
           )
           this.$set(
             this.formObj.approvalList[this.editIndex].superior,
             'level',
-            val.superior.level
+            temp.superior.level
           )
           this.$set(
             this.formObj.approvalList[this.editIndex].superior,
             'noSuperior',
-            val.superior.noSuperior
+            temp.superior.noSuperior
           )
           this.$set(
             this.formObj.approvalList[this.editIndex].superior,
             'approvalType',
-            val.superior.approvalType
+            temp.superior.approvalType
           )
-        } else {
+        } else if (temp.type == 2) {
+          console.log('type等于2')
+          this.$set(this.formObj.approvalList[this.editIndex], 'type', 2)
           this.$set(
             this.formObj.approvalList[this.editIndex].member,
             'approvalType',
-            val.member.approvalType
+            temp.member.approvalType
           )
           this.$set(
             this.formObj.approvalList[this.editIndex].member,
             'userList',
-            val.member.userList
+            temp.member.userList
           )
+        } else {
+          this.$set(this.formObj.approvalList[this.editIndex], 'type', 3)
         }
       }
     },
     saveNewOrEdit() {
       if (!this.nameUsed) {
         let url = this.isCreate ? 'createStrategy' : 'updateStrategy'
-        console.log(url, this.formObj)
         this.$http(url, this.formObj)
           .then((res) => {
             this.$message.success(res.errMsg)
@@ -373,26 +445,19 @@ export default {
       this.formObj.approvalList.splice(index, 1)
     },
     editApproval(data, index) {
-      if (data.type == 2) {
-        data.superior = {
-          levelType: 1,
-          level: 1,
-          noSuperior: false,
-          approvalType: 1,
-        }
-      } else {
-        data.member = {
-          userList: [],
-          approvalType: 1,
-        }
-      }
+      this.showNewApproval = true
+      this.userType = data.type
       this.editIndex = index
       this.editOrNew = 1
-      this.approvalObj1 = clone(data)
-      this.showNewApproval = true
+      if (data.type == 1) {
+        this.userInfo = data.superior
+      } else if (data.type == 2) {
+        this.userInfo = data.member
+      }
     },
-    clickAddBox() {
-      this.approvalObj1 = clone(this.approvalObj)
+    clickAddBox(index) {
+      this.$refs['newApproval'].initData()
+      this.createIndex = index
       this.showNewApproval = true
       this.editOrNew = 2
     },
@@ -449,196 +514,82 @@ export default {
       }
     }
     .content {
-      .approval {
+      .approvalWrap {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
-        width: 60%;
-        flex-wrap: wrap;
-        .approvalWrap {
-          .superior {
+        width: 380px;
+        .approval {
+          width: 358px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .approvalBox {
             position: relative;
-            .EditWrap {
-              position: absolute;
-              top: 0px;
-              left: 0px;
-              width: 100%;
-              height: 100%;
-              background: rgba(0, 0, 0, 0.1);
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              span {
-                width: 40px;
-                height: 20px;
-                color: white;
-                font-size: 12px;
-                line-height: 20px;
-                text-align: center;
-                cursor: pointer;
-              }
-              .edit {
-                background: #343a40;
-                margin-bottom: 5px;
-              }
-              .edit:hover {
-                background: #495057;
-              }
-              .del {
-                background: #f03e3e;
-              }
-              .del:hover {
-                background: #fa5252;
-              }
-            }
-            .approvalBox {
-              display: flex;
-              flex-direction: column;
-              width: 60px;
-              align-items: center;
-              .iconBox {
-                background: #bdccea;
-                width: 40px;
-                height: 40px;
-                border-radius: 5px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                i {
-                  font-size: 30px;
-                  color: #fcfcfc;
-                }
-              }
-              span {
-                color: #343a40;
-                font-size: 12px;
-                height: 20px;
-                line-height: 20px;
-              }
-            }
-          }
-          .member {
-            .memberWrap {
+            width: 346px;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            margin: 7px 0px;
+            border: 0.5px solid #d9d9d9;
+            border-radius: 5px;
+            padding: 15px;
+            .itemWrap {
               display: flex;
               flex-direction: row;
-              align-items: center;
-              max-width: 300px;
-              max-height: 152px;
-              overflow: auto;
-              border: 0.5px solid #d9d9d9;
-              border-radius: 5px;
-              padding: 10px;
-              position: relative;
-              .EditWrap {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.1);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                span {
-                  width: 50px;
-                  height: 20px;
-                  color: white;
-                  font-size: 12px;
-                  line-height: 20px;
-                  text-align: center;
-                  cursor: pointer;
-                }
-                .edit {
-                  background: #343a40;
-                  margin-bottom: 5px;
-                }
-                .edit:hover {
-                  background: #495057;
-                }
-                .del {
-                  background: #f03e3e;
-                }
-                .del:hover {
-                  background: #fa5252;
-                }
-              }
-              .content {
-                display: flex;
-                flex-direction: row;
-                .interval {
-                  background: #e9ecef;
-                  width: 1px;
-                  margin: 0px 2px;
-                  height: 60px;
-                }
-
-                .memberBox {
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  .iconBox {
-                    background: #bdccea;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 5px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin-bottom: 5px;
-                    i {
-                      font-size: 30px;
-                      color: #fcfcfc;
-                    }
-                  }
-                  span {
-                    width: 65px;
-                    text-align: center;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    color: #343a40;
-                    height: 20px;
-                    line-height: 20px;
-                    font-size: 13px;
-                  }
-                }
+              flex-wrap: wrap;
+              .itemName {
+                color: #595959;
+                height: 18px;
+                line-height: 18px;
+                font-size: 14px;
               }
             }
-            .memType {
-              width: 300px;
+            .moveItem {
+              position: absolute;
+              right: 30%;
+              width: 20px;
               height: 20px;
               line-height: 20px;
               text-align: center;
-              color: #343a40;
-              font-size: 12px;
+              right: 48%;
+              background: white;
+              border: 0.5px solid #ced4da;
+              border-radius: 50%;
+            }
+            .top {
+              top: -12px;
+            }
+            .down {
+              bottom: -12px;
+            }
+            .del {
+              position: absolute;
+              right: 3px;
+              top: -5px;
+              color: #bfbfbf;
+              font-size: 18px;
+              cursor: pointer;
+            }
+            .del:hover {
+              color: #434343;
+            }
+            .edit {
+              position: absolute;
+              right: 2px;
+              top: 30%;
+              font-weight: bolder;
+              font-size: 18px;
+            }
+            .itemWrap {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
             }
           }
-          .iAm {
-            .approvalBox {
-              display: flex;
-              flex-direction: column;
-              width: 60px;
-              align-items: center;
-              .iconBox {
-                background: #bdccea;
-                width: 40px;
-                height: 40px;
-                border-radius: 5px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                i {
-                  font-size: 30px;
-                  color: #fcfcfc;
-                }
-              }
-              span {
-                color: #343a40;
-                font-size: 12px;
-              }
-            }
+          .approvalBox:hover {
+            background: #e7f5ff;
+            border: 1px solid #228be6;
           }
         }
       }
@@ -650,21 +601,22 @@ export default {
   }
 }
 .addBox {
-  width: 35px;
-  height: 35px;
-  line-height: 35px;
-  border: 1.5px dotted #d9d9d9;
-  border-radius: 5px;
-  text-align: center;
-  color: #ced4da;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #b0bec5;
+  margin-right: 10px;
   cursor: pointer;
   i {
+    color: white;
     font-size: 18px;
     font-weight: bold;
   }
 }
 .addBox:hover {
-  border: 1px solid #228be6;
-  color: #228be6;
+  background: #78909c;
 }
 </style>

@@ -35,4 +35,7 @@ export default {
   getSetting: {
     url: '/system/getSetting',
   },
+  testEmail: {
+    url: '/system/testEmail',
+  },
 }

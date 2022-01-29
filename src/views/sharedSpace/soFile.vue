@@ -311,7 +311,7 @@ export default {
             minWidth: '400px',
           },
           {
-            prop: 'size',
+            prop: 'fileSize',
             label: '大小',
             // formatter: (row) => {
             //   return row.dir ? '-' : unitSetUp(row.size)
@@ -345,6 +345,15 @@ export default {
           }
         })
       )
+    },
+    isTable: {
+      handler(val) {
+        if (val) {
+          this.$nextTick(() => {
+            this.$refs['table'].toggleRowSelection(this.selectData)
+          })
+        }
+      },
     },
   },
   methods: {
@@ -386,7 +395,7 @@ export default {
           fileSize: item.size,
           filePath: item.path,
           fileName: item.name,
-          size: unitSetUp(item.size),
+          size: item.fileSize,
         }
       })
       let obj = {
@@ -439,7 +448,7 @@ export default {
       this.$http('getFileList', { path: path })
         .then((res) => {
           res.data.map((item) => {
-            item.size = unitSetUp(item.size)
+            item['fileSize'] = unitSetUp(item.size)
           })
           this.tableConfig.tableData = res.data
           this.fullData = res.data
@@ -464,8 +473,14 @@ export default {
     selectedFile(data) {
       if (data.checked) {
         this.$set(data, 'checked', false)
+        this.selectData.map((item, index) => {
+          if (item.name == data.name) {
+            this.selectData.splice(index, 1)
+          }
+        })
       } else {
         this.$set(data, 'checked', true)
+        this.selectData.push(data)
       }
     },
     clickDel(val) {
@@ -529,7 +544,15 @@ export default {
       this.uploadDialog = true
     },
     handleSelectionChange(val) {
-      this.selectData = val
+      if (val) {
+        this.selectData = val
+        this.tableConfig.tableData.map((item) => {
+          this.$set(item, 'checked', false)
+        })
+        val.map((item) => {
+          this.$set(item, 'checked', true)
+        })
+      }
     },
     cellMouseEnter(val) {
       this.$set(val, 'showOperate', true)

@@ -20,12 +20,13 @@
       size="small"
       @row-click="rowClick"
       @expand-change="expandChange"
+      @select="handleSelect"
       @selection-change="handleSelectionChange"
+      @select-all="handleSelectAll"
       @sort-change="handleSortChange"
       @cell-mouse-enter="cellMouseEnter"
       @cell-mouse-leave="cellMouseLeave"
       @cell-click="cellClick"
-      @toggleRowSelection="toggleRowSelection"
     >
       <el-table-column
         v-if="cloneConfig.selection"
@@ -246,9 +247,6 @@ export default {
     cellMouseLeave(val) {
       this.$emit('cellMouseLeave', val)
     },
-    toggleRowSelection(val) {
-      this.$emit('toggleRowSelection', val)
-    },
     cellClick(val, event, column) {
       this.$emit('cellClick', val, event, column)
     },
@@ -265,6 +263,12 @@ export default {
     },
     handleSelectionChange(selection) {
       this.$emit('selection-change', selection)
+    },
+    handleSelectAll(selection) {
+      this.$emit('handleSelectAll', selection)
+    },
+    handleSelect(selection, row) {
+      this.$emit('handleSelect', selection, row)
     },
     handleSizeChange(index) {
       if (this.cloneConfig.page) {
@@ -439,6 +443,14 @@ export default {
       if (this.loading) {
         this.innerLoading = this.loading
       }
+    },
+    toggleRowSelection(data) {
+      console.log('执行toggleRowSelection')
+      this.$nextTick(() => {
+        data.map((item) => {
+          this.$refs['elTable'].toggleRowSelection(item, true)
+        })
+      })
     },
   },
   // 如果不是分页接口，而是全部返回的模式，自动分割数据形成分页

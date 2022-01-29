@@ -115,6 +115,7 @@ export default {
         }
         resolve(temp)
         if (this.userList) {
+          console.log('触发setChecked')
           temp.map((item) => {
             if (this.userList.includes(item.name)) {
               this.$refs['tree'].setChecked(item.name, true)
@@ -128,6 +129,12 @@ export default {
         if (item.leaf && !this.seleNodeList.includes(item.name)) {
           this.seleNodeList.push(item.name)
         }
+      })
+    },
+    setNodeCheck() {
+      this.$refs['tree'].setCheckedNodes([])
+      this.seleNodeList.map((item) => {
+        this.$refs['tree'].setChecked(item, true)
       })
     },
     getDepartmentUserTree(val) {

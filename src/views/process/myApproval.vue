@@ -104,7 +104,12 @@
         <el-button size="small" @click="agreeOrRefuseDialog = false">
           取 消
         </el-button>
-        <el-button size="small" type="primary" @click="confirmEdit">
+        <el-button
+          size="small"
+          type="primary"
+          :loading="loading"
+          @click="confirmEdit"
+        >
           确 定
         </el-button>
       </span>
@@ -328,7 +333,7 @@ export default {
                 this.agreeOrRefuseDialog = true
               },
               show: (row) => {
-                return row.applyStatus == 2 || row.applyStatus == 3
+                return row.canApproval
               },
             },
             {
@@ -345,7 +350,7 @@ export default {
                 this.agreeOrRefuseDialog = true
               },
               show: (row) => {
-                return row.applyStatus == 2 || row.applyStatus == 3
+                return row.canApproval
               },
             },
             {
@@ -392,6 +397,7 @@ export default {
           },
         ],
       },
+      loading: false,
     }
   },
   created() {
@@ -402,12 +408,17 @@ export default {
   },
   methods: {
     confirmEdit() {
+      this.loading = true
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
-      this.$http(url, this.editForm).then((res) => {
-        this.$message.success(res.errMsg)
-        this.agreeOrRefuseDialog = false
-        this.getData()
-      })
+      this.$http(url, this.editForm)
+        .then((res) => {
+          this.$message.success(res.errMsg)
+          this.agreeOrRefuseDialog = false
+          this.getData()
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     getData() {
       this.tableConfig.condition.startTime = this.times[0]
