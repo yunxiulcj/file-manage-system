@@ -69,7 +69,6 @@ export default {
   created() {
     this.initLeftMenuList()
     this.isCreated = true
-    // console.log('getters.capacity', this.$store.getters.capacity)
   },
   methods: {
     initLeftMenuList() {
@@ -109,7 +108,7 @@ export default {
 }
 .contentBox {
   padding: 15px;
-  width: 100%;
+  width: calc(100% - 230px);
   background: #f0f0f0;
   height: calc(100% - 12px);
 }

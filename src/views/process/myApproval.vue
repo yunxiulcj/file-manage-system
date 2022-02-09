@@ -357,7 +357,14 @@ export default {
               label: '详情',
               type: 'text',
               fn: (row) => {
-                console.log(row)
+                sessionStorage.setItem(
+                  'tempObj',
+                  JSON.stringify({
+                    accountType: '1',
+                    approvalState: row.applyStatus,
+                    applyId: row.applyId,
+                  })
+                )
                 this.$router.push({
                   name: 'approval',
                   query: {

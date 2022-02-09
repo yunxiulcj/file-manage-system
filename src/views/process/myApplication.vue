@@ -288,6 +288,14 @@ export default {
               label: '详情',
               type: 'text',
               fn: (row) => {
+                sessionStorage.setItem(
+                  'tempObj',
+                  JSON.stringify({
+                    accountType: '2',
+                    approvalState: row.applyStatus,
+                    applyId: row.applyId,
+                  })
+                )
                 this.$router.push({
                   name: 'approval',
                   params: {
@@ -362,10 +370,19 @@ export default {
                     obj['applyEmail'] = data.applyEmail
                     obj['applyTheme'] = data.applyTheme
                     obj['describe'] = data.applyDesc
-                    obj['fileList'] = data.fileList
+                    obj['fileList'] =
+                      data.fileList &&
+                      data.fileList.map((item) => {
+                        item['size'] = unitSetUp(item.fileSize)
+                        return item
+                      })
                     obj['downloadDay'] = data.downloadDay
                     obj['downloadCount'] = data.downloadCount
                     obj['approvalUserList'] = data.approvalUserList
+                    sessionStorage.setItem(
+                      'tempData',
+                      JSON.stringify({ data: obj, type: 0 })
+                    )
                   })
                   .finally(() => {
                     this.$router.push({

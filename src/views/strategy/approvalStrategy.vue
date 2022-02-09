@@ -125,7 +125,7 @@
 
                     <div class="itemWrap">
                       {{ approvalType[item.type]
-                      }}{{ approvalMode[item.superior.approvalType] }}
+                      }}{{ approvalMode[item.member.approvalType] }}
                       ：
                       <div
                         class="itemBox"
@@ -172,9 +172,6 @@
                     </div>
                     <div class="approvalMode"></div>
                   </div>
-                  <!-- <div class="addBox" @click="clickAddBox(index)">
-                    <i class="el-icon-plus"></i>
-                  </div> -->
                 </div>
                 <div class="addBox" @click="clickAddBox(-1)">
                   <i class="el-icon-plus"></i>
@@ -197,8 +194,6 @@
       ref="newApproval"
       v-model="showNewApproval"
       :editOrNew="editOrNew"
-      :userType="userType"
-      :info="userInfo"
       @addApproval="addApproval"
     ></new-approval>
   </div>
@@ -216,8 +211,6 @@ export default {
   components: { pageFrame, strategyItem, newApproval, scopeSelect },
   data() {
     return {
-      userInfo: {},
-      userType: 0,
       setPath: '',
       editIndex: -1,
       showEdit: false,
@@ -338,7 +331,6 @@ export default {
       this.showNewStrategy = true
     },
     passSignal(val, data) {
-      console.log('passSignal', data.approvalList)
       this.isCreate = false
       this.setPath = data.scope
       this.showNewStrategy = val
@@ -377,6 +369,9 @@ export default {
         }
       } else {
         if (temp.type == 1) {
+          if (!this.formObj.approvalList[this.editIndex].superior) {
+            this.formObj.approvalList[this.editIndex].superior = {}
+          }
           this.$set(this.formObj.approvalList[this.editIndex], 'type', 1)
           this.$set(
             this.formObj.approvalList[this.editIndex].superior,
@@ -399,7 +394,9 @@ export default {
             temp.superior.approvalType
           )
         } else if (temp.type == 2) {
-          console.log('type等于2')
+          if (!this.formObj.approvalList[this.editIndex].member) {
+            this.formObj.approvalList[this.editIndex].member = {}
+          }
           this.$set(this.formObj.approvalList[this.editIndex], 'type', 2)
           this.$set(
             this.formObj.approvalList[this.editIndex].member,
@@ -445,18 +442,20 @@ export default {
       this.formObj.approvalList.splice(index, 1)
     },
     editApproval(data, index) {
-      this.showNewApproval = true
-      this.userType = data.type
+      let userInfo
       this.editIndex = index
       this.editOrNew = 1
       if (data.type == 1) {
-        this.userInfo = data.superior
+        userInfo = data.superior
       } else if (data.type == 2) {
-        this.userInfo = data.member
+        userInfo = data.member
       }
+      console.log('edit1', userInfo)
+      this.$refs['newApproval'].initEdit(data.type, userInfo)
+      this.showNewApproval = true
     },
     clickAddBox(index) {
-      this.$refs['newApproval'].initData()
+      this.$refs['newApproval'].initData(1)
       this.createIndex = index
       this.showNewApproval = true
       this.editOrNew = 2
@@ -488,6 +487,7 @@ export default {
         font-size: 17px;
       }
       .goBack {
+        z-index: 99;
         position: absolute;
         width: 100px;
         right: 40px;

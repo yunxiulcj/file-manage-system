@@ -67,13 +67,11 @@ export default {
     clickMenu(val) {
       this.checked = val
       this.$emit('update', val)
-      console.log('clickMenu', val)
     },
     test(val, parentVal) {
       this.children = val
       this.checked = parentVal
       this.$emit('update', val)
-      console.log(val, parentVal, this.checked)
     },
   },
 }

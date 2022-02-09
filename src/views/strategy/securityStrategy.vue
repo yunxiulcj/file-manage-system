@@ -271,20 +271,29 @@ export default {
     },
     addBlacklist(val) {
       if (val) {
-        this.$http('checkUserIsGroup', { userId: val }).then((res) => {
-          if (res.data && res.data != 3) {
-            this.limitForm.userList.push({
-              userId: val,
-              isUserGroup: res.data == 1 ? false : true,
-            })
-          } else {
-            this.$message.warning('该用户不存在')
+        let isExsit = false
+        this.limitForm.userList.map((item) => {
+          if (item.userId == val) {
+            isExsit = true
           }
         })
+        if (!isExsit) {
+          this.$http('checkUserIsGroup', { userId: val }).then((res) => {
+            if (res.data && res.data != 3) {
+              this.limitForm.userList.push({
+                userId: val,
+                isUserGroup: res.data == 1 ? false : true,
+              })
+            } else {
+              this.$message.warning('该用户不存在')
+            }
+          })
+        } else {
+          this.$message.warning(val + '已在黑名单')
+        }
       }
     },
     delBlacklist(val) {
-      console.log(val)
       if (val && val.length > 0) {
         let temp = this.limitForm.userList.filter(
           (item) => val.indexOf(item.userId) < 0

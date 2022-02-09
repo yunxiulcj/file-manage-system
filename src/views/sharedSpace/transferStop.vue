@@ -172,7 +172,6 @@ export default {
   },
   created() {
     this.baseUrl = this.$store.getters.symSetting.uploadUrl
-    console.log(this.baseUrl)
   },
   mounted() {
     this.tableConfig.maxHeight = document.body.clientHeight - 260 + 'px'

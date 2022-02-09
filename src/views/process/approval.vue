@@ -179,10 +179,11 @@ export default {
       this.tempData = this.$route.query
     } else if (paramNum.length > 0) {
       this.tempData = this.$route.params
+    } else {
+      this.tempData = JSON.parse(sessionStorage.getItem('tempObj'))
     }
     this.getData(this.tempData)
     this.accountType = this.tempData.accountType
-    // this.approvalState = this.tempData.approvalState
   },
   mounted() {},
   methods: {
@@ -198,7 +199,6 @@ export default {
           this.$nextTick(() => {
             this.approvalState = res.data.state
           })
-
           res.data.fileList.map((file) => {
             file['fileSize'] = unitSetUp(file.fileSize)
           })
@@ -212,7 +212,6 @@ export default {
       this.editForm.downloadCount = data.downloadCount
       this.editForm.downloadExpiredDay = data.downloadDay
       this.canEdit = data.canEdit
-
       this.agreeOrRefuseDialog = true
     },
     refuse(data) {

@@ -60,7 +60,10 @@
           <span class="tips">不能超过100人</span>
         </div>
         <div class="memberWrap">
-          <div class="content" v-if="formObj.member.userList.length > 0">
+          <div
+            class="content"
+            v-if="formObj.member.userList && formObj.member.userList.length > 0"
+          >
             <div
               v-for="(user, userIndex) in formObj.member.userList"
               :key="user.index"
@@ -94,8 +97,8 @@
         }}
       </div>
       <el-radio-group
-        v-model="formObj[type].approvalType"
         v-if="formObj.type != 3"
+        v-model="formObj[type].approvalType"
         style="width: 150px"
       >
         <el-radio
@@ -132,8 +135,6 @@ export default {
   props: {
     value: Boolean,
     editOrNew: Number,
-    userType: Number,
-    info: Object,
   },
   components: { newCc },
   data() {
@@ -228,32 +229,9 @@ export default {
       },
       immediate: true,
     },
-    userType: {
-      immediate: true,
-      handler(val) {
-        if (val) {
-          this.formObj.type = val
-          if (val == 1) {
-            this.formObj.superior = clone(this.info)
-            this.formObj.member = this.formObj.member = {
-              approvalType: 1,
-              userList: [],
-            }
-          } else if (val == 2) {
-            this.formObj.member = clone(this.info)
-            this.formObj.superior = {
-              levelType: 1,
-              level: 1,
-              noSuperior: false,
-              approvalType: 1,
-            }
-          }
-        }
-      },
-    },
   },
   methods: {
-    initData() {
+    initData(val) {
       this.formObj = {
         superior: {
           levelType: 1,
@@ -265,7 +243,29 @@ export default {
           approvalType: 1,
           userList: [],
         },
-        type: 1,
+        type: val,
+      }
+    },
+    initEdit(val, data) {
+      console.log('init', data)
+      this.type = val == 1 ? 'superior' : 'member'
+      this.formObj.type = val
+      if (val == 1) {
+        this.formObj.superior = clone(data)
+        this.formObj.member = {
+          approvalType: 1,
+          userList: [],
+        }
+      } else if (val == 2) {
+        this.formObj.member = clone(data)
+        this.formObj.superior = {
+          levelType: 1,
+          level: 1,
+          noSuperior: false,
+          approvalType: 1,
+        }
+      } else {
+        this.initData(3)
       }
     },
     delUser(index) {
@@ -277,16 +277,19 @@ export default {
       })
     },
     addUser() {
-      this.userList = this.formObj.member.userList.map((item) => {
-        return item.userId
-      })
-      this.showAddMember = true
+      this.userList = this.formObj.member.userList
+        ? this.formObj.member.userList.map((item) => {
+            return item.userId
+          })
+        : []
+      console.log(this.userList, this.formObj.member.userList)
       this.$nextTick(() => {
         this.$refs['newCC'].setNodeCheck()
       })
+      this.showAddMember = true
     },
     typeChange(val) {
-      this.type = val == 1 ? 'superior' : 'member'
+      this.$set(this, 'type', val == 1 ? 'superior' : 'member')
     },
     cancel() {
       this.$emit('input', false)

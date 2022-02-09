@@ -236,6 +236,7 @@ export default {
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
       this.$http(url, this.editForm).then((res) => {
         this.$message.success(res.errMsg)
+        this.agreeOrRefuseDialog = false
       })
     },
     showDetail(data) {
@@ -251,7 +252,6 @@ export default {
         }
       })
       this.detailDialog = true
-      console.log(data)
     },
     downFile(data) {
       this.$http('download', {

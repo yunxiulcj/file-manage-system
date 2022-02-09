@@ -14,6 +14,9 @@ export default {
   upOrDown: {
     url: '/strategy/upOrDown',
   },
+  top: {
+    url: '/strategy/top',
+  },
   deleteStrategy: {
     url: '/strategy/deleteStrategy',
   },

@@ -25,6 +25,9 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="del">删除</el-dropdown-item>
+                <el-dropdown-item command="top" :disabled="index == 0">
+                  置顶
+                </el-dropdown-item>
                 <el-dropdown-item command="up" :disabled="index == 0">
                   上移
                 </el-dropdown-item>
@@ -133,6 +136,12 @@ export default {
       switch (val) {
         case 'del':
           this.$http('deleteStrategy', { id: this.operateId }).then((res) => {
+            this.$emit('operation', true)
+            this.$message.success(res.errMsg)
+          })
+          break
+        case 'top':
+          this.$http('top', { id: this.operateId }).then((res) => {
             this.$emit('operation', true)
             this.$message.success(res.errMsg)
           })

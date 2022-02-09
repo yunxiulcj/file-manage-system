@@ -333,7 +333,6 @@ export default {
           promise = this.$http(this.config.fetchUrl, postData)
         }
 
-        // console.log('postData', postData)
         promise
           .then(
             (data) => {

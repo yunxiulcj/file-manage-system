@@ -34,32 +34,32 @@ export default {
     return {
       stepList: [
         {
-          value: '0',
+          value: 0,
           icon: 'myApplication',
           label: '用户申请',
         },
         {
-          value: '1',
+          value: 1,
           icon: 'withdraw',
           label: '已撤回',
         },
         {
-          value: '2',
+          value: 2,
           icon: 'myApproval',
           label: '待处理',
         },
         {
-          value: '3',
+          value: 3,
           icon: 'daishenpi',
           label: '审批中',
         },
         {
-          value: '4',
+          value: 4,
           icon: 'shenpitongguo',
           label: '审批通过',
         },
         {
-          value: '5',
+          value: 5,
           icon: 'shenhebutongguo',
           label: '审批不通过',
         },
@@ -89,6 +89,7 @@ export default {
         }
         this.tempSteps.push(this.stepList[i])
       }
+      console.log(val, this.tempSteps)
     },
   },
 }

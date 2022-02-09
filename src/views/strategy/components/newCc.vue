@@ -115,7 +115,6 @@ export default {
         }
         resolve(temp)
         if (this.userList) {
-          console.log('触发setChecked')
           temp.map((item) => {
             if (this.userList.includes(item.name)) {
               this.$refs['tree'].setChecked(item.name, true)

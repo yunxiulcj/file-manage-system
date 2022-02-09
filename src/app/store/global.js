@@ -26,7 +26,6 @@ const mutations = {
     state.capacity = capacity
   },
   SET_DOWNLOADFORM(state, downloadForm) {
-    console.log('store初始化下载表单', state, downloadForm)
     state.capacity = downloadForm
   },
   SET_APPROVALFORM(state, approvalForm) {

@@ -86,7 +86,6 @@ export default {
       if (val) {
         let OUNum = val.indexOf('OU=')
         if (OUNum != -1) {
-          console.log(val)
           this.getDepartmentList(val.substring(val.indexOf(',') + 1))
         } else {
           this.getDepartmentList('')

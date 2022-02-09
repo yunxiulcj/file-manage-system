@@ -287,7 +287,12 @@ export default {
   },
   created() {},
   mounted() {
-    let data = this.$route.params
+    let data
+    if (data && Object.keys(this.$route.params).length > 0) {
+      data = this.$route.params
+    } else {
+      data = JSON.parse(sessionStorage.getItem('tempData'))
+    }
     this.applyTitle = data.type == 0 ? '新建下载申请' : '编辑下载申请'
     this.$nextTick(() => {
       this.applyForm = data.data
@@ -311,6 +316,14 @@ export default {
   },
   methods: {
     jumpDetail(val) {
+      sessionStorage.setItem(
+        'tempObj',
+        JSON.stringify({
+          accountType: '2',
+          approvalState: 2,
+          applyId: val,
+        })
+      )
       this.$router.push({
         name: 'approval',
         params: {
@@ -427,7 +440,14 @@ export default {
           })
         }
       } else {
-        this.tempSelectFile[this.parentPath] = [row]
+        this.tempSelectFile[this.parentPath] = [
+          {
+            fileSize: row.size,
+            size: unitSetUp(row.size),
+            filePath: row.path,
+            fileName: row.name,
+          },
+        ]
       }
     },
     handleSelectAll(selection) {
@@ -442,7 +462,7 @@ export default {
     },
     getCurrentApprovalUser() {
       this.$http('getCurrentApprovalUser').then((res) => {
-        this.applyForm.approvalUserList = res.data
+        this.$set(this.applyForm, 'approvalUserList', res.data)
       })
     },
   },

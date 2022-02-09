@@ -24,7 +24,7 @@
             type="danger"
             plain
             size="mini"
-            @click="delFile(selectData)"
+            @click="delCheckFile(selectData)"
             v-show="selectData.length > 0"
           >
             <i class="iconfont icon-delete"></i>
@@ -169,7 +169,7 @@
             >
               <div slot="content">
                 <div>文件名称：{{ item.name }}</div>
-                <div>文件大小：{{ item.size }}</div>
+                <div>文件大小：{{ item.fileSize }}</div>
                 <div>修改日期：{{ item.lastModified }}</div>
               </div>
               <div
@@ -409,7 +409,7 @@ export default {
         fileList: fileList,
         approvalUserList: [],
       }
-      this.$store.commit('SET_DOWNLOADFORM', obj)
+      sessionStorage.setItem('tempData', JSON.stringify({ data: obj, type: 0 }))
       this.$router.push({
         name: 'newOrEditApply',
         params: { type: 0, data: obj },
@@ -483,17 +483,14 @@ export default {
         this.selectData.push(data)
       }
     },
-    clickDel(val) {
-      let pathList = val.map((item) => {
-        return item.path
-      })
+    delCheckFile(val) {
       this.$confirm('删除后不可恢复，是否删除所选文件？', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
         center: true,
       }).then(() => {
-        this.delFile(pathList)
+        this.delFile(val)
       })
     },
     delFile(pathList) {
@@ -555,7 +552,7 @@ export default {
       }
     },
     cellMouseEnter(val) {
-      this.$set(val, 'showOperate', true)
+      if (this.tempDelId == '') this.$set(val, 'showOperate', true)
     },
     cellMouseLeave(val) {
       if (this.tempDelId != val.id) {
