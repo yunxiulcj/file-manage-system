@@ -540,8 +540,8 @@ export default {
               flex-wrap: wrap;
               .itemName {
                 color: #595959;
-                height: 18px;
-                line-height: 18px;
+                height: 28px;
+                line-height: 28px;
                 font-size: 14px;
               }
             }

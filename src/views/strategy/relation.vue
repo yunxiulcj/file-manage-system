@@ -246,11 +246,18 @@ export default {
       )
     },
     filterUser1(val) {
-      this.depUserList = this.fullData1.filter((item) => {
-        if (item.userId.indexOf(val) != -1) {
-          return item
-        }
-      })
+      this.$set(
+        this,
+        'depUserList',
+        this.fullData1.filter((item) => {
+          if (
+            item.userId &&
+            item.userId.toLowerCase().indexOf(val.toLowerCase()) != -1
+          ) {
+            return item
+          }
+        })
+      )
     },
   },
   methods: {

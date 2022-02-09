@@ -1,8 +1,6 @@
 import request from '@/app/axios/index'
 import common from './modules/common'
 import message from './modules/message'
-import myFile from './modules/myFile'
-import permissions from './modules/permissions'
 import process from './modules/process'
 import sharedSpace from './modules/sharedSpace'
 import strategy from './modules/strategy'
@@ -11,8 +9,6 @@ import systemManage from './modules/systemManage'
 const config = {
   ...common,
   ...message,
-  ...myFile,
-  ...permissions,
   ...process,
   ...sharedSpace,
   ...strategy,

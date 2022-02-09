@@ -17,12 +17,6 @@
         <slot name="aside"></slot>
       </el-aside>
       <el-main>
-        <!-- <div class="form">
-          <slot name="form"></slot>
-        </div>
-        <div class="content">
-          <slot name="content"></slot>
-        </div> -->
         <slot></slot>
       </el-main>
     </el-container>

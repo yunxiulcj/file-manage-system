@@ -23,7 +23,7 @@
       </div>
       <div class="fileTreeWrap">
         <el-tree
-          style="width: 300px"
+          style="min-width: 300px"
           ref="tree"
           :props="props"
           :load="loadNode"

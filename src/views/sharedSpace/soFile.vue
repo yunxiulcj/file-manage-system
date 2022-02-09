@@ -160,44 +160,42 @@
         </el-checkbox> -->
         <el-divider></el-divider>
         <div class="fileWrap" v-if="tableConfig.tableData.length > 0">
-          <template v-for="(item, index) in tableConfig.tableData">
-            <el-tooltip
-              :key="index"
-              effect="dark"
-              placement="top"
-              :open-delay="400"
+          <div v-for="(item, index) in tableConfig.tableData" :key="index">
+            <div
+              class="fileBox"
+              :class="{ checked: item.checked }"
+              @click="!item.dir ? selectedFile(item) : getData(item.path)"
             >
+              <i class="el-icon-success" v-if="item.checked"></i>
+              <div
+                class="fileIcon"
+                v-show="item.dir"
+                :style="{
+                  background: 'url(' + iconPath.folder + ')',
+                  backgroundSize: '100% 100%',
+                }"
+              ></div>
+              <div
+                class="fileIcon"
+                v-show="!item.dir"
+                :style="{
+                  background: 'url(' + iconPath.file + ')',
+                  backgroundSize: '100% 100%',
+                }"
+              ></div>
+            </div>
+            <el-tooltip effect="dark" placement="top" :open-delay="400">
               <div slot="content">
                 <div>文件名称：{{ item.name }}</div>
                 <div>文件大小：{{ item.fileSize }}</div>
                 <div>修改日期：{{ item.lastModified }}</div>
               </div>
-              <div
-                class="fileBox"
-                :class="{ checked: item.checked }"
-                @click="!item.dir ? selectedFile(item) : getData(item.path)"
-              >
-                <i class="el-icon-success" v-if="item.checked"></i>
-                <div
-                  class="fileIcon"
-                  v-show="item.dir"
-                  :style="{
-                    background: 'url(' + iconPath.folder + ')',
-                    backgroundSize: '100% 100%',
-                  }"
-                ></div>
-                <div
-                  class="fileIcon"
-                  v-show="!item.dir"
-                  :style="{
-                    background: 'url(' + iconPath.file + ')',
-                    backgroundSize: '100% 100%',
-                  }"
-                ></div>
+              <div class="infoWrap">
                 <div class="fileName">{{ item.name }}</div>
+                <div class="fileSize">{{ item.fileSize }}</div>
               </div>
             </el-tooltip>
-          </template>
+          </div>
         </div>
         <el-empty v-else description="暂无数据"></el-empty>
       </div>
@@ -313,9 +311,6 @@ export default {
           {
             prop: 'fileSize',
             label: '大小',
-            // formatter: (row) => {
-            //   return row.dir ? '-' : unitSetUp(row.size)
-            // },
           },
           {
             prop: 'lastModified',
@@ -611,6 +606,7 @@ export default {
             text-decoration: underline;
           }
         }
+
         .fileIcon {
           width: 25px;
           height: 25px;
@@ -662,19 +658,9 @@ export default {
             color: #228be6;
           }
           .fileIcon {
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             background: #228be6;
-            margin-bottom: 8px;
-          }
-          .fileName {
-            width: 110px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            text-align: center;
-            font-size: 13px;
-            color: #343a40;
           }
         }
         .fileBox:hover {
@@ -684,6 +670,20 @@ export default {
         .checked {
           border: 0.5px solid #228be6;
           background: #e7f5ff;
+        }
+        .infoWrap {
+          .fileSize {
+            color: #868e96;
+            font-size: 12px;
+          }
+          .fileName {
+            width: 110px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            font-size: 13px;
+          }
         }
       }
     }

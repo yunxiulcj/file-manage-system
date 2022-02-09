@@ -15,7 +15,7 @@
           </el-button>
         </div>
         <div class="rightBtn">
-          <el-button type="warning" size="small" @click="powerPreview">
+          <el-button type="warning" size="small" @click="previewDialog = true">
             权限预览
           </el-button>
           <el-button
@@ -116,16 +116,26 @@
           权限预览
         </div>
       </template>
-      <div class="leftBox">
-        <!-- <el-tree
-          :data="normalData"
-          show-checkbox
-          node-key="id"
-          default-expand-all
-          :props="defaultProps"
-        ></el-tree> -->
+      <div class="treeWrap">
+        <div class="leftBox">
+          <div class="title">普通管理员</div>
+          <el-tree
+            :data="normalData"
+            node-key="id"
+            default-expand-all
+            :props="defaultProps"
+          ></el-tree>
+        </div>
+        <div class="rightBox">
+          <div class="title">系统管理员</div>
+          <el-tree
+            :data="adminData"
+            node-key="id"
+            default-expand-all
+            :props="defaultProps"
+          ></el-tree>
+        </div>
       </div>
-      <div class="rightBox"></div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="previewDialog = false">关 闭</el-button>
       </span>
@@ -136,7 +146,7 @@
 <script>
 import pageFrame from '../../components/pageFrame.vue'
 import tableTemp from '../../components/table-temp.vue'
-// import { defaultRouter } from '@/app/router/index.js'
+import { listRouter } from '@/app/router/index.js'
 export default {
   name: 'adminConfig',
   components: { pageFrame, tableTemp },
@@ -154,7 +164,17 @@ export default {
       })
     }
     return {
+      normalId: [1, 2, 101, 102, 301, 3],
+      adminId: [
+        1, 2, 101, 102, 402, 401, 302, 301, 3, 6, 505, 504, 4, 503, 502, 501, 5,
+        403,
+      ],
       normalData: [],
+      adminData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'label',
+      },
       newOrEdit: '',
       showNewOrEdit: false,
       tableLoading: false,
@@ -255,20 +275,44 @@ export default {
   },
   mounted() {
     this.getData()
+    this.powerPreview()
   },
   methods: {
     getData() {
       this.$refs.table.fetch()
     },
     powerPreview() {
-      // console.log(defaultRouter)
-      // defaultRouter.map((item) => {
-      //   let temp = { label: item.meta.title }
-      //   if (item.children && item.children.length > 0) {
-      //     item.children.map((child) => {})
-      //   }
-      // })
-      this.previewDialog = true
+      listRouter.map((item) => {
+        let temp, temp1
+        if (this.adminId.includes(item.id)) {
+          temp = { label: item.meta.title }
+        }
+        if (this.normalId.includes(item.id)) {
+          temp1 = { label: item.meta.title }
+        }
+        if (item.children && item.children.length > 0) {
+          item.children.map((child) => {
+            if (this.normalId.includes(child.id)) {
+              if (temp1['children']) {
+                temp1['children'].push({ label: child.meta.title })
+              } else {
+                temp1['children'] = [{ label: child.meta.title }]
+              }
+            }
+            if (this.adminId.includes(child.id)) {
+              if (temp['children']) {
+                temp['children'].push({ label: child.meta.title })
+              } else {
+                temp['children'] = [{ label: child.meta.title }]
+              }
+            }
+          })
+        }
+        if (temp1) {
+          this.normalData.push(temp1)
+        }
+        this.adminData.push(temp)
+      })
     },
     showNew() {
       this.newOrEdit = '新建账号'
@@ -333,6 +377,25 @@ export default {
     .rightBtn {
       position: absolute;
       right: 15px;
+    }
+  }
+  .treeWrap {
+    display: flex;
+    flex-direction: row;
+    .title {
+      color: #495057;
+      font-size: 15px;
+      padding-left: 20px;
+      height: 30px;
+      line-height: 30px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .leftBox {
+      width: 50%;
+      border-right: 1px solid #dee2e6;
+    }
+    .rightBox {
+      width: 50%;
     }
   }
 }
