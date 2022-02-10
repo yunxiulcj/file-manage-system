@@ -113,6 +113,7 @@ export default {
   },
   methods: {
     MarkRead() {
+      // console.log(this.$store.state.global.capacity.totalSize)
       let idList = this.messageList.map((item) => {
         return item.id
       })

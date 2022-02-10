@@ -164,11 +164,8 @@ export default {
       })
     }
     return {
-      normalId: [1, 2, 101, 102, 301, 3],
-      adminId: [
-        1, 2, 101, 102, 402, 401, 302, 301, 3, 6, 505, 504, 4, 503, 502, 501, 5,
-        403,
-      ],
+      normalId: [],
+      adminId: [],
       normalData: [],
       adminData: [],
       defaultProps: {
@@ -201,6 +198,7 @@ export default {
       ],
       tableConfig: {
         tableData: [],
+        maxHeight: '10000px',
         selection: true,
         border: true,
         tableSetting: [
@@ -274,12 +272,34 @@ export default {
     }
   },
   mounted() {
+    this.tableConfig.maxHeight = document.body.clientHeight - 294 + 'px'
     this.getData()
-    this.powerPreview()
+    this.getPreViewRole()
   },
   methods: {
     getData() {
       this.$refs.table.fetch()
+    },
+    getPreViewRole() {
+      this.$http('preViewRole')
+        .then((res) => {
+          if (res.data && res.data.length > 0) {
+            let temp1 = [],
+              temp2 = []
+            res.data.map((item) => {
+              if (item.roleId == 1) {
+                temp1.push(item.menuId)
+              } else if (item.roleId == 2) {
+                temp2.push(item.menuId)
+              }
+            })
+            this.$set(this, 'adminId', temp1)
+            this.$set(this, 'normalId', temp2)
+          }
+        })
+        .finally(() => {
+          this.powerPreview()
+        })
     },
     powerPreview() {
       listRouter.map((item) => {

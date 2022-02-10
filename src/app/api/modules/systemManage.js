@@ -38,4 +38,7 @@ export default {
   testEmail: {
     url: '/system/testEmail',
   },
+  preViewRole: {
+    url: '/system/preViewRole',
+  },
 }

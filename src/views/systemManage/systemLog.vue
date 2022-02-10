@@ -149,6 +149,7 @@ export default {
       tableConfig: {
         tableData: [],
         border: true,
+        maxHeight: '10000px',
         tableSetting: [
           {
             label: '用户',
@@ -194,6 +195,7 @@ export default {
     }
   },
   mounted() {
+    this.tableConfig.maxHeight = document.body.clientHeight - 294 + 'px'
     this.getData()
   },
   methods: {

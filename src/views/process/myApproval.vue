@@ -200,6 +200,7 @@ export default {
         },
       ],
       tableConfig: {
+        maxHeight: '10000px',
         tableData: [],
         border: true,
         tableSetting: [
@@ -411,6 +412,7 @@ export default {
     this.getDefaultTime()
   },
   mounted() {
+    this.tableConfig.maxHeight = document.body.clientHeight - 294 + 'px'
     this.getData()
   },
   methods: {
