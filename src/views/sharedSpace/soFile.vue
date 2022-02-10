@@ -112,7 +112,7 @@
                   class="iconfont icon-edit"
                   v-show="!scope.row.isEdit"
                   @click.stop="showEditName(scope.row)"
-                  title="编辑"
+                  title="重命名"
                 ></i>
                 <i
                   class="iconfont icon-quxiao"
@@ -151,51 +151,105 @@
         </table-temp>
       </div>
       <div class="isIconWrap" v-else>
-        <!-- <el-checkbox
+        <el-checkbox
           v-model="checkAll"
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
         >
           全选
-        </el-checkbox> -->
+        </el-checkbox>
         <el-divider></el-divider>
         <div class="fileWrap" v-if="tableConfig.tableData.length > 0">
-          <div v-for="(item, index) in tableConfig.tableData" :key="index">
+          <el-checkbox-group
+            v-model="pathList"
+            v-for="item in tableConfig.tableData"
+            :key="item.path"
+            @change="handleCheck"
+          >
             <div
-              class="fileBox"
               :class="{ checked: item.checked }"
-              @click="!item.dir ? selectedFile(item) : getData(item.path)"
+              @mouseenter="showOperate(item)"
+              @mouseleave="hiddenOperate(item)"
+              class="fileBoxWrap"
             >
-              <i class="el-icon-success" v-if="item.checked"></i>
-              <div
-                class="fileIcon"
-                v-show="item.dir"
-                :style="{
-                  background: 'url(' + iconPath.folder + ')',
-                  backgroundSize: '100% 100%',
-                }"
-              ></div>
-              <div
-                class="fileIcon"
-                v-show="!item.dir"
-                :style="{
-                  background: 'url(' + iconPath.file + ')',
-                  backgroundSize: '100% 100%',
-                }"
-              ></div>
+              <div class="OperateBox" v-show="item.showOperate">
+                <i
+                  class="iconfont icon-edit"
+                  v-show="!item.showDecide"
+                  @click.stop="showEditBox(item, true)"
+                  title="重命名"
+                ></i>
+                <i
+                  class="iconfont icon-xiazai"
+                  v-show="!item.showDecide && !item.dir"
+                  @click.stop="createApply([item])"
+                  title="下载"
+                ></i>
+                <i
+                  class="iconfont icon-trash"
+                  v-show="!item.showDecide"
+                  title.stop="删除"
+                  @click="delCheckFile([item])"
+                ></i>
+                <i
+                  class="el-icon-check"
+                  v-show="item.showDecide"
+                  @click.stop="editFileName(item)"
+                  title="确认"
+                ></i>
+                <i
+                  class="el-icon-close"
+                  @click.stop="showEditBox(item, false)"
+                  v-show="item.showDecide"
+                  title="取消"
+                ></i>
+              </div>
+              <div class="fileBox">
+                <el-checkbox
+                  v-show="item.showOperate || item.checked"
+                  :label="item.path"
+                  class="checkBoxs"
+                >
+                  <br />
+                </el-checkbox>
+                <div
+                  @click="getData(item.path)"
+                  class="fileIcon"
+                  v-show="item.dir"
+                  :style="{
+                    background: 'url(' + iconPath.folder + ')',
+                    backgroundSize: '100% 100%',
+                  }"
+                ></div>
+                <div
+                  class="fileIcon"
+                  v-show="!item.dir"
+                  :style="{
+                    background: 'url(' + iconPath.file + ')',
+                    backgroundSize: '100% 100%',
+                  }"
+                ></div>
+              </div>
+              <el-tooltip effect="dark" placement="bottom" :open-delay="400">
+                <div slot="content">
+                  <div>文件名称：{{ item.name }}</div>
+                  <div>文件大小：{{ item.fileSize }}</div>
+                  <div>修改日期：{{ item.lastModified }}</div>
+                </div>
+                <div class="infoWrap" @click="item.dir && getData(item.path)">
+                  <div class="fileName">
+                    <span v-show="!item.showDecide">{{ item.name }}</span>
+                    <el-input
+                      v-model="item.tempName"
+                      v-if="item.showDecide"
+                      size="mini"
+                    ></el-input>
+                  </div>
+                  <div class="fileSize">{{ item.fileSize }}</div>
+                </div>
+              </el-tooltip>
             </div>
-            <el-tooltip effect="dark" placement="top" :open-delay="400">
-              <div slot="content">
-                <div>文件名称：{{ item.name }}</div>
-                <div>文件大小：{{ item.fileSize }}</div>
-                <div>修改日期：{{ item.lastModified }}</div>
-              </div>
-              <div class="infoWrap">
-                <div class="fileName">{{ item.name }}</div>
-                <div class="fileSize">{{ item.fileSize }}</div>
-              </div>
-            </el-tooltip>
-          </div>
+          </el-checkbox-group>
         </div>
         <el-empty v-else description="暂无数据"></el-empty>
       </div>
@@ -276,7 +330,6 @@ export default {
       fullData: [],
       tempDelId: '',
       folderName: '',
-      selectedList: [],
       props: {
         label: 'name',
         isLeaf: 'leaf',
@@ -322,6 +375,7 @@ export default {
       targetPath: '/',
       node: '',
       resolve: '',
+      pathList: [],
     }
   },
   created() {},
@@ -352,6 +406,60 @@ export default {
     },
   },
   methods: {
+    showEditBox(data, val) {
+      this.$set(data, 'tempName', data.name)
+      this.$set(data, 'showDecide', val)
+    },
+    showOperate(data) {
+      this.$set(data, 'showOperate', true)
+    },
+    hiddenOperate(data) {
+      this.$set(data, 'showOperate', false)
+    },
+    handleCheck(val) {
+      let checkedCount = val.length
+      this.checkAll = checkedCount === this.tableConfig.tableData.length
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.tableConfig.tableData.length
+      this.selectData = []
+      this.$set(
+        this.tableConfig,
+        'tableData',
+        this.tableConfig.tableData.map((item) => {
+          if (val.includes(item.path)) {
+            this.selectData.push(item)
+            this.$set(item, 'checked', true)
+          } else {
+            this.$set(item, 'checked', false)
+          }
+          return item
+        })
+      )
+    },
+    handleCheckAllChange(val) {
+      this.pathList = []
+      if (val) {
+        this.$set(
+          this.tableConfig,
+          'tableData',
+          this.tableConfig.tableData.map((item) => {
+            this.pathList.push(item.path)
+            this.$set(item, 'checked', true)
+            return item
+          })
+        )
+      } else {
+        this.$set(
+          this.tableConfig,
+          'tableData',
+          this.tableConfig.tableData.map((item) => {
+            this.$set(item, 'checked', false)
+            return item
+          })
+        )
+      }
+      this.isIndeterminate = false
+    },
     nodeClick(node) {
       if (this.targetPath != node.path) {
         this.targetPath = node.path
@@ -462,22 +570,6 @@ export default {
       this.tempDelId = ''
       this.$set(data, 'showOperate', false)
     },
-    handleCheckAllChange(val) {
-      console.log(val)
-    },
-    selectedFile(data) {
-      if (data.checked) {
-        this.$set(data, 'checked', false)
-        this.selectData.map((item, index) => {
-          if (item.name == data.name) {
-            this.selectData.splice(index, 1)
-          }
-        })
-      } else {
-        this.$set(data, 'checked', true)
-        this.selectData.push(data)
-      }
-    },
     delCheckFile(val) {
       this.$confirm('删除后不可恢复，是否删除所选文件？', '提示', {
         confirmButtonText: '确认',
@@ -538,11 +630,17 @@ export default {
     handleSelectionChange(val) {
       if (val) {
         this.selectData = val
-        this.tableConfig.tableData.map((item) => {
-          this.$set(item, 'checked', false)
-        })
+        this.pathList = []
         val.map((item) => {
+          this.pathList.push(item.path)
           this.$set(item, 'checked', true)
+        })
+        this.tableConfig.tableData.map((item) => {
+          if (this.pathList.includes(item.path)) {
+            this.$set(item, 'checked', true)
+          } else {
+            this.$set(item, 'checked', false)
+          }
         })
       }
     },
@@ -639,51 +737,84 @@ export default {
         overflow: auto;
         display: grid;
         grid-template-columns: repeat(auto-fill, 116px);
-        grid-template-rows: repeat(auto-fill, 116px);
+        grid-template-rows: repeat(auto-fill, 126px);
         grid-gap: 4px 2px;
-        .fileBox {
+        .fileBoxWrap {
           width: 115px;
-          height: 115px;
+          height: 125px;
           display: flex;
           flex-direction: column;
           position: relative;
           align-items: center;
           justify-content: center;
           border-radius: 5px;
-          cursor: pointer;
-          i {
+          .OperateBox {
             position: absolute;
-            right: 5px;
-            top: 5px;
+            right: 4px;
+            top: 4px;
             color: #228be6;
+            i {
+              font-size: 14px;
+              cursor: pointer;
+              margin: 0px 4px;
+            }
+            i:hover {
+              color: #1971c2;
+            }
+            .iconfont {
+              font-size: 12px;
+            }
+            .el-icon-check,
+            .el-icon-close {
+              font-weight: bold;
+            }
           }
-          .fileIcon {
-            width: 55px;
-            height: 55px;
-            background: #228be6;
+          .fileBox {
+            margin-top: 15px;
+            .checkBoxs {
+              position: absolute;
+              top: 3px;
+              left: 8px;
+            }
+            i {
+              position: absolute;
+              right: 5px;
+              top: 5px;
+              color: #228be6;
+            }
+            .fileIcon {
+              width: 55px;
+              height: 55px;
+              background: #228be6;
+            }
           }
-        }
-        .fileBox:hover {
-          border: 0.5px solid #228be6;
-          background: #e7f5ff;
+
+          .infoWrap {
+            width: 110px;
+            margin-top: 5px;
+            .fileSize {
+              color: #868e96;
+              font-size: 11px;
+              text-align: center;
+            }
+            .fileName {
+              height: 24px;
+              line-height: 24px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              text-align: center;
+              font-size: 12px;
+            }
+          }
         }
         .checked {
           border: 0.5px solid #228be6;
           background: #e7f5ff;
         }
-        .infoWrap {
-          .fileSize {
-            color: #868e96;
-            font-size: 12px;
-          }
-          .fileName {
-            width: 110px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            text-align: center;
-            font-size: 13px;
-          }
+        .fileBoxWrap:hover {
+          border: 0.5px solid #228be6;
+          background: #e7f5ff;
         }
       }
     }

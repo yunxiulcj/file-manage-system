@@ -4,6 +4,11 @@
   text-align: center;
   width: 150px;
 }
+.fileName .el-input--mini .el-input__inner {
+  height: 22px;
+  line-height: 22px;
+  padding: 0px 8px;
+}
 .el-drawer__header{
   margin-bottom: 15px;
 }
