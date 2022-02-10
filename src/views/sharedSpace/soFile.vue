@@ -236,16 +236,23 @@
                   <div>文件大小：{{ item.fileSize }}</div>
                   <div>修改日期：{{ item.lastModified }}</div>
                 </div>
-                <div class="infoWrap" @click="item.dir && getData(item.path)">
+                <div class="infoWrap">
                   <div class="fileName">
-                    <span v-show="!item.showDecide">{{ item.name }}</span>
+                    <span
+                      v-show="!item.showDecide"
+                      @click="item.dir && getData(item.path)"
+                    >
+                      {{ item.name }}
+                    </span>
                     <el-input
                       v-model="item.tempName"
                       v-if="item.showDecide"
                       size="mini"
                     ></el-input>
                   </div>
-                  <div class="fileSize">{{ item.fileSize }}</div>
+                  <div class="fileSize" @click="item.dir && getData(item.path)">
+                    {{ item.fileSize }}
+                  </div>
                 </div>
               </el-tooltip>
             </div>
