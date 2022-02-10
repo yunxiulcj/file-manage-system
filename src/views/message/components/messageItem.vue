@@ -293,7 +293,7 @@ export default {
     },
     clickReject(data) {
       this.editForm.applyId = data.applyId
-      this.editForm.approvalState = 2
+      this.editForm.applyStatus = 2
       this.editForm.downloadCount = data.downloadCount
       this.editForm.downloadExpiredDay = data.downloadDay
       this.canEdit = false
