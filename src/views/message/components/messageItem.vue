@@ -226,11 +226,14 @@ export default {
       },
       detailData: {},
       approvalState: 0,
+      baseUrl: '',
     }
   },
   computed: {},
   watch: {},
-  created() {},
+  created() {
+    this.baseUrl = this.$store.getters.symSetting.uploadUrl
+  },
   methods: {
     confirmEdit() {
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
@@ -259,11 +262,7 @@ export default {
         fileName: data.fileName,
         fileId: data.fileId,
       }).then((res) => {
-        var a = document.createElement('a')
-        var t = new Blob(res)
-        a.href = URL.createObjectURL(t)
-        a.download = data.fileName
-        a.click()
+        window.open(this.baseUrl + 'download?token=' + res.data)
       })
     },
     clickOnAgree(data) {

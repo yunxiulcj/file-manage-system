@@ -87,6 +87,7 @@
 <script>
 import tableTemp from '../../components/table-temp.vue'
 import { unitSetUp } from '../../utils/obj-operation'
+// import { saveAs } from 'file-saver'
 // import axios from 'axios'
 export default {
   name: 'transferStop',
@@ -189,11 +190,7 @@ export default {
             fileName: item.fileName,
             fileId: item.fileId,
           }).then((res) => {
-            var a = document.createElement('a')
-            var t = new Blob(res)
-            a.href = URL.createObjectURL(t)
-            a.download = data.fileName
-            a.click()
+            window.open(this.baseUrl + 'download?token=' + res.data)
           })
         })
       } else {
@@ -204,11 +201,8 @@ export default {
           fileId: data.fileId,
         })
           .then((res) => {
-            var a = document.createElement('a')
-            var t = new Blob(res)
-            a.href = URL.createObjectURL(t)
-            a.download = data.fileName
-            a.click()
+            window.open(this.baseUrl + 'download?token=' + res.data)
+            this.getData()
           })
           .finally(() => {
             this.$set(data, 'loading', false)

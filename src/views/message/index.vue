@@ -23,8 +23,9 @@
         <el-tab-pane label="全部消息" name="2">
           <div
             class="itemWrap"
+            v-if="!showEmply"
             v-loading="loading"
-            v-if="messageList.length > 0"
+            element-loading-text="加载中..."
           >
             <message-item :messageList="messageList"></message-item>
           </div>
@@ -42,8 +43,9 @@
           </span>
           <div
             class="itemWrap"
+            v-if="!showEmply"
             v-loading="loading"
-            v-if="messageList.length > 0"
+            element-loading-text="加载中..."
           >
             <message-item :messageList="messageList"></message-item>
           </div>
@@ -52,8 +54,9 @@
         <el-tab-pane label="已读消息" name="1">
           <div
             class="itemWrap"
+            v-if="!showEmply"
             v-loading="loading"
-            v-if="messageList.length > 0"
+            element-loading-text="加载中..."
           >
             <message-item :messageList="messageList"></message-item>
           </div>
@@ -96,6 +99,7 @@ export default {
         },
       ],
       messageList: [],
+      showEmply: false,
     }
   },
   watch: {
@@ -133,6 +137,7 @@ export default {
     },
     getNoticeList(type) {
       this.loading = true
+      this.showEmply = false
       let startTime = '',
         endTime = ''
       switch (this.filterTime) {
@@ -167,13 +172,17 @@ export default {
         endTime: endTime,
       })
         .then((res) => {
-          if (res.data) {
+          if (res.data && res.data.length > 0) {
             res.data.map((item) => {
               item.attachmentList.map((file) => {
                 file['fileSize'] = unitSetUp(file.fileSize)
               })
             })
+            this.showEmply = false
             this.messageList = res.data
+          } else {
+            this.messageList = []
+            this.showEmply = true
           }
         })
         .finally(() => {
