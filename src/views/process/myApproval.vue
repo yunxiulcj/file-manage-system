@@ -97,7 +97,7 @@
           <span class="tips">注：0表示长期有效</span>
         </el-form-item>
         <el-form-item label="理由*">
-          <el-input v-model="editForm.comment"></el-input>
+          <el-input v-model="editForm.comment" style="width: 335px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -362,7 +362,6 @@ export default {
                   'tempObj',
                   JSON.stringify({
                     accountType: '1',
-                    approvalState: row.applyStatus,
                     applyId: row.applyId,
                   })
                 )
@@ -370,7 +369,6 @@ export default {
                   name: 'approval',
                   query: {
                     accountType: '1',
-                    approvalState: row.applyStatus,
                     applyId: row.applyId,
                   },
                 })
@@ -417,6 +415,10 @@ export default {
   },
   methods: {
     confirmEdit() {
+      if (this.editForm.comment == '') {
+        this.$message.warning('理由不能为空')
+        return
+      }
       this.loading = true
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
       this.$http(url, this.editForm)
@@ -446,4 +448,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.unit {
+  margin-left: 10px;
+}
+</style>

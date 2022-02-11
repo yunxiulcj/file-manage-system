@@ -81,7 +81,7 @@
           提示
         </div>
       </template>
-      <el-form size="small">
+      <el-form size="small" label-position="right" label-width="100px">
         <el-form-item label="下载次数" v-if="canEdit">
           <el-input-number
             v-model="editForm.downloadCount"
@@ -103,7 +103,7 @@
           <span class="tips">注：0表示长期有效</span>
         </el-form-item>
         <el-form-item label="理由*">
-          <el-input v-model="editForm.comment"></el-input>
+          <el-input v-model="editForm.comment" style="width: 335px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -216,13 +216,17 @@ export default {
     },
     refuse(data) {
       this.editForm.applyId = data.applyId
-      this.editForm.approvalState = 2
+      this.editForm.applyStatus = 2
       this.editForm.downloadCount = data.downloadCount
       this.editForm.downloadExpiredDay = data.downloadDay
       this.canEdit = false
       this.agreeOrRefuseDialog = true
     },
     confirmEdit() {
+      if (this.editForm.comment == '') {
+        this.$message.warning('理由不能为空')
+        return
+      }
       this.loading = true
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
       this.$http(url, this.editForm)
@@ -351,5 +355,8 @@ export default {
 }
 .el-divider--horizontal {
   margin: 5px 0px 0px 0px;
+}
+.unit {
+  margin-left: 10px;
 }
 </style>

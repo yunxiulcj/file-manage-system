@@ -121,7 +121,7 @@
           提示
         </div>
       </template>
-      <el-form size="small">
+      <el-form size="small" label-position="right" label-width="100px">
         <el-form-item label="下载次数" v-if="canEdit">
           <el-input-number
             v-model="editForm.downloadCount"
@@ -143,7 +143,7 @@
           <span class="tips">注：0表示长期有效</span>
         </el-form-item>
         <el-form-item label="理由">
-          <el-input v-model="editForm.comment"></el-input>
+          <el-input v-model="editForm.comment" style="width: 335px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -235,7 +235,16 @@ export default {
     this.baseUrl = this.$store.getters.symSetting.uploadUrl
   },
   methods: {
+    MarkRead(val) {
+      this.$http('setNoticeRead', { noticeIdList: [val] }).then(() => {
+        this.$emit('updateList', true)
+      })
+    },
     confirmEdit() {
+      if (this.editForm.comment == '') {
+        this.$message.warning('理由不能为空')
+        return
+      }
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
       this.$http(url, this.editForm).then((res) => {
         this.$message.success(res.errMsg)
@@ -243,6 +252,9 @@ export default {
       })
     },
     showDetail(data) {
+      if (!data.read) {
+        this.MarkRead(data.id)
+      }
       this.$http('getApplyDetail', {
         applyId: data.applyId,
         type: data.applyDetailType,
@@ -266,7 +278,11 @@ export default {
       })
     },
     clickOnAgree(data) {
+      if (!data.read) {
+        this.MarkRead(data.id)
+      }
       if (data.canEdit) {
+        this.editForm.comment = ''
         this.editForm.applyId = data.applyId
         this.editForm.applyStatus = 1
         this.editForm.downloadCount = data.downloadCount
@@ -291,6 +307,10 @@ export default {
       }
     },
     clickReject(data) {
+      if (!data.read) {
+        this.MarkRead(data.id)
+      }
+      this.editForm.comment = ''
       this.editForm.applyId = data.applyId
       this.editForm.applyStatus = 2
       this.editForm.downloadCount = data.downloadCount
@@ -454,5 +474,8 @@ export default {
   min-height: 200px;
   position: relative;
   left: 40px;
+}
+.unit {
+  margin-left: 10px;
 }
 </style>

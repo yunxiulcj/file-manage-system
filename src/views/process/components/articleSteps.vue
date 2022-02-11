@@ -77,6 +77,7 @@ export default {
   created() {},
   methods: {
     initSteps(val) {
+      this.tempSteps = []
       for (let i = 0; i <= val; i++) {
         if (val != 1 && i == 1) {
           continue
@@ -89,7 +90,6 @@ export default {
         }
         this.tempSteps.push(this.stepList[i])
       }
-      console.log(val, this.tempSteps)
     },
   },
 }

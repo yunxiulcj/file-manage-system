@@ -596,8 +596,16 @@ export default {
           if (index == pathList.length - 1) {
             this.getData(this.nowPath)
             this.$message.success(res.errMsg)
+            this.getPersonDiskSize()
           }
         })
+      })
+    },
+    getPersonDiskSize() {
+      this.$http('getPersonDiskSize', {
+        userId: localStorage.getItem('username') || '',
+      }).then((res) => {
+        this.$store.commit('SET_CAPACITY', res.data)
       })
     },
     showEditName(val) {

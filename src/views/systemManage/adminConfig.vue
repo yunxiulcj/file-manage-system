@@ -118,6 +118,15 @@
       </template>
       <div class="treeWrap">
         <div class="leftBox">
+          <div class="title">普通用户</div>
+          <el-tree
+            :data="userData"
+            node-key="id"
+            default-expand-all
+            :props="defaultProps"
+          ></el-tree>
+        </div>
+        <div class="leftBox">
           <div class="title">普通管理员</div>
           <el-tree
             :data="normalData"
@@ -164,6 +173,8 @@ export default {
       })
     }
     return {
+      userId: [],
+      userData: [],
       normalId: [],
       adminId: [],
       normalData: [],
@@ -285,16 +296,20 @@ export default {
         .then((res) => {
           if (res.data && res.data.length > 0) {
             let temp1 = [],
-              temp2 = []
+              temp2 = [],
+              temp3 = []
             res.data.map((item) => {
               if (item.roleId == 1) {
                 temp1.push(item.menuId)
               } else if (item.roleId == 2) {
                 temp2.push(item.menuId)
+              } else {
+                temp3.push(item.menuId)
               }
             })
             this.$set(this, 'adminId', temp1)
             this.$set(this, 'normalId', temp2)
+            this.$set(this, 'userId', temp3)
           }
         })
         .finally(() => {
@@ -303,12 +318,15 @@ export default {
     },
     powerPreview() {
       listRouter.map((item) => {
-        let temp, temp1
+        let temp, temp1, temp2
         if (this.adminId.includes(item.id)) {
           temp = { label: item.meta.title }
         }
         if (this.normalId.includes(item.id)) {
           temp1 = { label: item.meta.title }
+        }
+        if (this.userId.includes(item.id)) {
+          temp2 = { label: item.meta.title }
         }
         if (item.children && item.children.length > 0) {
           item.children.map((child) => {
@@ -326,10 +344,20 @@ export default {
                 temp['children'] = [{ label: child.meta.title }]
               }
             }
+            if (this.userId.includes(child.id)) {
+              if (temp2['children']) {
+                temp2['children'].push({ label: child.meta.title })
+              } else {
+                temp2['children'] = [{ label: child.meta.title }]
+              }
+            }
           })
         }
         if (temp1) {
           this.normalData.push(temp1)
+        }
+        if (temp2) {
+          this.userData.push(temp2)
         }
         this.adminData.push(temp)
       })
@@ -404,6 +432,7 @@ export default {
     flex-direction: row;
     .title {
       color: #495057;
+      font-weight: bolder;
       font-size: 15px;
       padding-left: 20px;
       height: 30px;
@@ -411,11 +440,13 @@ export default {
       border-bottom: 1px solid #dee2e6;
     }
     .leftBox {
-      width: 50%;
-      border-right: 1px solid #dee2e6;
+      width: 33%;
+    }
+    .middle {
+      width: 33%;
     }
     .rightBox {
-      width: 50%;
+      width: 33%;
     }
   }
 }

@@ -27,7 +27,10 @@
             v-loading="loading"
             element-loading-text="加载中..."
           >
-            <message-item :messageList="messageList"></message-item>
+            <message-item
+              :messageList="messageList"
+              @updateList="updateList"
+            ></message-item>
           </div>
           <el-empty v-else description="暂无数据"></el-empty>
         </el-tab-pane>
@@ -47,7 +50,10 @@
             v-loading="loading"
             element-loading-text="加载中..."
           >
-            <message-item :messageList="messageList"></message-item>
+            <message-item
+              :messageList="messageList"
+              @updateList="updateList"
+            ></message-item>
           </div>
           <el-empty v-else description="暂无数据"></el-empty>
         </el-tab-pane>
@@ -116,8 +122,13 @@ export default {
     this.getUserUnreadNoticeNum()
   },
   methods: {
+    updateList(val) {
+      if (val) {
+        this.getNoticeList(this.activeName)
+        this.getUserUnreadNoticeNum()
+      }
+    },
     MarkRead() {
-      // console.log(this.$store.state.global.capacity.totalSize)
       let idList = this.messageList.map((item) => {
         return item.id
       })

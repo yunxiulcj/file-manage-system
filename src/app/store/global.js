@@ -1,6 +1,12 @@
 const state = {
   symSetting: {},
-  capacity: {},
+  capacity: {
+    used: '0',
+    remainingSize: '0',
+    totalSize: '0',
+    usagePercent: '0%',
+    remainingPercent: '0%',
+  },
   downloadForm: {},
   approvalForm: {},
 }

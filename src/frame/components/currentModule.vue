@@ -17,13 +17,16 @@
       <div class="capacityView" v-if="currentModule == 'sharedSpace'">
         <div class="progressWrap">
           <el-progress
-            :percentage="parseFloat(capacity.usagePercent)"
+            :percentage="parseFloat($store.state.global.capacity.usagePercent)"
             color="#228be6"
             :stroke-width="20"
             :text-inside="true"
           ></el-progress>
         </div>
-        <div class="info">{{ capacity.used }} / {{ capacity.totalSize }}</div>
+        <div class="info">
+          {{ $store.state.global.capacity.used }} /
+          {{ $store.state.global.capacity.totalSize }}
+        </div>
       </div>
     </div>
     <div class="contentBox">
@@ -42,7 +45,6 @@ export default {
   components: {},
   data() {
     return {
-      capacity: {},
       leftList: {},
       currentModule: '',
       currentMenu: '',
@@ -55,7 +57,7 @@ export default {
       handler(val) {
         this.currentMenu = val.fullPath
         this.currentModule = this.currentMenu.split('/')[1]
-        if (this.currentModule == 'sharedSpace') {
+        if (this.currentMenu == '/sharedSpace/soFile') {
           this.getPersonDiskSize()
         }
         if (this.isCreated) {
@@ -83,8 +85,7 @@ export default {
       this.$http('getPersonDiskSize', {
         userId: localStorage.getItem('username') || '',
       }).then((res) => {
-        this.capacity = res.data
-        // this.$store.commit('SET_CAPACITY', res.data)
+        this.$store.commit('SET_CAPACITY', res.data)
       })
     },
   },

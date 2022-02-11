@@ -183,12 +183,20 @@ export default {
               this.$message.success(
                 file.name + '上传到' + this.targetPath + '路径成功'
               )
+              this.getPersonDiskSize()
             } else {
               this.$set(this.fileList[fileIndex], 'status', 'error')
               this.$set(this.fileList[fileIndex], 'loading', false)
               this.$message.warning(file.name + '：' + obj.data.errMsg)
             }
           })
+      })
+    },
+    getPersonDiskSize() {
+      this.$http('getPersonDiskSize', {
+        userId: localStorage.getItem('username') || '',
+      }).then((res) => {
+        this.$store.commit('SET_CAPACITY', res.data)
       })
     },
     onUploadChange(file) {

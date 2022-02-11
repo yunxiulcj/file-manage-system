@@ -293,7 +293,6 @@ export default {
                   'tempObj',
                   JSON.stringify({
                     accountType: '2',
-                    approvalState: row.applyStatus,
                     applyId: row.applyId,
                   })
                 )
@@ -301,7 +300,6 @@ export default {
                   name: 'approval',
                   params: {
                     accountType: '2',
-                    approvalState: row.applyStatus,
                     applyId: row.applyId,
                   },
                 })
