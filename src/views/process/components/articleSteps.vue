@@ -63,6 +63,11 @@ export default {
           icon: 'shenhebutongguo',
           label: '审批不通过',
         },
+        {
+          value: 6,
+          icon: 'yichang',
+          label: '传输异常',
+        },
       ],
       tempSteps: [],
     }

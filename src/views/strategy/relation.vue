@@ -103,6 +103,7 @@
                 v-for="item in depUserList"
                 :key="item.userId"
                 :label="item.userId"
+                style="width: 230px"
               >
                 <div class="checkItem">
                   {{ item.userId }}
@@ -121,7 +122,7 @@
               closable
               style="margin: 5px"
             >
-              {{ tag }}
+              <span style="width: 230px; display: inline-block">{{ tag }}</span>
             </el-tag>
           </div>
         </div>
