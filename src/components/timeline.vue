@@ -1,26 +1,26 @@
 <template>
   <el-timeline>
     <el-timeline-item type="success">
-      <span class="labelBox">申请成功</span>
+      <span class="labelBox">{{ $t('cs_.cs_24') }}</span>
       <div class="infoWrap">
         <div class="timeBox">{{ data.applyTime }}</div>
         <div class="infoBox">
           <div class="applyId apply">
-            <span class="label">工单号：</span>
+            <span class="label">{{ $t('cs_.cs_25') }}</span>
             {{ data.applyId }}
           </div>
           <div class="applyUser apply">
-            <span class="label">申请人：</span>
+            <span class="label">{{ $t('cs_common.cs_26') }}</span>
             {{ data.applyUser }}
             <el-divider direction="vertical"></el-divider>
             <span style="font-weight: bolder">{{ data.userDept }}</span>
           </div>
           <div class="applyDesc apply">
-            <span class="label">描述：</span>
+            <span class="label">{{ $t('cs_.cs_26') }}</span>
             {{ data.applyDesc }}
           </div>
           <div class="downloadCount apply">
-            <span class="label">下载次数：</span>
+            <span class="label">{{ $t('cs_.cs_27') }}</span>
             <span class="canBeModifi" v-if="data.canEdit">
               <el-input-number
                 v-model="data.downloadCount"
@@ -29,14 +29,16 @@
                 :min="0"
                 style="margin-left: 12px"
               ></el-input-number>
-              <span class="unit">单位：次</span>
+              <span class="unit">{{ $t('cs_common.cs_9') }}</span>
               <el-divider direction="vertical"></el-divider>
-              <span class="tips">注：0表示没有限制</span>
+              <span class="tips">{{ $t('cs_.cs_28') }}</span>
             </span>
-            <span class="noModifi" v-else>{{ data.downloadCount }} 次</span>
+            <span class="noModifi" v-else>
+              {{ data.downloadCount + $t('cs_.cs_29') }}
+            </span>
           </div>
           <div class="expiredDay apply">
-            <span class="label">申请有效期：</span>
+            <span class="label">{{ $t('cs_.cs_30') }}</span>
             <span class="canBeModifi" v-if="data.canEdit">
               <el-input-number
                 v-model="data.downloadDay"
@@ -44,11 +46,13 @@
                 size="small"
                 :min="0"
               ></el-input-number>
-              <span class="unit">单位：天</span>
+              <span class="unit">{{ $t('cs_common.cs_27') }}</span>
               <el-divider direction="vertical"></el-divider>
-              <span class="tips">注：0表示长期有效</span>
+              <span class="tips">{{ $t('cs_common.cs_28') }}</span>
             </span>
-            <span class="noModifi" v-else>{{ data.downloadDay }} 天</span>
+            <span class="noModifi" v-else>
+              {{ data.downloadDay + $t('cs_.cs_31') }}
+            </span>
           </div>
         </div>
       </div>
@@ -64,10 +68,12 @@
           : 'danger'
       "
     >
-      <span class="labelBox" v-if="index == 0">审批中</span>
+      <span class="labelBox" v-if="index == 0">
+        {{ $t('cs_common.cs_29') }}
+      </span>
       <span class="timeBox">{{ item.approvalTime }}</span>
       <span class="approvaler">
-        <span class="label">审批人：</span>
+        <span class="label">{{ $t('cs_.cs_32') }}</span>
         {{ item.user }}
       </span>
       <span
@@ -86,7 +92,7 @@
         {{ state[item.state] }}
       </span>
       <span class="reason" v-if="item.reason">
-        <span class="label">理由：</span>
+        <span class="label">{{ $t('cs_.cs_33') }}</span>
         {{ item.reason }}
       </span>
     </el-timeline-item>
@@ -107,11 +113,11 @@ export default {
   data() {
     return {
       state: {
-        1: '已撤回',
-        2: '待处理',
-        3: '审批中',
-        4: '审批通过',
-        5: '审批不通过',
+        1: this.$t('cs_common.cs_30'),
+        2: this.$t('cs_common.cs_31'),
+        3: this.$t('cs_common.cs_29'),
+        4: this.$t('cs_common.cs_32'),
+        5: this.$t('cs_common.cs_33'),
       },
     }
   },

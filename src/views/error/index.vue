@@ -4,7 +4,9 @@
       <i class="errr-icon el-icon-warning"></i>
       <span class="text">can not find this page</span>
     </div>
-    <router-link class="return-home" to="/">返回首页</router-link>
+    <router-link class="return-home" to="/">
+      {{ $t('cs_error.cs_1') }}
+    </router-link>
   </div>
 </template>
 

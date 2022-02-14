@@ -5,9 +5,17 @@ import qs from 'qs'
 import { Message } from 'element-ui'
 import { typeTest } from '@/utils/obj-operation'
 import router from '@/app/router/index'
+
 function getErrText(data) {
-  if (!data || !data.errMsg) {
-    return '网络异常'
+  if (!data || !data.message) {
+    let language = localStorage.getItem('language') || 'zh'
+    let mes
+    if (language == 'zh') {
+      mes = '网络异常'
+    } else if (language == 'en') {
+      mes = 'Network anomalies'
+    }
+    return mes
   }
   if (typeTest(data.errMsg, 'string')) {
     return data.errMsg
@@ -19,12 +27,6 @@ function getErrText(data) {
 }
 
 function handleError(msg) {
-  if (msg.toLowerCase().indexOf('network') > -1) {
-    msg = '网络异常，请检查您的网络配置'
-  }
-  if (msg.toLowerCase().indexOf('timeout') > -1) {
-    msg = '请求超时，请重新尝试'
-  }
   Message.warning(msg)
 }
 
@@ -58,7 +60,14 @@ function responseInterceptor(response) {
       case -1:
         return data
       case 14001:
-        handleError('登录过期，请重新登录')
+        var language = localStorage.getItem('language') || 'zh'
+        var mes
+        if (language == 'zh') {
+          mes = '登录过期，请重新登录'
+        } else if (language == 'en') {
+          mes = 'Login expired. Please log in again'
+        }
+        handleError(mes)
         router.push('/login')
         break
       default:
@@ -72,7 +81,14 @@ function responseInterceptor(response) {
 }
 
 function error(err) {
-  handleError('网络异常')
+  let language = localStorage.getItem('language') || 'zh'
+  let mes
+  if (language == 'zh') {
+    mes = '网络异常'
+  } else if (language == 'en') {
+    mes = 'Network anomalies'
+  }
+  handleError(mes)
   return Promise.reject(err)
 }
 

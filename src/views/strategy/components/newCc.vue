@@ -15,10 +15,10 @@
             padding-left: 10px;
           "
         >
-          添加成员
+          {{ $t('cs_common.cs_90') }}
         </div>
       </template>
-      <div class="tips">添加指定成员（不超过100人）</div>
+      <div class="tips">{{ $t('cs_strategy.cs_20') }}</div>
       <div class="contentBox">
         <div class="treeWrap">
           <el-tree
@@ -56,9 +56,11 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel" size="small">取 消</el-button>
+        <el-button @click="cancel" size="small">
+          {{ $t('cs_common.cs_11') }}
+        </el-button>
         <el-button type="primary" @click="confirm" size="small">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>

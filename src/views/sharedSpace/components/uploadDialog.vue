@@ -15,11 +15,11 @@
             padding-left: 10px;
           "
         >
-          文件上传
+          {{ $t('cs_common.cs_50') }}
         </div>
       </template>
       <div style="margin-bottom: 5px; font-size: 13px">
-        请选择路径（再次点击选中路径取消选中）
+        {{ $t('cs_sharedSpace.cs_1') }}
       </div>
       <div class="fileTreeWrap">
         <el-tree
@@ -29,7 +29,7 @@
           :load="loadNode"
           node-key="label"
           lazy
-          empty-text="暂无数据"
+          :empty-text="$t('cs_common.cs_57')"
           @node-click="nodeClick"
         >
           <span class="nodeItem" slot-scope="{ node }">
@@ -40,7 +40,7 @@
           </span>
         </el-tree>
       </div>
-      <div class="pathBox">目标路径：{{ targetPath }}</div>
+      <div class="pathBox">{{ $t('cs_sharedSpace.cs_32') + targetPath }}</div>
       <el-divider></el-divider>
       <div class="uploadWrap">
         <el-upload
@@ -56,7 +56,7 @@
           multiple
         >
           <el-button slot="trigger" size="mini" type="primary">
-            选取文件
+            {{ $t('cs_sharedSpace.cs_2') }}
           </el-button>
           <el-button
             style="float: right"
@@ -65,7 +65,7 @@
             @click="submitUpload"
             :disabled="fileList.length <= 0"
           >
-            上传到服务器
+            {{ $t('cs_sharedSpace.cs_3') }}
           </el-button>
         </el-upload>
         <div class="fileList">
@@ -76,7 +76,9 @@
           >
             <div class="fileName">{{ file.name }}</div>
             <div class="fileSize">{{ file.size }}</div>
-            <div class="loading" v-if="file.loading">上传中...</div>
+            <div class="loading" v-if="file.loading">
+              {{ $t('cs_sharedSpace.cs_4') }}
+            </div>
             <div class="fileState" v-else>
               <i
                 class="el-icon-close"
@@ -90,7 +92,9 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel" size="small">关 闭</el-button>
+        <el-button @click="cancel" size="small">
+          {{ $t('cs_common.cs_13') }}
+        </el-button>
       </span>
     </el-dialog>
   </div>
@@ -181,7 +185,10 @@ export default {
               this.$set(this.fileList[fileIndex], 'status', 'success')
               this.$set(this.fileList[fileIndex], 'loading', false)
               this.$message.success(
-                file.name + '上传到' + this.targetPath + '路径成功'
+                file.name +
+                  this.$t('cs_sharedSpace.cs_5') +
+                  this.targetPath +
+                  this.$t('cs_sharedSpace.cs_6')
               )
               this.getPersonDiskSize()
             } else {

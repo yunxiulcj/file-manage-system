@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <page-frame title="审批策略" icon="approvalStrategy">
+    <page-frame :title="$t('cs_strategy.cs_1')" icon="approvalStrategy">
       <template #headBtn>
         <el-button
           type="primary"
@@ -9,11 +9,11 @@
           @click="newStrategy"
           v-show="!showNewStrategy"
         >
-          新建策略
+          {{ $t('cs_common.cs_83') }}
         </el-button>
       </template>
       <div class="strategyWrap" v-if="!showNewStrategy">
-        <div class="tips">提示：优先匹配排序靠前的审批流程</div>
+        <div class="tips">{{ $t('cs_strategy.cs_2') }}</div>
         <strategy-item
           v-if="!loading"
           :strategyList="strategyList"
@@ -30,7 +30,7 @@
           <div class="title">{{ newOrEditTitle }}</div>
           <div class="goBack" @click="showNewStrategy = false">
             <i class="el-icon-back"></i>
-            <span>返回上一级</span>
+            <span>{{ $t('cs_common.cs_1') }}</span>
           </div>
         </div>
         <div class="content">
@@ -40,15 +40,15 @@
             label-position="right"
             size="small"
           >
-            <el-form-item label="策略名称">
+            <el-form-item :label="$t('cs_strategy.cs_3')">
               <el-input
                 v-model="formObj.strategyName"
-                placeholder="请输入策略名称"
+                :placeholder="$t('cs_strategy.cs_4')"
                 @blur="strategyNameExists"
                 style="width: 335px"
               ></el-input>
             </el-form-item>
-            <el-form-item label="应用范围">
+            <el-form-item :label="$t('cs_strategy.cs_5')">
               <scope-select
                 v-model="showScope"
                 @fullPath="fullPath"
@@ -57,7 +57,7 @@
                 width="335px"
               ></scope-select>
             </el-form-item>
-            <el-form-item label="审批人">
+            <el-form-item :label="$t('cs_common.cs_7')">
               <div class="approvalWrap">
                 <div
                   class="approval"
@@ -67,7 +67,7 @@
                   <div
                     class="approvalBox"
                     v-if="item.type == 1"
-                    title="点击编辑"
+                    :title="$t('cs_common.cs_84')"
                     @mouseenter="setShowEdit(item)"
                     @mouseleave="setHideEdit(item)"
                     @click="editApproval(item, index)"
@@ -102,7 +102,7 @@
                   <div
                     class="approvalBox"
                     v-if="item.type == 2"
-                    title="点击编辑"
+                    :title="$t('cs_common.cs_84')"
                     @mouseenter="setShowEdit(item)"
                     @mouseleave="setHideEdit(item)"
                     @click="editApproval(item, index)"
@@ -147,7 +147,7 @@
                   <div
                     class="approvalBox"
                     v-if="item.type == 3"
-                    title="点击编辑"
+                    title="$t('cs_common.cs_84')"
                     @mouseenter="setShowEdit(item)"
                     @mouseleave="setHideEdit(item)"
                     @click="editApproval(item, index)"
@@ -167,7 +167,7 @@
                     </div>
                     <div class="itemWrap">
                       <div class="itemBox">
-                        <div class="itemName">申请人本人</div>
+                        <div class="itemName">{{ $t('cs_common.cs_85') }}</div>
                       </div>
                     </div>
                     <div class="approvalMode"></div>
@@ -182,10 +182,10 @@
         </div>
         <div class="footer">
           <el-button type="primary" size="small" @click="saveNewOrEdit">
-            保存
+            {{ $t('cs_common.cs_86') }}
           </el-button>
           <el-button type="info" size="small" @click="cancelCreate">
-            取消
+            {{ $t('cs_common.cs_10') }}
           </el-button>
         </div>
       </div>
@@ -222,35 +222,22 @@ export default {
       showNewApproval: false,
       newOrEditTitle: '',
       approvalType: {
-        1: '指定上级',
-        2: '指定成员',
-        3: '申请人本人',
+        1: this.$t('cs_common.cs_87'),
+        2: this.$t('cs_common.cs_88'),
+        3: this.$t('cs_common.cs_85'),
       },
       approvalMode: {
-        1: '会签',
-        2: '或签',
-        3: '依次审批',
+        1: this.$t('cs_common.cs_17'),
+        2: this.$t('cs_common.cs_18'),
+        3: this.$t('cs_common.cs_19'),
       },
       levelObj: {
-        1: '直接上级',
-        2: '第二级上级',
-        3: '第三级上级',
-        4: '第四级上级',
-        5: '第五级上级',
-        6: '第六级上级',
-      },
-      approvalObj: {
-        superior: {
-          levelType: 1,
-          level: 1,
-          noSuperior: false,
-          approvalType: 1,
-        },
-        member: {
-          approvalType: 1,
-          userList: [],
-        },
-        type: 1,
+        1: this.$t('cs_common.cs_20'),
+        2: this.$t('cs_common.cs_21'),
+        3: this.$t('cs_common.cs_22'),
+        4: this.$t('cs_common.cs_23'),
+        5: this.$t('cs_common.cs_24'),
+        6: this.$t('cs_common.cs_25'),
       },
       formObj: {
         id: null,
@@ -265,6 +252,7 @@ export default {
               level: 1,
               noSuperior: false,
               approvalType: 1,
+              defaultApprovalUser: '',
             },
             member: {
               approvalType: 1,
@@ -310,7 +298,7 @@ export default {
           strategyName: this.formObj.strategyName,
         }).then((res) => {
           if (res.data) {
-            this.$message.warning('该策略名称已存在')
+            this.$message.warning(this.$t('cs_common.cs_89'))
             this.nameUsed = true
           } else {
             this.nameUsed = false
@@ -319,7 +307,7 @@ export default {
       }
     },
     newStrategy() {
-      this.newOrEditTitle = '新建策略'
+      this.newOrEditTitle = this.$t('cs_common.cs_83')
       this.isCreate = true
       this.showScope = ''
       this.formObj.strategyType = 1
@@ -335,7 +323,7 @@ export default {
       this.setPath = data.scope
       this.showNewStrategy = val
       this.showScope = data.scope.split(',')[0].substring(3)
-      this.newOrEditTitle = '编辑策略'
+      this.newOrEditTitle = this.$t('cs_strategy.cs_6')
       data['strategyType'] = 1
       this.formObj = clone(data)
     },
@@ -393,6 +381,11 @@ export default {
             'approvalType',
             temp.superior.approvalType
           )
+          this.$set(
+            this.formObj.approvalList[this.editIndex].superior,
+            'defaultApprovalUser',
+            temp.superior.defaultApprovalUser
+          )
         } else if (temp.type == 2) {
           if (!this.formObj.approvalList[this.editIndex].member) {
             this.formObj.approvalList[this.editIndex].member = {}
@@ -425,7 +418,7 @@ export default {
             this.getData()
           })
       } else {
-        this.$message.warning('该策略名称已存在')
+        this.$message.warning(this.$t('cs_common.cs_89'))
       }
     },
     cancelCreate() {

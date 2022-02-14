@@ -10,7 +10,7 @@
             padding-left: 10px;
           "
         >
-          添加审批人
+          {{ $t('cs_strategy.cs_7') }}
         </div>
       </template>
       <el-radio-group v-model="formObj.type" @change="typeChange">
@@ -25,7 +25,7 @@
       <el-divider></el-divider>
       <div class="superior" v-if="formObj.type == 1">
         <div class="level">
-          <div class="label">指定层级</div>
+          <div class="label">{{ $t('cs_strategy.cs_8') }}</div>
           <el-select
             v-model="formObj.superior.levelType"
             size="small"
@@ -48,16 +48,38 @@
           </el-select>
         </div>
         <div class="noLevel">
-          <div class="label">当前层级无上级时</div>
+          <div class="label">{{ $t('cs_strategy.cs_9') }}</div>
           <el-checkbox v-model="formObj.superior.noSuperior">
-            当前层级无上级时，此审批节点为空，直接跳过由上一级审批
+            <span
+              style="
+                display: inline-grid;
+                white-space: pre-line;
+                word-wrap: break-word;
+                overflow: hidden;
+                line-height: 20px;
+                width: 460px;
+              "
+            >
+              {{ $t('cs_strategy.cs_10') }}
+            </span>
           </el-checkbox>
+        </div>
+        <div class="noLevel">
+          <div class="label">{{ $t('cs_strategy.cs_65') }}</div>
+          <div class="Default">
+            <span class="label">{{ $t('cs_strategy.cs_66') }}</span>
+            <el-input
+              v-model="formObj.superior.defaultApprovalUser"
+              size="small"
+              style="width: 380px; margin-left: 10px"
+            ></el-input>
+          </div>
         </div>
       </div>
       <div class="member" v-if="formObj.type == 2">
         <div class="labelWrap">
-          <span class="label">添加成员</span>
-          <span class="tips">不能超过100人</span>
+          <span class="label">{{ $t('cs_common.cs_90') }}</span>
+          <span class="tips">{{ $t('cs_strategy.cs_11') }}</span>
         </div>
         <div class="memberWrap">
           <div
@@ -90,9 +112,9 @@
       <div class="label">
         {{
           formObj.type == 2
-            ? '多人审批模式'
+            ? this.$t('cs_strategy.cs_12')
             : formObj.type == 1
-            ? '同时有多个上级时'
+            ? this.$t('cs_strategy.cs_13')
             : ''
         }}
       </div>
@@ -112,9 +134,11 @@
         </el-radio>
       </el-radio-group>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel" size="small">取 消</el-button>
+        <el-button @click="cancel" size="small">
+          {{ $t('cs_common.cs_11') }}
+        </el-button>
         <el-button type="primary" size="small" @click="confirm">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -158,65 +182,65 @@ export default {
       tempVal: false,
       approvalType: [
         {
-          label: '指定上级',
+          label: this.$t('cs_common.cs_87'),
           value: 1,
         },
         {
-          label: '指定成员',
+          label: this.$t('cs_common.cs_88'),
           value: 2,
         },
         {
-          label: '申请人本人',
+          label: this.$t('cs_common.cs_85'),
           value: 3,
         },
       ],
       approvalMode: [
         {
-          label: '会签（须所有成员同意）',
+          label: this.$t('cs_strategy.cs_14'),
           value: 1,
         },
         {
-          label: '或签（一名成员同意即可）',
+          label: this.$t('cs_strategy.cs_15'),
           value: 2,
         },
         {
-          label: '依次审批（按顺序依次审批）',
+          label: this.$t('cs_strategy.cs_16'),
           value: 3,
         },
       ],
       levelTypes: [
         {
-          label: '从下到上',
+          label: this.$t('cs_strategy.cs_17'),
           value: 1,
         },
         {
-          label: '从上到下',
+          label: this.$t('cs_strategy.cs_18'),
           value: 2,
         },
       ],
       levelList: [
         {
-          label: '直接上级',
+          label: this.$t('cs_common.cs_20'),
           value: 1,
         },
         {
-          label: '第二级上级',
+          label: this.$t('cs_common.cs_21'),
           value: 2,
         },
         {
-          label: '第三级上级',
+          label: this.$t('cs_common.cs_22'),
           value: 3,
         },
         {
-          label: '第四级上级',
+          label: this.$t('cs_common.cs_23'),
           value: 4,
         },
         {
-          label: '第五级上级',
+          label: this.$t('cs_common.cs_24'),
           value: 5,
         },
         {
-          label: '第六级上级',
+          label: this.$t('cs_common.cs_25'),
           value: 6,
         },
       ],
@@ -238,6 +262,7 @@ export default {
           level: 1,
           noSuperior: false,
           approvalType: 1,
+          defaultApprovalUser: '',
         },
         member: {
           approvalType: 1,
@@ -263,6 +288,7 @@ export default {
           level: 1,
           noSuperior: false,
           approvalType: 1,
+          defaultApprovalUser: '',
         }
       } else {
         this.initData(3)
@@ -295,6 +321,10 @@ export default {
       this.$emit('input', false)
     },
     confirm() {
+      if (this.formObj.type == 2 && this.formObj.member.userList.length <= 0) {
+        this.$message.warning(this.$t('cs_strategy.cs_19'))
+        return
+      }
       this.$emit('input', false)
       this.$emit('addApproval', clone(this.formObj), this.editOrNew)
     },

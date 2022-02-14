@@ -7,7 +7,9 @@
     clearable
   >
     <template slot="empty">
-      <div @click="goBack(depOU)" size="mini" class="goBack">向上一级</div>
+      <div @click="goBack(depOU)" size="mini" class="goBack">
+        {{ $t('cs_strategy.cs_21') }}
+      </div>
       <div class="depWrap" v-if="depList.length > 0">
         <div
           class="depItem"
@@ -18,14 +20,16 @@
           <i
             class="el-icon-circle-plus-outline"
             @click="getDepartmentList(item.dn)"
-            title="点击获取子部门"
+            :title="$t('cs_strategy.cs_22')"
           ></i>
           <div class="depName" :style="item.style" @click="selectDep(index)">
             {{ item.name }}
           </div>
         </div>
       </div>
-      <div class="noData" v-loading="depLoading" v-else>暂无数据</div>
+      <div class="noData" v-loading="depLoading" v-else>
+        {{ $t('cs_common.cs_57') }}
+      </div>
     </template>
   </el-select>
 </template>
@@ -91,7 +95,7 @@ export default {
           this.getDepartmentList('')
         }
       } else {
-        this.$message.warning('已无上级')
+        this.$message.warning(this.$t('cs_strategy.cs_23'))
       }
     },
     getDepartmentList(val) {

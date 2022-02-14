@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <page-frame title="邮件配置" icon="emailConfig">
+    <page-frame :title="$t('cs_systemManage.cs_33')" icon="emailConfig">
       <div class="formBox" v-loading="loading">
         <el-form
           :model="formObj"
@@ -12,32 +12,38 @@
           style="width: 420px"
         >
           <div style="height: 60px"></div>
-          <el-form-item label="SMTP服务器" prop="emailService">
+          <el-form-item
+            :label="$t('cs_systemManage.cs_34')"
+            prop="emailService"
+          >
             <el-input
               v-model="formObj.emailService"
-              placeholder="请输入SMTP服务器"
+              :placeholder="$t('cs_common.cs_106')"
               clearable
             ></el-input>
           </el-form-item>
           <el-form-item label="Port" prop="emailPort">
             <el-input
               v-model="formObj.emailPort"
-              placeholder="请输入端口"
+              :placeholder="this.$t('cs_common.cs_107')"
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="账号" prop="emailUsername">
+          <el-form-item
+            :label="$t('cs_systemManage.cs_35')"
+            prop="emailUsername"
+          >
             <el-input
               v-model="formObj.emailUsername"
-              placeholder="请输入账号"
+              :placeholder="this.$t('cs_common.cs_108')"
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="emailPassword">
+          <el-form-item :label="$t('cs_common.cs_37')" prop="emailPassword">
             <el-input
               v-model="formObj.emailPassword"
               :type="inputType"
-              placeholder="请输入密码"
+              :placeholder="$t('cs_common.cs_40')"
             >
               <i slot="suffix" :class="inputIcon" @click="changeType"></i>
             </el-input>
@@ -45,7 +51,7 @@
           <el-form-item>
             <el-checkbox
               v-model="formObj.ssllogin"
-              label="使用SSL登录"
+              :label="$t('cs_systemManage.cs_36')"
             ></el-checkbox>
           </el-form-item>
           <el-form-item>
@@ -54,11 +60,13 @@
               :loading="saveLoading"
               @click="emailSetting"
             >
-              保存
+              {{ $t('cs_common.cs_86') }}
             </el-button>
-            <el-button type="danger" @click="resetForm">重置</el-button>
+            <el-button type="danger" @click="resetForm">
+              {{ $t('cs_systemManage.cs_37') }}
+            </el-button>
             <el-button type="info" @click="testEmail" :loading="testLoading">
-              测试邮件
+              {{ $t('cs_systemManage.cs_38') }}
             </el-button>
           </el-form-item>
         </el-form>
@@ -88,14 +96,32 @@ export default {
       },
       formRules: {
         emailService: [
-          { required: true, message: '请输入SMTP服务器', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_106'),
+            trigger: 'blur',
+          },
         ],
-        emailPort: [{ required: true, message: '请输入端口', trigger: 'blur' }],
+        emailPort: [
+          {
+            required: true,
+            message: this.$t('cs_common.cs_107'),
+            trigger: 'blur',
+          },
+        ],
         emailUsername: [
-          { required: true, message: '请输入账号', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_108'),
+            trigger: 'blur',
+          },
         ],
         emailPassword: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_40'),
+            trigger: 'blur',
+          },
         ],
       },
     }

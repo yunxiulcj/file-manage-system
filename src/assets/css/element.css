@@ -12,6 +12,13 @@
 .el-drawer__header{
   margin-bottom: 15px;
 }
+.el-checkbox__input {
+	display: inline-grid;
+    white-space: pre-line;
+    word-wrap: break-word;
+    overflow: hidden;
+    line-height: 20px;
+ }
 .loadingStyle {
 position: absolute;
 top: 14px;

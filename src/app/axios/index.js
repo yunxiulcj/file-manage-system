@@ -7,10 +7,21 @@ import store from '@/app/store/index'
  * axios 实例
  */
 /* eslint-disable */
+let language = localStorage.getItem('language')
+if (language) {
+  if (language == 'zh') {
+    language = 'zh-CN'
+  } else if (language == 'en') {
+    language = 'en-US'
+  }
+} else {
+  language = 'zh-CN'
+}
 let baseSetting = {
   timeout: 600000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept-Language': language
   },
   // baseURL:'/api',
   withCredentials: true

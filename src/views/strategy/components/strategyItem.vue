@@ -13,7 +13,7 @@
           <div class="operate">
             <i
               class="iconfont icon-bianji"
-              title="编辑"
+              :title="$t('cs_common.cs_77')"
               @click="editItem(item)"
             ></i>
             <el-dropdown
@@ -24,18 +24,20 @@
                 <i class="iconfont icon-gengduo"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="del">删除</el-dropdown-item>
+                <el-dropdown-item command="del">
+                  {{ $t('cs_common.cs_51') }}
+                </el-dropdown-item>
                 <el-dropdown-item command="top" :disabled="index == 0">
-                  置顶
+                  {{ $t('cs_strategy.cs_24') }}
                 </el-dropdown-item>
                 <el-dropdown-item command="up" :disabled="index == 0">
-                  上移
+                  {{ $t('cs_strategy.cs_25') }}
                 </el-dropdown-item>
                 <el-dropdown-item
                   command="down"
                   :disabled="index == strategyList.length - 1"
                 >
-                  下移
+                  {{ $t('cs_strategy.cs_26') }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -43,14 +45,14 @@
         </div>
         <div class="contentWrap">
           <div class="condition">
-            <div class="label">条件</div>
+            <div class="label">{{ $t('cs_strategy.cs_27') }}</div>
             <div class="content">
-              <span>应用范围：</span>
+              <span>{{ $t('cs_strategy.cs_28') }}</span>
               <span>{{ item.scope.split(',')[0].substring(3) }}</span>
             </div>
           </div>
           <div class="approval">
-            <div class="label">审批人</div>
+            <div class="label">{{ $t('cs_common.cs_7') }}</div>
             <div class="approvalRound">
               <div
                 class="approvalWrap"
@@ -94,7 +96,7 @@
                     <div class="iconBox">
                       <i class="iconfont icon-yonghutianchong"></i>
                     </div>
-                    <span>申请人本人</span>
+                    <span>{{ $t('cs_common.cs_85') }}</span>
                   </div>
                 </div>
               </div>
@@ -117,17 +119,17 @@ export default {
       testKey: 0,
       operateId: 0,
       approvalMode: {
-        1: '会签',
-        2: '或签',
-        3: '依次审批',
+        1: this.$t('cs_common.cs_17'),
+        2: this.$t('cs_common.cs_18'),
+        3: this.$t('cs_common.cs_19'),
       },
       levelObj: {
-        1: '直接上级',
-        2: '第二级上级',
-        3: '第三级上级',
-        4: '第四级上级',
-        5: '第五级上级',
-        6: '第六级上级',
+        1: this.$t('cs_common.cs_20'),
+        2: this.$t('cs_common.cs_21'),
+        3: this.$t('cs_common.cs_22'),
+        4: this.$t('cs_common.cs_23'),
+        5: this.$t('cs_common.cs_24'),
+        6: this.$t('cs_common.cs_25'),
       },
     }
   },

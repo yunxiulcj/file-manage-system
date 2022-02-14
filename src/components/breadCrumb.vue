@@ -1,7 +1,7 @@
 <template>
   <div class="breadCrumb">
     <span class="goBack" @click="goBack" v-if="pathList.length > 1">
-      返回上一级
+      {{ $t('cs_common.cs_1') }}
     </span>
     <el-divider direction="vertical" v-if="pathList.length > 1"></el-divider>
     <span class="pathBox" v-for="(item, index) in pathList" :key="index">
@@ -9,7 +9,7 @@
         :class="{ pathName: pathList.length - 1 !== index }"
         @click="pathList.length - 1 !== index && clickItem(index, item)"
       >
-        {{ item == '' ? '全部文件' : item }}
+        {{ item == '' ? $t('cs_.cs_1') : item }}
       </span>
       <i class="el-icon-arrow-right" v-if="index != pathList.length - 1"></i>
     </span>

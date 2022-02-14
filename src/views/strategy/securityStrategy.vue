@@ -1,6 +1,10 @@
 <template>
   <div class="box">
-    <page-frame title="安全策略" icon="securityStrategy" :aside="true">
+    <page-frame
+      :title="$t('cs_strategy.cs_44')"
+      icon="securityStrategy"
+      :aside="true"
+    >
       <template #aside>
         <mini-menu :options="menuList" v-model="menu"></mini-menu>
       </template>
@@ -9,7 +13,7 @@
           <el-form size="small" label-width="200px" label-position="left">
             <el-form-item>
               <span slot="label" style="color: #228be6; font-size: 16px">
-                密码策略
+                {{ $t('cs_common.cs_95') }}
               </span>
               <el-switch
                 v-model="passForm.passStrategy"
@@ -17,7 +21,7 @@
                 inactive-color="#adb5bd"
               ></el-switch>
             </el-form-item>
-            <el-form-item label="密码最小长度">
+            <el-form-item :label="$t('cs_strategy.cs_45')">
               <el-input-number
                 v-model="passForm.passMin"
                 controls-position="right"
@@ -25,7 +29,7 @@
                 :max="20"
               ></el-input-number>
             </el-form-item>
-            <el-form-item label="密码中至少包含大写字母数">
+            <el-form-item :label="$t('cs_strategy.cs_46')">
               <el-input-number
                 v-model="passForm.passUpper"
                 controls-position="right"
@@ -33,7 +37,7 @@
                 :max="20"
               ></el-input-number>
             </el-form-item>
-            <el-form-item label="密码中至少包含特殊字符个数">
+            <el-form-item :label="$t('cs_strategy.cs_47')">
               <el-input-number
                 v-model="passForm.passSpecial"
                 controls-position="right"
@@ -41,12 +45,12 @@
                 :max="20"
               ></el-input-number>
             </el-form-item>
-            <el-form-item label="密码过期时间">
+            <el-form-item :label="$t('cs_strategy.cs_48')">
               <el-radio v-model="passForm.passOverdue" label="0">
-                设置天数
+                {{ $t('cs_strategy.cs_49') }}
               </el-radio>
               <el-radio v-model="passForm.passOverdue" label="1">
-                不限制
+                {{ $t('cs_strategy.cs_50') }}
               </el-radio>
               <el-input-number
                 v-show="passForm.passOverdue == 0"
@@ -60,7 +64,7 @@
         </div>
         <div class="btnBox">
           <el-button type="primary" size="small" @click="savePass">
-            保存
+            {{ $t('cs_common.cs_86') }}
           </el-button>
         </div>
       </div>
@@ -69,7 +73,7 @@
           <el-form size="small" label-width="170px" label-position="left">
             <el-form-item>
               <span slot="label" style="color: #228be6; font-size: 16px">
-                登录策略
+                {{ $t('cs_common.cs_96') }}
               </span>
               <el-switch
                 v-model="loginForm.passStrategy"
@@ -77,38 +81,38 @@
                 inactive-color="#adb5bd"
               ></el-switch>
             </el-form-item>
-            <el-form-item label="密码错误锁定次数">
+            <el-form-item :label="$t('cs_strategy.cs_51')">
               <el-input-number
                 v-model="loginForm.lockNum"
                 controls-position="right"
                 :min="0"
                 :max="20"
               ></el-input-number>
-              <span class="unit">单位：次</span>
+              <span class="unit">{{ $t('cs_common.cs_9') }}</span>
             </el-form-item>
-            <el-form-item label="密码错误锁定时间">
+            <el-form-item :label="$t('cs_strategy.cs_52')">
               <el-input-number
                 v-model="loginForm.lockTime"
                 controls-position="right"
                 :min="0"
                 :max="20"
               ></el-input-number>
-              <span class="unit">单位：小时</span>
+              <span class="unit">{{ $t('cs_strategy.cs_53') }}</span>
             </el-form-item>
-            <el-form-item label="非活跃用户自动登出时间">
+            <el-form-item :label="$t('cs_strategy.cs_54')">
               <el-input-number
                 v-model="loginForm.logoutTime"
                 controls-position="right"
                 :min="0"
                 :max="20"
               ></el-input-number>
-              <span class="unit">单位：分钟</span>
+              <span class="unit">{{ $t('cs_strategy.cs_55') }}</span>
             </el-form-item>
           </el-form>
         </div>
         <div class="btnBox">
           <el-button type="primary" size="small" @click="saveLogin">
-            保存
+            {{ $t('cs_common.cs_86') }}
           </el-button>
         </div>
       </div>
@@ -116,7 +120,7 @@
         <div class="contentBox">
           <div class="limitStrategy">
             <span style="color: #228be6; font-size: 16px; margin-right: 30px">
-              登录限制策略
+              {{ $t('cs_common.cs_97') }}
             </span>
             <el-switch
               v-model="limitForm.isOpen"
@@ -126,34 +130,34 @@
           </div>
 
           <div class="limitTitle">
-            黑名单
-            <span class="limitTips">（无权登录文档管理系统的用户/用户组）</span>
+            {{ $t('cs_strategy.cs_56') }}
+            <span class="limitTips">{{ $t('cs_strategy.cs_64') }}</span>
           </div>
           <el-input
             v-model="limitStr"
             size="small"
             style="width: 365px; margin-right: 12px"
             clearable
-            placeholder="请输入添加到黑名单的用户或用户组名称"
+            :placeholder="$t('cs_strategy.cs_58')"
           ></el-input>
           <el-button
             type="primary"
             size="small"
             @click="addBlacklist(limitStr)"
           >
-            添加
+            {{ $t('cs_strategy.cs_59') }}
           </el-button>
           <div class="limitListTitle">
-            当前已设置的黑名单用户和用户组列表
+            {{ $t('cs_strategy.cs_60') }}
             <span class="limitListTips">
               （
               <span class="limitListUser">
                 <i class="iconfont icon-yonghutianchong"></i>
-                用户
+                {{ $t('cs_common.cs_98') }}
               </span>
               <span class="limitListUserGroup">
                 <i class="iconfont icon-huaban"></i>
-                用户组
+                {{ $t('cs_strategy.cs_61') }}
               </span>
               ）
             </span>
@@ -185,14 +189,14 @@
                 size="small"
                 @click="delBlacklist(limitDelList)"
               >
-                删除
+                {{ $t('cs_common.cs_51') }}
               </el-button>
             </div>
           </div>
         </div>
         <div class="btnBox">
           <el-button type="primary" size="small" @click="saveLimit">
-            保存
+            {{ $t('cs_common.cs_86') }}
           </el-button>
         </div>
       </div>
@@ -211,15 +215,15 @@ export default {
       menu: 'limitStrategy',
       menuList: [
         {
-          label: '密码策略',
+          label: this.$t('cs_common.cs_95'),
           value: 'passwordPolicy',
         },
         {
-          label: '登录策略',
+          label: this.$t('cs_common.cs_96'),
           value: 'loginStrategy',
         },
         {
-          label: '登录限制策略',
+          label: this.$t('cs_common.cs_97'),
           value: 'limitStrategy',
         },
       ],
@@ -259,10 +263,10 @@ export default {
   },
   methods: {
     savePass() {
-      this.$message.success('保存成功')
+      this.$message.success(this.$t('cs_common.cs_99'))
     },
     saveLogin() {
-      this.$message.success('保存成功')
+      this.$message.success(this.$t('cs_common.cs_99'))
     },
     saveLimit() {
       this.$http('setLoginStrategy', this.limitForm).then((res) => {
@@ -285,11 +289,11 @@ export default {
                 isUserGroup: res.data == 1 ? false : true,
               })
             } else {
-              this.$message.warning('该用户不存在')
+              this.$message.warning(this.$t('cs_strategy.cs_62'))
             }
           })
         } else {
-          this.$message.warning(val + '已在黑名单')
+          this.$message.warning(val + this.$t('cs_strategy.cs_63'))
         }
       }
     },

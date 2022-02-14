@@ -1,10 +1,10 @@
 <template>
   <div class="box">
-    <page-frame title="新建下载申请" icon="fileDownload">
+    <page-frame :title="$t('cs_common.cs_2')" icon="fileDownload">
       <template #headBtn>
         <div class="goBack" @click="goBack">
           <i class="el-icon-back"></i>
-          <span>返回上一级</span>
+          <span>{{ $t('cs_common.cs_1') }}</span>
         </div>
       </template>
       <div class="apply">
@@ -18,30 +18,30 @@
             :model="applyForm"
             :rules="formRule"
           >
-            <el-form-item label="申请人">
+            <el-form-item :label="$t('cs_common.cs_3')">
               <div class="applyUser">{{ applyForm.applyUser }}</div>
             </el-form-item>
-            <el-form-item label="申请人邮箱" prop="applyEmail">
+            <el-form-item :label="$t('cs_.cs_2')" prop="applyEmail">
               <el-input
                 v-model="applyForm.applyEmail"
-                placeholder="请输入邮箱"
+                :placeholder="$t('cs_common.cs_4')"
               ></el-input>
             </el-form-item>
-            <el-form-item label="主题" prop="applyTheme">
+            <el-form-item :label="$t('cs_.cs_3')" prop="applyTheme">
               <el-input
                 v-model="applyForm.applyTheme"
-                placeholder="请输入主题"
+                :placeholder="$t('cs_common.cs_5')"
               ></el-input>
             </el-form-item>
-            <el-form-item label="描述" prop="describe">
+            <el-form-item :label="$t('cs_.cs_4')" prop="describe">
               <el-input
                 type="textarea"
                 :rows="3"
                 v-model="applyForm.describe"
-                placeholder="请输入申请描述"
+                :placeholder="$t('cs_.cs_5')"
               ></el-input>
             </el-form-item>
-            <el-form-item label="文件">
+            <el-form-item :label="$t('cs_.cs_6')">
               <div class="fileWrap">
                 <div
                   class="fileBox"
@@ -59,10 +59,10 @@
               </div>
               <div class="addFile" @click="getFileList">
                 <i class="el-icon-plus"></i>
-                <span>添加文件</span>
+                <span>{{ $t('cs_common.cs_6') }}</span>
               </div>
             </el-form-item>
-            <el-form-item label="审批人">
+            <el-form-item :label="$t('cs_common.cs_7')">
               <div class="member">
                 <div class="content">
                   <div v-for="user in applyForm.approvalUserList" :key="user">
@@ -88,13 +88,13 @@
         </div>
         <div class="seniorWrap">
           <div class="senior">
-            <div class="seniorTitle">高级选项</div>
+            <div class="seniorTitle">{{ $t('cs_.cs_7') }}</div>
             <div class="seniorItem">
               <el-checkbox v-model="isPeriodValidity">
-                文件下载有效期
+                {{ $t('cs_.cs_8') }}
               </el-checkbox>
               <div class="seniorContent">
-                审批通过后
+                {{ $t('cs_.cs_9') }}
                 <el-input-number
                   v-model="applyForm.downloadDay"
                   controls-position="right"
@@ -102,13 +102,15 @@
                   size="mini"
                   style="width: 100px; margin-left: 25px; margin-right: 10px"
                 ></el-input-number>
-                天内有效
+                {{ $t('cs_common.cs_8') }}
               </div>
             </div>
             <div class="seniorItem">
-              <el-checkbox v-model="isDownloads">总下载次数</el-checkbox>
+              <el-checkbox v-model="isDownloads">
+                {{ $t('cs_.cs_10') }}
+              </el-checkbox>
               <div class="seniorContent">
-                文件下载次数
+                {{ $t('cs_.cs_11') }}
                 <el-input-number
                   v-model="applyForm.downloadCount"
                   controls-position="right"
@@ -116,7 +118,7 @@
                   size="mini"
                   style="width: 100px; margin: 0px 10px"
                 ></el-input-number>
-                单位：次
+                {{ $t('cs_common.cs_9') }}
               </div>
             </div>
           </div>
@@ -127,9 +129,11 @@
               :loading="loading"
               @click="addDownloadApply(applyForm)"
             >
-              确定
+              {{ $t('cs_.cs_12') }}
             </el-button>
-            <el-button type="info" size="small" @click="goBack">取消</el-button>
+            <el-button type="info" size="small" @click="goBack">
+              {{ $t('cs_common.cs_10') }}
+            </el-button>
           </div>
         </div>
       </div>
@@ -144,7 +148,7 @@
             padding-left: 10px;
           "
         >
-          添加文件
+          {{ $t('cs_common.cs_6') }}
         </div>
       </template>
       <div class="breadCrumbBox">
@@ -173,27 +177,29 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showFileDialog = false" size="small">
-          取 消
+          {{ $t('cs_common.cs_11') }}
         </el-button>
         <el-button type="primary" @click="addFile" size="small">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
     <el-dialog :visible.sync="tipsDialog" width="450px">
       <div class="tipsWrap">
         <i class="el-icon-success"></i>
-        <div class="label">文件下载申请成功</div>
+        <div class="label">{{ $t('cs_.cs_13') }}</div>
         <div>
-          点击审批单号
+          {{ $t('cs_.cs_14') }}
           <span class="applyId" @click="jumpDetail(tipInfo)">
             {{ tipInfo }}
           </span>
-          查看审批详情
+          {{ $t('cs_.cs_15') }}
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="goBack" size="small">关 闭</el-button>
+        <el-button @click="goBack" size="small">
+          {{ $t('cs_common.cs_13') }}
+        </el-button>
       </span>
     </el-dialog>
   </div>
@@ -231,12 +237,22 @@ export default {
       },
       formRule: {
         applyEmail: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_4'),
+            trigger: 'blur',
+          },
         ],
         applyTheme: [
-          { required: true, message: '请输入主题', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_5'),
+            trigger: 'blur',
+          },
         ],
-        describe: [{ required: true, message: '请输入描述', trigger: 'blur' }],
+        describe: [
+          { required: true, message: this.$t('cs_.cs_16'), trigger: 'blur' },
+        ],
       },
       tableConfig: {
         tableData: [],
@@ -246,19 +262,19 @@ export default {
         tableSetting: [
           {
             prop: 'name',
-            label: '文件名',
+            label: this.$t('cs_common.cs_14'),
             slot: 'file',
           },
           {
             prop: 'size',
-            label: '大小',
+            label: this.$t('cs_common.cs_15'),
             formatter: (row) => {
               return row.dir ? '-' : unitSetUp(row.size)
             },
           },
           {
             prop: 'lastModified',
-            label: '修改日期',
+            label: this.$t('cs_common.cs_16'),
           },
         ],
         condition: {
@@ -267,17 +283,17 @@ export default {
         fetchUrl: 'getFileList',
       },
       approvalMode: {
-        1: '会签',
-        2: '或签',
-        3: '依次审批',
+        1: this.$t('cs_common.cs_17'),
+        2: this.$t('cs_common.cs_18'),
+        3: this.$t('cs_common.cs_19'),
       },
       levelObj: {
-        1: '直接上级',
-        2: '第二级上级',
-        3: '第三级上级',
-        4: '第四级上级',
-        5: '第五级上级',
-        6: '第六级上级',
+        1: this.$t('cs_common.cs_20'),
+        2: this.$t('cs_common.cs_21'),
+        3: this.$t('cs_common.cs_22'),
+        4: this.$t('cs_common.cs_23'),
+        5: this.$t('cs_common.cs_24'),
+        6: this.$t('cs_common.cs_25'),
       },
       selectFiles: [],
       rootPath: '',
@@ -293,7 +309,8 @@ export default {
     } else {
       data = JSON.parse(sessionStorage.getItem('tempData'))
     }
-    this.applyTitle = data.type == 0 ? '新建下载申请' : '编辑下载申请'
+    this.applyTitle =
+      data.type == 0 ? this.$t('cs_common.cs_2') : this.$t('cs_.cs_17')
     this.$nextTick(() => {
       this.applyForm = data.data
       this.tempSelectFile = {}
@@ -417,7 +434,7 @@ export default {
                 })
             }
           } else {
-            this.$message.warning('请选择至少一个文件')
+            this.$message.warning(this.$t('cs_.cs_18'))
           }
         }
       })

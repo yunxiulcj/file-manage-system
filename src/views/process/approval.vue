@@ -1,10 +1,10 @@
 <template>
   <div class="box">
-    <page-frame title="审批详情" icon="approval">
+    <page-frame :title="$t('cs_common.cs_48')" icon="approval">
       <template #headBtn>
         <div class="goBack" @click="goBack">
           <i class="el-icon-back"></i>
-          <span>返回上一级</span>
+          <span>{{ $t('cs_common.cs_1') }}</span>
         </div>
       </template>
       <div class="content">
@@ -24,7 +24,7 @@
         </div>
         <el-divider></el-divider>
         <div class="attachmentBox">
-          <div class="title">附件：</div>
+          <div class="title">{{ $t('cs_process.cs_1') }}</div>
           <div class="fileWrap">
             <template v-for="(item, index) in detailData.fileList">
               <el-tooltip
@@ -49,14 +49,16 @@
               </el-tooltip>
             </template>
           </div>
-          <div class="fileFromInfo">来自：{{ userName }}的个人网盘</div>
+          <div class="fileFromInfo">
+            {{ $t('cs_process.cs_10') + userName + $t('cs_process.cs_11') }}
+          </div>
         </div>
 
         <el-divider></el-divider>
       </div>
       <div class="btnWrap" v-if="detailData.canApproval">
         <el-button @click="agree(detailData)" type="primary" size="small" plain>
-          同意
+          {{ $t('cs_common.cs_43') }}
         </el-button>
         <el-button
           @click="refuse(detailData)"
@@ -64,7 +66,7 @@
           size="small"
           plain
         >
-          拒绝
+          {{ $t('cs_common.cs_44') }}
         </el-button>
       </div>
     </page-frame>
@@ -78,37 +80,37 @@
             padding-left: 10px;
           "
         >
-          提示
+          {{ $t('cs_common.cs_34') }}
         </div>
       </template>
       <el-form size="small" label-position="right" label-width="100px">
-        <el-form-item label="下载次数" v-if="canEdit">
+        <el-form-item :label="$t('cs_common.cs_46')" v-if="canEdit">
           <el-input-number
             v-model="editForm.downloadCount"
             controls-position="right"
             :min="0"
           ></el-input-number>
-          <span class="unit">单位：天</span>
+          <span class="unit">{{ $t('cs_common.cs_27') }}</span>
           <el-divider direction="vertical"></el-divider>
-          <span class="tips">注：0表示长期有效</span>
+          <span class="tips">{{ $t('cs_common.cs_28') }}</span>
         </el-form-item>
-        <el-form-item label="申请有效期" v-if="canEdit">
+        <el-form-item :label="$t('cs_common.cs_47')" v-if="canEdit">
           <el-input-number
             v-model="editForm.downloadExpiredDay"
             controls-position="right"
             :min="0"
           ></el-input-number>
-          <span class="unit">单位：天</span>
+          <span class="unit">{{ $t('cs_common.cs_27') }}</span>
           <el-divider direction="vertical"></el-divider>
-          <span class="tips">注：0表示长期有效</span>
+          <span class="tips">{{ $t('cs_common.cs_28') }}</span>
         </el-form-item>
-        <el-form-item label="理由*">
+        <el-form-item :label="$t('cs_common.cs_60')">
           <el-input v-model="editForm.comment" style="width: 335px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="agreeOrRefuseDialog = false">
-          取 消
+          {{ $t('cs_common.cs_11') }}
         </el-button>
         <el-button
           size="small"
@@ -116,7 +118,7 @@
           @click="confirmEdit"
           :loading="loading"
         >
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -147,12 +149,12 @@ export default {
         comment: '',
       },
       applyStatus: {
-        1: '已撤回',
-        2: '待处理',
-        3: '审批中',
-        4: '审批通过',
-        5: '审批不通过',
-        6: '传输异常',
+        1: this.$t('cs_common.cs_30'),
+        2: this.$t('cs_common.cs_31'),
+        3: this.$t('cs_common.cs_29'),
+        4: this.$t('cs_common.cs_32'),
+        5: this.$t('cs_common.cs_33'),
+        6: this.$t('cs_common.cs_54'),
       },
       detailData: {
         fileList: [],
@@ -224,7 +226,7 @@ export default {
     },
     confirmEdit() {
       if (this.editForm.comment == '') {
-        this.$message.warning('理由不能为空')
+        this.$message.warning(this.$t('cs_common.cs_55'))
         return
       }
       this.loading = true

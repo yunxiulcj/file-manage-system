@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <page-frame
-      title="用户管理"
+      :title="$t('cs_strategy.cs_29')"
       icon="userManage"
       :aside="true"
       asideWidth="210px"
@@ -10,7 +10,7 @@
         <el-input
           v-model="filterDep"
           size="mini"
-          placeholder="请输入部门名称"
+          :placeholder="$t('cs_strategy.cs_30')"
           style="margin: 10px 10px 10px 0px; width: 190px"
         ></el-input>
         <el-tree
@@ -29,9 +29,11 @@
             <el-popover placement="right" trigger="hover" :open-delay="300">
               <div>
                 <div class="operation">
-                  <div class="opItem" @click="changeName(data)">修改名称</div>
+                  <div class="opItem" @click="changeName(data)">
+                    {{ $t('cs_strategy.cs_31') }}
+                  </div>
                   <div class="opItem" @click="setSuperior(data.dn)">
-                    设置上级
+                    {{ $t('cs_common.cs_91') }}
                   </div>
                 </div>
               </div>
@@ -46,13 +48,13 @@
         <el-input
           v-model="filterUser"
           size="small"
-          placeholder="请输入用户名或真实姓名查询"
+          :placeholder="$t('cs_strategy.cs_32')"
           style="width: 250px; margin-right: 10px"
           clearable
         ></el-input>
         <div class="rightWrap">
           <el-button type="primary" size="small" @click="setSuperior(tempDn)">
-            设置上级
+            {{ $t('cs_common.cs_91') }}
           </el-button>
           <el-button
             type="warning"
@@ -60,7 +62,7 @@
             :loading="exportLoading"
             @click="exported"
           >
-            导出Excel
+            {{ $t('cs_strategy.cs_33') }}
           </el-button>
         </div>
       </div>
@@ -69,7 +71,7 @@
           <div class="userBox">
             <span>{{ scope.row.userId }}</span>
             <el-tag v-if="scope.row.isTop" size="mini" style="float: right">
-              上级
+              {{ $t('cs_strategy.cs_34') }}
             </el-tag>
           </div>
         </template>
@@ -85,7 +87,7 @@
             padding-left: 10px;
           "
         >
-          设置部门上级
+          {{ $t('cs_strategy.cs_35') }}
         </div>
       </template>
       <div class="contentBox">
@@ -95,7 +97,7 @@
             suffix-icon="el-icon-search"
             size="small"
             style="width: 90%; margin-bottom: 10px"
-            placeholder="输入用户名进行筛选"
+            :placeholder="$t('cs_strategy.cs_36')"
           ></el-input>
           <div class="leftContent">
             <el-checkbox-group v-model="tempSuperior">
@@ -113,7 +115,7 @@
           </div>
         </div>
         <div class="rightBox">
-          <div class="title">已选择的成员</div>
+          <div class="title">{{ $t('cs_strategy.cs_37') }}</div>
           <div class="rightContent">
             <el-tag
               v-for="tag in tempSuperior"
@@ -129,10 +131,10 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setSuperiorDialog = false" size="small">
-          取 消
+          {{ $t('cs_common.cs_11') }}
         </el-button>
         <el-button type="primary" size="small" @click="confirmSuperior">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -146,19 +148,21 @@
             padding-left: 10px;
           "
         >
-          编辑部门名称
+          {{ $t('cs_strategy.cs_38') }}
         </div>
       </template>
-      <div>新部门名称</div>
+      <div>{{ $t('cs_strategy.cs_39') }}</div>
       <el-input
         v-model="editInfo.name"
         size="small"
-        placeholder="请输入名称"
+        :placeholder="$t('cs_strategy.cs_40')"
       ></el-input>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancelEdit" size="small">取 消</el-button>
+        <el-button @click="cancelEdit" size="small">
+          {{ $t('cs_common.cs_11') }}
+        </el-button>
         <el-button type="primary" size="small" @click="alterName">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -197,25 +201,25 @@ export default {
         tableSetting: [
           {
             prop: 'userId',
-            label: '用户名',
+            label: this.$t('cs_common.cs_36'),
             align: 'left',
             slot: 'userId',
           },
           {
             prop: 'realName',
-            label: '真实姓名',
+            label: this.$t('cs_common.cs_92'),
           },
           {
             prop: 'department',
-            label: '部门',
+            label: this.$t('cs_common.cs_93'),
           },
           {
             prop: 'tel',
-            label: '手机号',
+            label: this.$t('cs_strategy.cs_41'),
           },
           {
             prop: 'email',
-            label: '邮箱',
+            label: this.$t('cs_common.cs_94'),
           },
         ],
       },
@@ -276,7 +280,7 @@ export default {
           this.editNameDialog = false
         })
       } else {
-        this.$message.warning('名称不能为空')
+        this.$message.warning(this.$t('cs_strategy.cs_42'))
       }
     },
     exported() {
@@ -330,7 +334,7 @@ export default {
             this.setSuperiorDialog = true
           })
       } else {
-        this.$message.warning('请选择设置上级的部门')
+        this.$message.warning(this.$t('cs_strategy.cs_43'))
       }
     },
     loadNode(node, resolve) {

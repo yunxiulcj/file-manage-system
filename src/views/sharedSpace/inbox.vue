@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <page-frame title="收集箱" icon="inbox"></page-frame>
+    <page-frame :title="$t('cs_sharedSpace.cs_8')" icon="inbox"></page-frame>
   </div>
 </template>
 

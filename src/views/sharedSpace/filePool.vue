@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <page-frame title="文件池" icon="filePool"></page-frame>
+    <page-frame :title="$t('cs_sharedSpace.cs_7')" icon="filePool"></page-frame>
   </div>
 </template>
 

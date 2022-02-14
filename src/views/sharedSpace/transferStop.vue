@@ -10,7 +10,7 @@
             :loading="downloading"
           >
             <i class="iconfont icon-xiazai"></i>
-            下载
+            {{ $t('cs_common.cs_45') }}
           </el-button>
           <el-button
             type="danger"
@@ -20,23 +20,23 @@
             v-show="selectData.length > 0"
           >
             <i class="iconfont icon-delete"></i>
-            删除
+            {{ $t('cs_common.cs_51') }}
           </el-button>
         </div>
         <div class="headRight">
           <el-input
-            placeholder="请输入文件名"
+            :placeholder="$t('cs_common.cs_81')"
             suffix-icon="el-icon-search"
             size="small"
             style="width: 220px; margin-right: 10px"
             v-model="tableConfig.condition.fileName"
           ></el-input>
           <el-button size="small" type="primary" @click="getData">
-            查询
+            {{ $t('cs_common.cs_67') }}
           </el-button>
         </div>
       </header>
-      <div class="title">文件中转站</div>
+      <div class="title">{{ $t('cs_sharedSpace.cs_27') }}</div>
       <div class="tableWrap">
         <table-temp
           ref="table"
@@ -65,7 +65,7 @@
                   class="iconfont icon-xiazai"
                   @click.stop="downloadFile(scope.row, 2)"
                   v-show="!scope.row.isFolder"
-                  title="下载"
+                  :title="$t('cs_common.cs_45')"
                   v-loading="scope.row.loading"
                   element-loading-spinner="el-icon-loading"
                   element-loading-custom-class="loadingStyle"
@@ -73,7 +73,7 @@
                 <i
                   class="iconfont icon-trash"
                   @click.stop="delFile([scope.row])"
-                  title="删除"
+                  :title="$t('cs_common.cs_51')"
                 ></i>
               </div>
             </div>
@@ -114,37 +114,39 @@ export default {
         tableSetting: [
           {
             prop: 'fileName',
-            label: '文件名',
+            label: this.$t('cs_common.cs_14'),
             align: 'left',
             slot: 'file',
             minWidth: '300px',
           },
           {
             prop: 'downloadCount',
-            label: '下载次数',
+            label: this.$t('cs_common.cs_46'),
             formatter: (row) => {
-              return row.countUnlimited ? '无限' : row.downloadCount
+              return row.countUnlimited
+                ? this.$t('cs_sharedSpace.cs_28')
+                : row.downloadCount
             },
           },
           {
             prop: 'fileSize',
-            label: '大小',
+            label: this.$t('cs_common.cs_15'),
             formatter: (row) => {
               return unitSetUp(row.fileSize)
             },
           },
           {
             prop: 'applyTime',
-            label: '申请日期',
+            label: this.$t('cs_sharedSpace.cs_29'),
           },
           {
             prop: 'expiredTime',
-            label: '失效时间',
+            label: this.$t('cs_sharedSpace.cs_30'),
             formatter: (row) => {
               return row.dayUnlimited
-                ? '永久'
+                ? this.$t('cs_common.cs_41')
                 : row.isInvaild
-                ? '已失效'
+                ? this.$t('cs_sharedSpace.cs_31')
                 : row.expiredTime
             },
           },
@@ -213,9 +215,9 @@ export default {
       let IdList = val.map((item) => {
         return item.fileId
       })
-      this.$confirm('删除后不可恢复，是否删除所选文件？', '提示', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('cs_common.cs_82'), this.$t('cs_common.cs_34'), {
+        confirmButtonText: this.$t('cs_common.cs_35'),
+        cancelButtonText: this.$t('cs_common.cs_10'),
         type: 'warning',
         center: true,
       }).then(() => {

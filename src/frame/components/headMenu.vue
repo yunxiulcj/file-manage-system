@@ -11,15 +11,41 @@
         router
       >
         <template v-for="item in menuList">
-          <el-menu-item :key="item.name" :index="item.path" v-if="!item.hidden">
-            {{ item.meta.title }}
+          <el-menu-item
+            :key="item.name"
+            :index="item.path"
+            v-if="!item.hidden"
+            class="meauName"
+          >
+            {{ $t(item.meta.i18nTitle) }}
           </el-menu-item>
         </template>
       </el-menu>
     </div>
     <div class="accountBox">
-      <span class="account">用户：{{ account }}</span>
-      <i class="iconfont icon-logout" title="注销" @click="logout"></i>
+      <el-dropdown @command="handleCommand">
+        <span
+          type="primary"
+          plain
+          size="mini"
+          round
+          style="color: white"
+          class="el-dropdown-link"
+        >
+          {{ $t('cs_menu.cs_19') }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="zh">中文</el-dropdown-item>
+          <el-dropdown-item command="en">English</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <span class="account">{{ $t('cs_common.cs_98') + '：' + account }}</span>
+      <i
+        class="iconfont icon-logout"
+        :title="$t('cs_frame.cs_2')"
+        @click="logout"
+      ></i>
     </div>
   </div>
 </template>
@@ -48,9 +74,9 @@ export default {
   },
   methods: {
     logout() {
-      this.$confirm('是否要退出登录？', '提示', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('cs_frame.cs_3'), this.$t('cs_common.cs_34'), {
+        confirmButtonText: this.$t('cs_common.cs_35'),
+        cancelButtonText: this.$t('cs_common.cs_10'),
         type: 'info',
         center: true,
       }).then(() => {
@@ -62,7 +88,11 @@ export default {
             this.$router.push({ path: '/login', replace: true })
           })
       })
-      // this.$router.push({ path: '/login', replace: true })
+    },
+    handleCommand(val) {
+      this.$i18n.locale = val
+      localStorage.setItem('language', val)
+      location.reload()
     },
   },
 }
@@ -89,7 +119,7 @@ export default {
 .menuBox {
   background: #d3f261;
   height: 60px;
-  width: 600px;
+  min-width: 600px;
 }
 .accountBox {
   position: absolute;
@@ -103,7 +133,7 @@ export default {
   font-size: 14px;
 }
 .account {
-  margin-right: 35px;
+  margin: 0px 35px;
 }
 .icon-logout {
   color: #bfbfbf;

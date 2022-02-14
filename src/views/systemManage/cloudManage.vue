@@ -1,12 +1,16 @@
 <template>
   <div class="box">
-    <page-frame title="网盘管理" icon="cloudManage" :aside="true">
+    <page-frame
+      :title="$t('cs_systemManage.cs_18')"
+      icon="cloudManage"
+      :aside="true"
+    >
       <template #aside>
         <mini-menu :options="menuList" v-model="menu"></mini-menu>
       </template>
       <div class="file" v-if="menu == 'file'" v-loading="loading">
         <div class="uploadBox fileBox">
-          <span class="title">上传文件限制</span>
+          <span class="title">{{ $t('cs_systemManage.cs_19') }}</span>
           <el-switch
             v-model="formObj.enableUploadFileSize"
             active-color="#228be6"
@@ -14,21 +18,21 @@
             style="margin-bottom: 2px; margin-left: 20px"
           ></el-switch>
           <div class="contentBox">
-            <div class="subtitle">设置单个文件上传的大小上限</div>
+            <div class="subtitle">{{ $t('cs_systemManage.cs_20') }}</div>
             <div class="count">
               <el-input-number
                 v-model="formObj.uploadFileSize"
                 :min="1"
                 size="small"
               ></el-input-number>
-              <span class="unit">单位：MB</span>
+              <span class="unit">{{ $t('cs_systemManage.cs_21') }}</span>
             </div>
           </div>
         </div>
         <div class="typeBox fileBox">
-          <div class="title">文件类型限制</div>
+          <div class="title">{{ $t('cs_systemManage.cs_22') }}</div>
           <div class="contentBox">
-            <div class="subtitle">设置一般用户可操作的文件类型</div>
+            <div class="subtitle">{{ $t('cs_systemManage.cs_23') }}</div>
             <div class="type">
               <el-checkbox-group
                 v-model="formObj.operationFileType"
@@ -50,7 +54,7 @@
                 <div class="addType">
                   <div class="btn" v-if="!isInput" @click="clickAdd">
                     <i class="el-icon-plus"></i>
-                    添加类型
+                    {{ $t('cs_systemManage.cs_24') }}
                   </div>
                   <div class="input" v-else>
                     <el-input
@@ -69,37 +73,36 @@
           </div>
         </div>
         <div class="downloadBox fileBox">
-          <div class="title">文件下载设置</div>
+          <div class="title">{{ $t('cs_systemManage.cs_25') }}</div>
           <div class="contentBox1">
             <div class="setting1 setting">
               <el-checkbox
                 v-model="formObj.enableDownLoadCount"
-                label="文件下载申请默认下载次数上限"
-                style="width: 306px"
+                :label="$t('cs_systemManage.cs_26')"
               ></el-checkbox>
               <span>
                 <el-input-number
                   :min="1"
+                  style="margin-left: 15px"
                   size="mini"
                   v-model="formObj.defaultDownLoadCount"
                 ></el-input-number>
-                <span class="unit">单位：次</span>
+                <span class="unit">{{ $t('cs_common.cs_9') }}</span>
               </span>
             </div>
             <div class="setting2 setting">
               <el-checkbox
                 v-model="formObj.enableDownLoadDay"
-                label="默认下载申请有效期上限设置"
-                style="width: 245px"
+                :label="$t('cs_systemManage.cs_27')"
               ></el-checkbox>
               <span class="unit">
-                审批后
+                {{ $t('cs_systemManage.cs_28') }}
                 <el-input-number
                   :min="1"
                   size="mini"
                   v-model="formObj.defaultDownLoadDay"
                 ></el-input-number>
-                天内有效
+                {{ $t('cs_common.cs_8') }}
               </span>
             </div>
           </div>
@@ -110,20 +113,20 @@
             size="small"
             @click="saveFileSetting(formObj)"
           >
-            保存
+            {{ $t('cs_common.cs_86') }}
           </el-button>
         </div>
       </div>
       <div class="cloud" v-if="menu == 'cloud'">
         <div class="cloudPath fileBox">
-          <div class="title">网盘路径设置</div>
+          <div class="title">{{ $t('cs_common.cs_105') }}</div>
           <div class="contentBox" v-loading="loading">
             <el-form label-width="100px" label-position="right" size="small">
-              <el-form-item label="网盘根路径">
+              <el-form-item :label="$t('cs_systemManage.cs_29')">
                 <el-input
                   v-model="formObj.diskRootPath"
                   style="width: 450px"
-                  placeholder="请输入网盘根路径，示例：\\yxcloud-DFS01\"
+                  :placeholder="$t('cs_systemManage.cs_30')"
                 ></el-input>
               </el-form-item>
             </el-form>
@@ -131,7 +134,7 @@
         </div>
         <div class="operate">
           <el-button type="primary" size="small" @click="savePath(formObj)">
-            保存
+            {{ $t('cs_common.cs_86') }}
           </el-button>
         </div>
       </div>
@@ -152,11 +155,11 @@ export default {
       menu: 'file',
       menuList: [
         {
-          label: '文件设置',
+          label: this.$t('cs_systemManage.cs_31'),
           value: 'file',
         },
         {
-          label: '网盘路径设置',
+          label: this.$t('cs_common.cs_105'),
           value: 'cloud',
         },
       ],
@@ -230,7 +233,7 @@ export default {
           this.fileTypeList.push(val)
           this.formObj.operationFileType.push(val)
         } else {
-          this.$message.info('已存在该类型')
+          this.$message.info(this.$t('cs_systemManage.cs_32'))
         }
       }
       this.typeStr = ''

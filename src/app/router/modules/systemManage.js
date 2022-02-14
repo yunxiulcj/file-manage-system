@@ -7,6 +7,7 @@ export default [
     redirect: '/systemManage/cloudManage',
     meta: {
       title: '系统管理',
+      i18nTitle: 'cs_menu.cs_13',
     },
     children: [
       {
@@ -17,6 +18,7 @@ export default [
         meta: {
           title: '网盘管理',
           icon: 'cloudManage',
+          i18nTitle: 'cs_menu.cs_14',
         },
       },
       {
@@ -27,6 +29,7 @@ export default [
         meta: {
           title: '系统日志',
           icon: 'systemLog',
+          i18nTitle: 'cs_menu.cs_15',
         },
       },
       {
@@ -37,6 +40,7 @@ export default [
         meta: {
           title: '文件操作记录',
           icon: 'operatingRecord',
+          i18nTitle: 'cs_menu.cs_16',
         },
       },
       {
@@ -44,7 +48,11 @@ export default [
         name: 'adminConfig',
         id: 504,
         component: () => import('@/views/systemManage/adminConfig.vue'),
-        meta: { title: '管理员配置', icon: 'adminConfig' },
+        meta: {
+          title: '管理员配置',
+          icon: 'adminConfig',
+          i18nTitle: 'cs_menu.cs_17',
+        },
       },
       {
         path: '/systemManage/emailConfig',
@@ -54,6 +62,7 @@ export default [
         meta: {
           title: '邮件配置',
           icon: 'emailConfig',
+          i18nTitle: 'cs_menu.cs_18',
         },
       },
     ],

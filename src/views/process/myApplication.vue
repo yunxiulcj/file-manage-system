@@ -1,8 +1,8 @@
 <template>
   <div class="box">
-    <page-frame title="我的申请" icon="myApplication">
+    <page-frame :title="$t('cs_process.cs_4')" icon="myApplication">
       <el-form inline size="small">
-        <el-form-item label="审批状态">
+        <el-form-item :label="$t('cs_common.cs_61')">
           <el-select v-model="tableConfig.condition.applyStatus">
             <el-option
               v-for="item in stateList"
@@ -12,7 +12,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="日期">
+        <el-form-item :label="$t('cs_common.cs_62')">
           <el-date-picker
             v-model="times"
             type="datetimerange"
@@ -28,12 +28,14 @@
         <el-form-item>
           <el-input
             v-model="tableConfig.condition.searchStr"
-            placeholder="请输入工单号"
+            :placeholder="$t('cs_common.cs_66')"
             clear
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="getData">
+            {{ $t('cs_common.cs_67') }}
+          </el-button>
         </el-form-item>
       </el-form>
       <table-temp
@@ -52,7 +54,7 @@
             padding-left: 10px;
           "
         >
-          文件夹
+          {{ $t('cs_common.cs_68') }}
         </div>
       </template>
       <table-temp
@@ -61,7 +63,7 @@
       ></table-temp>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="MultiFileDialog = false">
-          关 闭
+          {{ $t('cs_common.cs_13') }}
         </el-button>
       </span>
     </el-dialog>
@@ -82,7 +84,7 @@ export default {
       pickerOptions: {
         shortcuts: [
           {
-            text: '最近一周',
+            text: this.$t('cs_common.cs_69'),
             onClick(picker) {
               const end = new Date()
               const start = new Date()
@@ -91,7 +93,7 @@ export default {
             },
           },
           {
-            text: '最近一个月',
+            text: this.$t('cs_common.cs_58'),
             onClick(picker) {
               const end = new Date()
               const start = new Date()
@@ -100,7 +102,7 @@ export default {
             },
           },
           {
-            text: '最近三个月',
+            text: this.$t('cs_common.cs_59'),
             onClick(picker) {
               const end = new Date()
               const start = new Date()
@@ -114,31 +116,31 @@ export default {
       times: [],
       stateList: [
         {
-          label: '全部',
+          label: this.$t('cs_common.cs_70'),
           value: '',
         },
         {
-          label: '已撤回',
+          label: this.$t('cs_common.cs_30'),
           value: '1',
         },
         {
-          label: '待处理',
+          label: this.$t('cs_common.cs_31'),
           value: '2',
         },
         {
-          label: '审批中',
+          label: this.$t('cs_common.cs_29'),
           value: '3',
         },
         {
-          label: '审批通过',
+          label: this.$t('cs_common.cs_32'),
           value: '4',
         },
         {
-          label: '审批拒绝',
+          label: this.$t('cs_common.cs_53'),
           value: '5',
         },
         {
-          label: '传输异常',
+          label: this.$t('cs_common.cs_54'),
           value: '6',
         },
       ],
@@ -172,11 +174,11 @@ export default {
         tableSetting: [
           {
             prop: 'applyId',
-            label: '工单号',
+            label: this.$t('cs_common.cs_71'),
           },
           {
             prop: 'fileName',
-            label: '文件名',
+            label: this.$t('cs_common.cs_14'),
             style: (row) => {
               return row.multiFile
                 ? { color: '#1890ff', cursor: 'pointer' }
@@ -191,18 +193,18 @@ export default {
           },
           {
             prop: 'applyType',
-            label: '行为',
+            label: this.$t('cs_common.cs_72'),
             formatter: (row) => {
               let str
               switch (row.applyType) {
                 case 1:
-                  str = '文件下载申请'
+                  str = this.$t('cs_common.cs_49')
                   break
                 case 2:
-                  str = '文件外发申请'
+                  str = this.$t('cs_common.cs_73')
                   break
                 case 3:
-                  str = '文件下载申请'
+                  str = this.$t('cs_common.cs_49')
                   break
                 default:
                   str = '-'
@@ -213,15 +215,15 @@ export default {
           },
           {
             prop: 'applyTime',
-            label: '申请时间',
+            label: this.$t('cs_common.cs_74'),
           },
           {
             prop: 'approvalTime',
-            label: '审批时间',
+            label: this.$t('cs_common.cs_75'),
           },
           {
             prop: 'applyStatus',
-            label: '申请结果',
+            label: this.$t('cs_common.cs_76'),
             style: (row) => {
               let sty
               switch (row.applyStatus) {
@@ -248,22 +250,22 @@ export default {
               let str
               switch (row.applyStatus) {
                 case 1:
-                  str = '已撤回'
+                  str = this.$t('cs_common.cs_30')
                   break
                 case 2:
-                  str = '待处理'
+                  str = this.$t('cs_common.cs_31')
                   break
                 case 3:
-                  str = '审批中'
+                  str = this.$t('cs_common.cs_29')
                   break
                 case 4:
-                  str = '审批通过'
+                  str = this.$t('cs_common.cs_32')
                   break
                 case 5:
-                  str = '审批拒绝'
+                  str = this.$t('cs_common.cs_53')
                   break
                 case 6:
-                  str = '传输异常'
+                  str = this.$t('cs_common.cs_54')
                   break
                 default:
                   str = '-'
@@ -286,7 +288,7 @@ export default {
         operation: {
           btns: [
             {
-              label: '详情',
+              label: this.$t('cs_common.cs_42'),
               type: 'text',
               fn: (row) => {
                 sessionStorage.setItem(
@@ -306,15 +308,19 @@ export default {
               },
             },
             {
-              label: '撤回',
+              label: this.$t('cs_process.cs_5'),
               type: 'text',
               fn: (row) => {
-                this.$confirm('是否撤回当前申请？', '提示', {
-                  confirmButtonText: '确认',
-                  cancelButtonText: '取消',
-                  type: 'info',
-                  center: true,
-                }).then(() => {
+                this.$confirm(
+                  this.$t('cs_process.cs_6'),
+                  this.$t('cs_common.cs_34'),
+                  {
+                    confirmButtonText: this.$t('cs_common.cs_35'),
+                    cancelButtonText: this.$t('cs_common.cs_10'),
+                    type: 'info',
+                    center: true,
+                  }
+                ).then(() => {
                   this.$http('back', { applyId: row.applyId }).then((res) => {
                     this.$message.success(res.errMsg)
                     this.getData()
@@ -327,18 +333,22 @@ export default {
               },
             },
             {
-              label: '删除',
+              label: this.$t('cs_common.cs_51'),
               type: 'text',
               show: (row) => {
                 return row.applyStatus == 1
               },
               fn: (row) => {
-                this.$confirm('是否删除该申请记录？', '提示', {
-                  confirmButtonText: '确认',
-                  cancelButtonText: '取消',
-                  type: 'info',
-                  center: true,
-                }).then(() => {
+                this.$confirm(
+                  this.$t('cs_process.cs_7'),
+                  this.$t('cs_common.cs_34'),
+                  {
+                    confirmButtonText: this.$t('cs_common.cs_35'),
+                    cancelButtonText: this.$t('cs_common.cs_10'),
+                    type: 'info',
+                    center: true,
+                  }
+                ).then(() => {
                   this.$http('deleteApply', { applyId: row.applyId }).then(
                     (res) => {
                       this.$message.success(res.errMsg)
@@ -349,7 +359,7 @@ export default {
               },
             },
             {
-              label: '编辑',
+              label: this.$t('cs_common.cs_77'),
               type: 'text',
               show: (row) => {
                 return row.applyStatus == 1
@@ -415,11 +425,11 @@ export default {
         tableSetting: [
           {
             prop: 'fileName',
-            label: '文件名',
+            label: this.$t('cs_common.cs_14'),
           },
           {
             prop: 'fileSize',
-            label: '文件大小',
+            label: this.$t('cs_common.cs_78'),
             formatter: (row) => {
               return unitSetUp(row.fileSize)
             },

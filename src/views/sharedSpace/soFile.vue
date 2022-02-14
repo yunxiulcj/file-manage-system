@@ -5,11 +5,11 @@
         <div class="headLeft">
           <el-button size="mini" type="primary" @click="createFolder">
             <i class="iconfont icon-xinjianwenjian"></i>
-            新建文件夹
+            {{ $t('cs_common.cs_80') }}
           </el-button>
           <el-button size="mini" type="primary" @click="uploadFile">
             <i class="iconfont icon-upload"></i>
-            上传文件
+            {{ $t('cs_sharedSpace.cs_11') }}
           </el-button>
           <el-button
             size="mini"
@@ -18,7 +18,7 @@
             @click="createApply(selectData)"
           >
             <i class="iconfont icon-fileDownload"></i>
-            下载申请
+            {{ $t('cs_sharedSpace.cs_12') }}
           </el-button>
           <el-button
             type="danger"
@@ -28,12 +28,12 @@
             v-show="selectData.length > 0"
           >
             <i class="iconfont icon-delete"></i>
-            删除
+            {{ $t('cs_common.cs_51') }}
           </el-button>
         </div>
         <div class="headRight">
           <el-input
-            placeholder="请输入文件名"
+            :placeholder="$t('cs_common.cs_81')"
             suffix-icon="el-icon-search"
             size="small"
             style="width: 220px"
@@ -41,13 +41,13 @@
           ></el-input>
           <i
             class="iconfont icon-caidan"
-            title="按图标排列"
+            :title="$t('cs_sharedSpace.cs_13')"
             v-if="isTable"
             @click="isTable = false"
           ></i>
           <i
             class="iconfont icon-liebiao"
-            title="按表格排列"
+            :title="$t('cs_sharedSpace.cs_14')"
             @click="isTable = true"
             v-else
           ></i>
@@ -91,7 +91,7 @@
                   ref="editInput"
                   v-if="scope.row.isEdit"
                   v-model="scope.row.tempName"
-                  placeholder="请输入文件名"
+                  :placeholder="$t('cs_common.cs_81')"
                   size="mini"
                 >
                   <el-button slot="append" @click="editFileName(scope.row)">
@@ -112,26 +112,26 @@
                   class="iconfont icon-edit"
                   v-show="!scope.row.isEdit"
                   @click.stop="showEditName(scope.row)"
-                  title="重命名"
+                  :title="$t('cs_common.cs_52')"
                 ></i>
                 <i
                   class="iconfont icon-quxiao"
                   v-show="scope.row.isEdit"
                   @click="cancelEdit(scope.row)"
-                  title="取消编辑"
+                  :title="$t('cs_sharedSpace.cs_15')"
                 ></i>
                 <i
                   class="iconfont icon-xiazai"
                   @click.stop="createApply([scope.row])"
                   v-show="!scope.row.dir"
-                  title="下载"
+                  :title="$t('cs_common.cs_45')"
                 ></i>
                 <el-popconfirm
                   confirm-button-text="是的"
                   cancel-button-text="不用了"
                   icon="el-icon-info"
                   icon-color="#fa5252"
-                  title="删除后不可恢复，确定删除吗？"
+                  :title="$t('cs_sharedSpace.cs_18')"
                   @confirm="confirmDel(scope.row)"
                   @cancel="cancelDel(scope.row)"
                 >
@@ -141,7 +141,7 @@
                       color: tempDelId == scope.row.id ? '#fa5252' : '#339af0',
                     }"
                     @click.stop="tempDelId = scope.row.id"
-                    title="删除"
+                    :title="$t('cs_common.cs_51')"
                     slot="reference"
                   ></i>
                 </el-popconfirm>
@@ -156,7 +156,7 @@
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
         >
-          全选
+          {{ $t('cs_sharedSpace.cs_19') }}
         </el-checkbox>
         <el-divider></el-divider>
         <div class="fileWrap" v-if="tableConfig.tableData.length > 0">
@@ -177,31 +177,31 @@
                   class="iconfont icon-edit"
                   v-show="!item.showDecide"
                   @click.stop="showEditBox(item, true)"
-                  title="重命名"
+                  :title="$t('cs_common.cs_52')"
                 ></i>
                 <i
                   class="iconfont icon-xiazai"
                   v-show="!item.showDecide && !item.dir"
                   @click.stop="createApply([item])"
-                  title="下载"
+                  :title="$t('cs_common.cs_45')"
                 ></i>
                 <i
                   class="iconfont icon-trash"
                   v-show="!item.showDecide"
-                  title.stop="删除"
-                  @click="delCheckFile([item])"
+                  :title="$t('cs_common.cs_51')"
+                  @click.stop="delCheckFile([item])"
                 ></i>
                 <i
                   class="el-icon-check"
                   v-show="item.showDecide"
                   @click.stop="editFileName(item)"
-                  title="确认"
+                  :title="$t('cs_common.cs_35')"
                 ></i>
                 <i
                   class="el-icon-close"
                   @click.stop="showEditBox(item, false)"
                   v-show="item.showDecide"
-                  title="取消"
+                  :title="$t('cs_common.cs_10')"
                 ></i>
               </div>
               <div class="fileBox">
@@ -232,9 +232,11 @@
               </div>
               <el-tooltip effect="dark" placement="bottom" :open-delay="400">
                 <div slot="content">
-                  <div>文件名称：{{ item.name }}</div>
-                  <div>文件大小：{{ item.fileSize }}</div>
-                  <div>修改日期：{{ item.lastModified }}</div>
+                  <div>{{ $t('cs_sharedSpace.cs_33') + item.name }}</div>
+                  <div>{{ $t('cs_sharedSpace.cs_34') + item.fileSize }}</div>
+                  <div>
+                    {{ $t('cs_sharedSpace.cs_35') + item.lastModified }}
+                  </div>
                 </div>
                 <div class="infoWrap">
                   <div class="fileName">
@@ -271,10 +273,12 @@
             padding-left: 10px;
           "
         >
-          新建文件夹
+          {{ $t('cs_common.cs_80') }}
         </div>
       </template>
-      <div style="margin-bottom: 5px; font-size: 13px">请选择路径</div>
+      <div style="margin-bottom: 5px; font-size: 13px">
+        {{ $t('cs_sharedSpace.cs_23') }}
+      </div>
       <div class="fileTreeWrap">
         <el-tree
           style="width: 300px"
@@ -294,19 +298,19 @@
           </span>
         </el-tree>
       </div>
-      <div class="pathBox">目标路径：{{ targetPath }}</div>
+      <div class="pathBox">{{ $t('cs_sharedSpace.cs_32') + targetPath }}</div>
       <el-input
         v-model="folderName"
         size="small"
-        placeholder="请输入文件夹名称"
+        :placeholder="$t('cs_sharedSpace.cs_24')"
         style="margin-top: 5px"
       ></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addFolderDialog = false" size="small">
-          取 消
+          {{ $t('cs_common.cs_11') }}
         </el-button>
         <el-button type="primary" @click="createDirectory" size="small">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -363,18 +367,18 @@ export default {
         tableSetting: [
           {
             prop: 'name',
-            label: '文件名',
+            label: this.$t('cs_common.cs_14'),
             align: 'left',
             slot: 'file',
             minWidth: '400px',
           },
           {
             prop: 'fileSize',
-            label: '大小',
+            label: this.$t('cs_common.cs_15'),
           },
           {
             prop: 'lastModified',
-            label: '修改日期',
+            label: this.$t('cs_common.cs_16'),
           },
         ],
       },
@@ -539,7 +543,7 @@ export default {
             this.getData(this.nowPath)
           })
       } else {
-        this.$message.warning('文件夹名称不能为空')
+        this.$message.warning(this.$t('cs_sharedSpace.cs_25'))
       }
     },
     startGetData(val) {
@@ -578,9 +582,9 @@ export default {
       this.$set(data, 'showOperate', false)
     },
     delCheckFile(val) {
-      this.$confirm('删除后不可恢复，是否删除所选文件？', '提示', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('cs_common.cs_82'), this.$t('cs_common.cs_34'), {
+        confirmButtonText: this.$t('cs_common.cs_35'),
+        cancelButtonText: this.$t('cs_common.cs_10'),
         type: 'warning',
         center: true,
       }).then(() => {
@@ -619,7 +623,7 @@ export default {
     },
     editFileName(val) {
       if (val.tempName == '') {
-        this.$message.warning('文件名不能为空')
+        this.$message.warning(this.$t('cs_sharedSpace.cs_26'))
         return
       } else {
         this.$http('rename', {

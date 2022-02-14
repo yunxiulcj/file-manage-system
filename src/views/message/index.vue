@@ -8,7 +8,7 @@
           @click="MarkRead"
           v-show="activeName == 0 || activeName == 2"
         >
-          全部标记为已读
+          {{ $t('cs_message.cs_11') }}
         </el-button>
         <el-select v-model="filterTime" size="mini">
           <el-option
@@ -20,7 +20,7 @@
         </el-select>
       </div>
       <el-tabs v-model="activeName">
-        <el-tab-pane label="全部消息" name="2">
+        <el-tab-pane :label="$t('cs_message.cs_12')" name="2">
           <div
             class="itemWrap"
             v-if="!showEmply"
@@ -36,7 +36,7 @@
         </el-tab-pane>
         <el-tab-pane name="0">
           <span slot="label">
-            未读消息
+            {{ $t('cs_message.cs_13') }}
             <el-badge
               :value="unread"
               :hidden="unread <= 0"
@@ -57,7 +57,7 @@
           </div>
           <el-empty v-else description="暂无数据"></el-empty>
         </el-tab-pane>
-        <el-tab-pane label="已读消息" name="1">
+        <el-tab-pane :label="$t('cs_message.cs_14')" name="1">
           <div
             class="itemWrap"
             v-if="!showEmply"
@@ -88,19 +88,19 @@ export default {
       filterTime: 1,
       timeRange: [
         {
-          label: '最近七天',
+          label: this.$t('cs_message.cs_15'),
           value: 1,
         },
         {
-          label: '最近十五天',
+          label: this.$t('cs_message.cs_16'),
           value: 2,
         },
         {
-          label: '最近一个月',
+          label: this.$t('cs_common.cs_58'),
           value: 3,
         },
         {
-          label: '最近三个月',
+          label: this.$t('cs_common.cs_59'),
           value: 4,
         },
       ],

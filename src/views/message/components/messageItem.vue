@@ -19,21 +19,21 @@
             <div class="messageContent">
               <div class="infoTop">
                 <div class="applyUser infoItem">
-                  <span class="label">申请人：</span>
+                  <span class="label">{{ $t('cs_common.cs_26') }}</span>
                   {{ item.applyUser }}
                 </div>
                 <el-divider direction="vertical"></el-divider>
 
                 <div class="periodValidity infoItem">
-                  <span class="label">有效期：</span>
+                  <span class="label">{{ $t('cs_message.cs_1') }}</span>
                   <span v-if="!item.dayUnlimited">
                     {{ item.expiredStartTime }} 至 {{ item.expiredEndTime }}
                   </span>
-                  <span v-else>永久</span>
+                  <span v-else>{{ $t('cs_common.cs_41') }}</span>
                 </div>
                 <el-divider direction="vertical"></el-divider>
                 <div class="detail infoItem" @click="showDetail(item)">
-                  详情
+                  {{ $t('cs_common.cs_42') }}
                 </div>
               </div>
               <div class="infoBottom">
@@ -44,7 +44,7 @@
                   "
                 >
                   <div class="describe infoItem">
-                    <span class="label">申请描述：</span>
+                    <span class="label">{{ $t('cs_message.cs_3') }}</span>
                     {{ item.applyDesc }}
                   </div>
                 </div>
@@ -56,7 +56,7 @@
                     plain
                     round
                   >
-                    同意
+                    {{ $t('cs_common.cs_43') }}
                   </el-button>
                   <el-button
                     @click="clickReject(item)"
@@ -65,7 +65,7 @@
                     plain
                     round
                   >
-                    拒绝
+                    {{ $t('cs_common.cs_44') }}
                   </el-button>
                 </div>
               </div>
@@ -100,7 +100,7 @@
                   v-if="file.canDownload"
                   @click="downFile(file)"
                 >
-                  下载
+                  {{ $t('cs_common.cs_45') }}
                 </div>
               </div>
             </div>
@@ -118,40 +118,40 @@
             padding-left: 10px;
           "
         >
-          提示
+          {{ $t('cs_common.cs_34') }}
         </div>
       </template>
       <el-form size="small" label-position="right" label-width="100px">
-        <el-form-item label="下载次数" v-if="canEdit">
+        <el-form-item :label="$t('cs_common.cs_46')" v-if="canEdit">
           <el-input-number
             v-model="editForm.downloadCount"
             controls-position="right"
             :min="0"
           ></el-input-number>
-          <span class="unit">单位：天</span>
+          <span class="unit">{{ $t('cs_common.cs_27') }}</span>
           <el-divider direction="vertical"></el-divider>
-          <span class="tips">注：0表示长期有效</span>
+          <span class="tips">{{ $t('cs_common.cs_28') }}</span>
         </el-form-item>
-        <el-form-item label="申请有效期" v-if="canEdit">
+        <el-form-item :label="$t('cs_common.cs_47')" v-if="canEdit">
           <el-input-number
             v-model="editForm.downloadExpiredDay"
             controls-position="right"
             :min="0"
           ></el-input-number>
-          <span class="unit">单位：天</span>
+          <span class="unit">{{ $t('cs_common.cs_27') }}</span>
           <el-divider direction="vertical"></el-divider>
-          <span class="tips">注：0表示长期有效</span>
+          <span class="tips">{{ $t('cs_common.cs_28') }}</span>
         </el-form-item>
-        <el-form-item label="理由">
+        <el-form-item :label="$t('cs_message.cs_4')">
           <el-input v-model="editForm.comment" style="width: 335px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="agreeOrRefuseDialog = false">
-          取 消
+          {{ $t('cs_common.cs_11') }}
         </el-button>
         <el-button size="small" type="primary" @click="confirmEdit">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -165,7 +165,7 @@
             padding-left: 10px;
           "
         >
-          审批详情
+          {{ $t('cs_common.cs_48') }}
         </div>
       </template>
       <div class="contentBox">
@@ -206,23 +206,23 @@ export default {
         6: 'danger',
       },
       applyType: {
-        1: '公网上传申请',
-        2: '外发申请',
-        3: '文件下载申请',
-        4: '文件上传',
-        5: '删除',
-        6: '邀请加入',
-        7: '重命名',
-        8: '移除',
-        9: '创建',
+        1: this.$t('cs_message.cs_5'),
+        2: this.$t('cs_message.cs_6'),
+        3: this.$t('cs_common.cs_49'),
+        4: this.$t('cs_common.cs_50'),
+        5: this.$t('cs_common.cs_51'),
+        6: this.$t('cs_message.cs_7'),
+        7: this.$t('cs_common.cs_52'),
+        8: this.$t('cs_message.cs_8'),
+        9: this.$t('cs_message.cs_9'),
       },
       stateType: {
-        1: '已撤回',
-        2: '待处理',
-        3: '审批中',
-        4: '审批通过',
-        5: '审批拒绝',
-        6: '传输异常',
+        1: this.$t('cs_common.cs_30'),
+        2: this.$t('cs_common.cs_31'),
+        3: this.$t('cs_common.cs_29'),
+        4: this.$t('cs_common.cs_32'),
+        5: this.$t('cs_common.cs_53'),
+        6: this.$t('cs_common.cs_54'),
       },
       detailData: {},
       approvalState: 0,
@@ -242,7 +242,7 @@ export default {
     },
     confirmEdit() {
       if (this.editForm.comment == '') {
-        this.$message.warning('理由不能为空')
+        this.$message.warning(this.$t('cs_common.cs_55'))
         return
       }
       let url = this.editForm.applyStatus == 1 ? 'agree' : 'refuse'
@@ -290,9 +290,9 @@ export default {
         this.canEdit = data.canEdit
         this.agreeOrRefuseDialog = true
       } else {
-        this.$confirm('是否同意当前申请？', '提示', {
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm(this.$t('cs_message.cs_10'), this.$t('cs_common.cs_34'), {
+          confirmButtonText: this.$t('cs_common.cs_35'),
+          cancelButtonText: this.$t('cs_common.cs_10'),
           type: 'info',
           center: true,
         }).then(() => {

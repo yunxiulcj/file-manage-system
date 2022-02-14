@@ -7,6 +7,7 @@ export default [
     redirect: '/process/myApplication',
     meta: {
       title: '流程',
+      i18nTitle: 'cs_menu.cs_5',
     },
     children: [
       {
@@ -17,6 +18,7 @@ export default [
         meta: {
           title: '我的申请',
           icon: 'myApplication',
+          i18nTitle: 'cs_menu.cs_6',
         },
       },
       {
@@ -27,6 +29,7 @@ export default [
         meta: {
           title: '我的审批',
           icon: 'myApproval',
+          i18nTitle: 'cs_menu.cs_7',
         },
       },
       {
@@ -36,6 +39,7 @@ export default [
         meta: {
           title: '审批详情',
           icon: 'approval',
+          i18nTitle: 'cs_menu.cs_8',
         },
         hidden: true,
       },
@@ -46,6 +50,7 @@ export default [
         meta: {
           title: '新建或编辑申请',
           icon: 'fileDownload',
+          i18nTitle: 'cs_menu.',
         },
         hidden: true,
       },

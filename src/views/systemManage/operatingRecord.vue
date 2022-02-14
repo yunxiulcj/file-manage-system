@@ -1,14 +1,14 @@
 <template>
   <div class="box">
-    <page-frame title="文件操作记录" icon="operatingRecord">
+    <page-frame :title="$t('cs_systemManage.cs_39')" icon="operatingRecord">
       <el-form size="small" inline>
-        <el-form-item label="日期">
+        <el-form-item :label="$t('cs_common.cs_62')">
           <el-date-picker
             v-model="tableConfig.condition.date"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
             format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间"
+            :placeholder="$t('cs_common.cs_109')"
             align="right"
             :picker-options="pickerOptions"
             clearable
@@ -18,12 +18,14 @@
           <el-input
             style="width: 200px"
             v-model="tableConfig.condition.username"
-            placeholder="请输入用户名"
+            :placeholder="$t('cs_common.cs_39')"
             clearable
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="getData">
+            {{ $t('cs_common.cs_67') }}
+          </el-button>
         </el-form-item>
       </el-form>
       <table-temp
@@ -47,13 +49,13 @@ export default {
       pickerOptions: {
         shortcuts: [
           {
-            text: '今天',
+            text: this.$t('cs_common.cs_110'),
             onClick(picker) {
               picker.$emit('pick', new Date())
             },
           },
           {
-            text: '昨天',
+            text: this.$t('cs_common.cs_111'),
             onClick(picker) {
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24)
@@ -61,7 +63,7 @@ export default {
             },
           },
           {
-            text: '一周前',
+            text: this.$t('cs_common.cs_112'),
             onClick(picker) {
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
@@ -76,23 +78,23 @@ export default {
         maxHeight: '10000px',
         tableSetting: [
           {
-            label: '时间',
+            label: this.$t('cs_systemManage.cs_40'),
             prop: 'time',
           },
           {
-            label: '用户',
+            label: this.$t('cs_common.cs_98'),
             prop: 'username',
           },
           {
-            label: '部门',
+            label: this.$t('cs_common.cs_93'),
             prop: 'dept',
           },
           {
-            label: '文档',
+            label: this.$t('cs_systemManage.cs_41'),
             prop: 'fileName',
           },
           {
-            label: '行为',
+            label: this.$t('cs_common.cs_72'),
             prop: 'operation',
           },
         ],

@@ -10,7 +10,7 @@
         <template v-for="item in leftList[currentModule]">
           <el-menu-item :key="item.name" :index="item.path" v-if="!item.hidden">
             <i :class="'iconfont icon-' + item.meta.icon"></i>
-            <span slot="title">{{ item.meta.title }}</span>
+            <span slot="title">{{ $t(item.meta.i18nTitle) }}</span>
           </el-menu-item>
         </template>
       </el-menu>
@@ -109,12 +109,12 @@ export default {
 }
 .contentBox {
   padding: 15px;
-  width: calc(100% - 230px);
+  min-width: calc(100% - 230px);
   background: #f0f0f0;
   height: calc(100% - 12px);
 }
 .content {
-  width: calc(100% - 30px);
+  min-width: calc(100% - 30px);
   height: calc(100% - 30px);
   padding: 15px;
   background: white;

@@ -1,14 +1,14 @@
 <template>
   <div class="box">
-    <page-frame title="系统日志" icon="systemLog">
+    <page-frame :title="$t('cs_systemManage.cs_53')" icon="systemLog">
       <el-form size="small" inline>
-        <el-form-item label="日期">
+        <el-form-item :label="$t('cs_common.cs_62')">
           <el-date-picker
             v-model="tableConfig.condition.date"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
             format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间"
+            :placeholder="$t('cs_common.cs_109')"
             align="right"
             :picker-options="pickerOptions1"
             clearable
@@ -18,12 +18,14 @@
           <el-input
             style="width: 200px"
             v-model="tableConfig.condition.username"
-            placeholder="请输入操作人名称"
+            :placeholder="$t('cs_systemManage.cs_54')"
             clearable
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getData">查询</el-button>
+          <el-button type="primary" @click="getData">
+            {{ $t('cs_common.cs_67') }}
+          </el-button>
         </el-form-item>
         <el-button
           type="warning"
@@ -31,7 +33,7 @@
           @click="dialogVisible = true"
           style="position: absolute; right: 45px"
         >
-          删除历史日志
+          {{ $t('cs_systemManage.cs_55') }}
         </el-button>
       </el-form>
 
@@ -52,26 +54,30 @@
             color: #1890ff;
           "
         >
-          历史日志
+          {{ $t('cs_systemManage.cs_56') }}
         </div>
       </template>
       <el-form label-width="100px">
-        <el-form-item label="选择日期">
+        <el-form-item :label="$t('cs_systemManage.cs_57')">
           <el-date-picker
             v-model="delLogDate"
             type="datetimerange"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
             format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间"
+            :placeholder="$t('cs_common.cs_109')"
             align="right"
           ></el-date-picker>
         </el-form-item>
       </el-form>
-      <div class="delLogTips">提示：请选择一年以前的历史记录</div>
+      <div class="delLogTips">{{ $t('cs_systemManage.cs_58') }}</div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="delLog">确 定</el-button>
+        <el-button size="small" @click="dialogVisible = false">
+          {{ $t('cs_common.cs_11') }}
+        </el-button>
+        <el-button size="small" type="primary" @click="delLog">
+          {{ $t('cs_common.cs_12') }}
+        </el-button>
       </span>
     </el-dialog>
   </div>
@@ -91,13 +97,13 @@ export default {
       pickerOptions1: {
         shortcuts: [
           {
-            text: '今天',
+            text: this.$t('cs_common.cs_110'),
             onClick(picker) {
               picker.$emit('pick', new Date())
             },
           },
           {
-            text: '昨天',
+            text: this.$t('cs_common.cs_111'),
             onClick(picker) {
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24)
@@ -105,7 +111,7 @@ export default {
             },
           },
           {
-            text: '一周前',
+            text: this.$t('cs_common.cs_112'),
             onClick(picker) {
               const date = new Date()
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
@@ -117,7 +123,7 @@ export default {
       pickerOptions2: {
         shortcuts: [
           {
-            text: '一年前',
+            text: this.$t('cs_systemManage.cs_59'),
             onClick(picker) {
               const end = new Date()
               const start = new Date()
@@ -127,7 +133,7 @@ export default {
             },
           },
           {
-            text: '一年半前',
+            text: this.$t('cs_systemManage.cs_60'),
             onClick(picker) {
               const end = new Date()
               const start = new Date()
@@ -136,7 +142,7 @@ export default {
             },
           },
           {
-            text: '两年前',
+            text: this.$t('cs_systemManage.cs_61'),
             onClick(picker) {
               const end = new Date()
               const start = new Date()
@@ -152,23 +158,23 @@ export default {
         maxHeight: '10000px',
         tableSetting: [
           {
-            label: '用户',
+            label: this.$t('cs_common.cs_98'),
             prop: 'username',
           },
           {
-            label: '操作时间',
+            label: this.$t('cs_systemManage.cs_62'),
             prop: 'operationTime',
           },
           {
-            label: '日志类型',
+            label: this.$t('cs_systemManage.cs_63'),
             prop: 'logType',
           },
           {
-            label: '日志内容',
+            label: this.$t('cs_systemManage.cs_64'),
             prop: 'logContent',
           },
           {
-            label: '执行结果',
+            label: this.$t('cs_systemManage.cs_65'),
             prop: 'result',
           },
         ],
@@ -213,7 +219,7 @@ export default {
           this.$message.success(res.message)
         })
       } else {
-        this.$message.warning('请选择时间范围')
+        this.$message.warning(this.$t('cs_systemManage.cs_66'))
       }
     },
   },

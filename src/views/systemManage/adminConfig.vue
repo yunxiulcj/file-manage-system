@@ -1,22 +1,22 @@
 <template>
   <div class="box">
-    <page-frame title="管理员配置" icon="adminConfig">
+    <page-frame :title="$t('cs_systemManage.cs_1')" icon="adminConfig">
       <div class="btnWrap">
         <div class="leftBtn">
           <el-button type="primary" size="small" @click="showNew">
-            添加账号
+            {{ $t('cs_systemManage.cs_2') }}
           </el-button>
           <el-button
             type="danger"
             size="small"
             @click="deleteManager(delAccount)"
           >
-            删除勾选账号
+            {{ $t('cs_systemManage.cs_3') }}
           </el-button>
         </div>
         <div class="rightBtn">
           <el-button type="warning" size="small" @click="previewDialog = true">
-            权限预览
+            {{ $t('cs_common.cs_100') }}
           </el-button>
           <el-button
             type="primary"
@@ -24,7 +24,7 @@
             icon="el-icon-refresh"
             @click="getData"
           >
-            刷新列表
+            {{ $t('cs_systemManage.cs_4') }}
           </el-button>
         </div>
       </div>
@@ -57,21 +57,21 @@
         label-position="right"
         label-width="100px"
       >
-        <el-form-item label="域账号" prop="userId">
+        <el-form-item :label="$t('cs_common.cs_101')" prop="userId">
           <el-input
             v-model="formObj.userId"
-            placeholder="请输入域账号"
+            :placeholder="$t('cs_systemManage.cs_5')"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="真实姓名">
+        <el-form-item :label="$t('cs_common.cs_92')">
           <el-input
             v-model="formObj.username"
-            placeholder="请输入真实姓名"
+            :placeholder="$t('cs_systemManage.cs_6')"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="用户角色">
+        <el-form-item :label="$t('cs_systemManage.cs_7')">
           <el-select v-model="formObj.roleId" style="width: 300px">
             <el-option
               v-for="item in roleType"
@@ -81,25 +81,27 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item :label="$t('cs_common.cs_94')">
           <el-input
             v-model="formObj.email"
-            placeholder="请输入邮箱"
+            :placeholder="$t('cs_common.cs_4')"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="手机号码">
+        <el-form-item :label="$t('cs_common.cs_102')">
           <el-input
             v-model="formObj.phone"
-            placeholder="请输入手机号码"
+            :placeholder="$t('cs_systemManage.cs_8')"
             clearable
           ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="showNewOrEdit = false">取 消</el-button>
+        <el-button size="small" @click="showNewOrEdit = false">
+          {{ $t('cs_common.cs_11') }}
+        </el-button>
         <el-button size="small" type="primary" @click="NewOrEditUser">
-          确 定
+          {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
     </el-dialog>
@@ -113,40 +115,54 @@
             padding-left: 10px;
           "
         >
-          权限预览
+          {{ $t('cs_common.cs_100') }}
         </div>
       </template>
       <div class="treeWrap">
         <div class="leftBox">
-          <div class="title">普通用户</div>
+          <div class="title">{{ $t('cs_systemManage.cs_9') }}</div>
           <el-tree
             :data="userData"
             node-key="id"
             default-expand-all
             :props="defaultProps"
-          ></el-tree>
+          >
+            <span class="custom-tree-node" slot-scope="{ node }">
+              {{ $t(node.label) }}
+            </span>
+          </el-tree>
         </div>
         <div class="leftBox">
-          <div class="title">普通管理员</div>
+          <div class="title">{{ $t('cs_common.cs_103') }}</div>
           <el-tree
             :data="normalData"
             node-key="id"
             default-expand-all
             :props="defaultProps"
-          ></el-tree>
+          >
+            <span class="custom-tree-node" slot-scope="{ node }">
+              {{ $t(node.label) }}
+            </span>
+          </el-tree>
         </div>
         <div class="rightBox">
-          <div class="title">系统管理员</div>
+          <div class="title">{{ $t('cs_common.cs_104') }}</div>
           <el-tree
             :data="adminData"
             node-key="id"
             default-expand-all
             :props="defaultProps"
-          ></el-tree>
+          >
+            <span class="custom-tree-node" slot-scope="{ node }">
+              {{ $t(node.label) }}
+            </span>
+          </el-tree>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="previewDialog = false">关 闭</el-button>
+        <el-button size="small" @click="previewDialog = false">
+          {{ $t('cs_common.cs_13') }}
+        </el-button>
       </span>
     </el-dialog>
   </div>
@@ -162,7 +178,7 @@ export default {
   data() {
     var checkUserId = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('域账号不能为空'))
+        return callback(new Error(this.$t('cs_systemManage.cs_10')))
       }
       this.$http('domainAccountMatch', { userId: value }).then((res) => {
         if (res.errCode != -1) {
@@ -199,11 +215,11 @@ export default {
       },
       roleType: [
         {
-          label: '系统管理员',
+          label: this.$t('cs_common.cs_104'),
           value: 1,
         },
         {
-          label: '普通管理员',
+          label: this.$t('cs_common.cs_103'),
           value: 2,
         },
       ],
@@ -215,35 +231,37 @@ export default {
         tableSetting: [
           {
             prop: 'userId',
-            label: '域账号',
+            label: this.$t('cs_common.cs_101'),
           },
           {
             prop: 'username',
-            label: '真实姓名',
+            label: this.$t('cs_common.cs_92'),
           },
           {
             prop: 'roleId',
-            label: '角色',
+            label: this.$t('cs_systemManage.cs_11'),
             formatter: (row) => {
-              return row.roleId == 1 ? '系统管理员' : '普通管理员'
+              return row.roleId == 1
+                ? this.$t('cs_common.cs_104')
+                : this.$t('cs_common.cs_103')
             },
           },
           {
             prop: 'email',
-            label: '邮箱',
+            label: this.$t('cs_common.cs_94'),
           },
           {
             prop: 'phone',
-            label: '手机号码',
+            label: this.$t('cs_common.cs_102'),
           },
         ],
         operation: {
           btns: [
             {
-              label: '修改',
+              label: this.$t('cs_systemManage.cs_12'),
               type: 'text',
               fn: (row) => {
-                this.newOrEdit = '编辑账号'
+                this.newOrEdit = this.$t('cs_systemManage.cs_13')
                 this.formObj.userId = row.userId
                 this.formObj.username = row.username
                 this.formObj.roleId = row.roleId
@@ -254,7 +272,7 @@ export default {
               },
             },
             {
-              label: '删除',
+              label: this.$t('cs_common.cs_51'),
               style: { color: 'red' },
               type: 'text',
               fn: (row) => {
@@ -320,35 +338,35 @@ export default {
       listRouter.map((item) => {
         let temp, temp1, temp2
         if (this.adminId.includes(item.id)) {
-          temp = { label: item.meta.title }
+          temp = { label: item.meta.i18nTitle }
         }
         if (this.normalId.includes(item.id)) {
-          temp1 = { label: item.meta.title }
+          temp1 = { label: item.meta.i18nTitle }
         }
         if (this.userId.includes(item.id)) {
-          temp2 = { label: item.meta.title }
+          temp2 = { label: item.meta.i18nTitle }
         }
         if (item.children && item.children.length > 0) {
           item.children.map((child) => {
             if (this.normalId.includes(child.id)) {
               if (temp1['children']) {
-                temp1['children'].push({ label: child.meta.title })
+                temp1['children'].push({ label: child.meta.i18nTitle })
               } else {
-                temp1['children'] = [{ label: child.meta.title }]
+                temp1['children'] = [{ label: child.meta.i18nTitle }]
               }
             }
             if (this.adminId.includes(child.id)) {
               if (temp['children']) {
-                temp['children'].push({ label: child.meta.title })
+                temp['children'].push({ label: child.meta.i18nTitle })
               } else {
-                temp['children'] = [{ label: child.meta.title }]
+                temp['children'] = [{ label: child.meta.i18nTitle }]
               }
             }
             if (this.userId.includes(child.id)) {
               if (temp2['children']) {
-                temp2['children'].push({ label: child.meta.title })
+                temp2['children'].push({ label: child.meta.i18nTitle })
               } else {
-                temp2['children'] = [{ label: child.meta.title }]
+                temp2['children'] = [{ label: child.meta.i18nTitle }]
               }
             }
           })
@@ -363,7 +381,7 @@ export default {
       })
     },
     showNew() {
-      this.newOrEdit = '新建账号'
+      this.newOrEdit = this.$t('cs_systemManage.cs_14')
       this.formObj['id'] = ''
       this.formObj.userId = ''
       this.formObj.username = ''
@@ -393,12 +411,16 @@ export default {
     },
     deleteManager(val) {
       if (val && val.length > 0) {
-        this.$confirm('是否删除所选账号？', '提示', {
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
-          type: 'error',
-          center: true,
-        }).then(() => {
+        this.$confirm(
+          this.$t('cs_systemManage.cs_15'),
+          this.$t('cs_common.cs_34'),
+          {
+            confirmButtonText: this.$t('cs_common.cs_35'),
+            cancelButtonText: this.$t('cs_common.cs_10'),
+            type: 'error',
+            center: true,
+          }
+        ).then(() => {
           this.$http('deleteAccount', { idList: val })
             .then((res) => {
               this.$message.success(res.errMsg)
@@ -408,7 +430,7 @@ export default {
             })
         })
       } else {
-        this.$message.info('请勾选删除的账号')
+        this.$message.info(this.$t('cs_systemManage.cs_16'))
       }
     },
   },

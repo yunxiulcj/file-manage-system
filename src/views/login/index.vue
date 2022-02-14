@@ -1,13 +1,13 @@
 <template>
   <div class="box">
     <div class="formBox">
-      <h3 class="titleBox">文档管理系统</h3>
+      <h3 class="titleBox">{{ $t('cs_login.cs_1') }}</h3>
       <el-form :model="loginForm" :rules="formRules" ref="loginForm">
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
             type="text"
-            placeholder="用户名"
+            :placeholder="$t('cs_common.cs_36')"
             @on-enter="handleSubmit"
           >
             <i slot="prefix" class="iconfont icon-zhanghao"></i>
@@ -17,20 +17,20 @@
           <el-input
             v-model="loginForm.password"
             type="password"
-            placeholder="密码"
+            :placeholder="$t('cs_common.cs_37')"
             @on-enter="handleSubmit"
           >
             <i slot="prefix" class="iconfont icon-mima"></i>
           </el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 14px" prop="verificationCode">
-          <div class="verificationCode">验证码 :</div>
+          <div class="verificationCode">{{ $t('cs_login.cs_2') }}</div>
           <el-row style="height: 40px">
             <el-col :span="11">
               <el-input
                 v-model="loginForm.verificationCode"
                 type="text"
-                placeholder="请输入验证码"
+                :placeholder="$t('cs_common.cs_38')"
                 @on-enter="handleSubmit"
                 @keyup.enter.native="handleSubmit"
               ></el-input>
@@ -52,9 +52,9 @@
             size="mini"
             style="font-size: 8px"
           >
-            记住密码
+            {{ $t('cs_login.cs_3') }}
           </el-checkbox>
-          <span class="forget">忘记密码?</span>
+          <span class="forget">{{ $t('cs_login.cs_4') }}</span>
         </div>
         <el-form-item>
           <el-button
@@ -66,7 +66,7 @@
               color: white;
             "
           >
-            登 录
+            {{ $t('cs_login.cs_5') }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -89,11 +89,25 @@ export default {
       },
       formRules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_39'),
+            trigger: 'blur',
+          },
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        password: [
+          {
+            required: true,
+            message: this.$t('cs_common.cs_40'),
+            trigger: 'blur',
+          },
+        ],
         verificationCode: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
+          {
+            required: true,
+            message: this.$t('cs_common.cs_38'),
+            trigger: 'blur',
+          },
         ],
       },
       verifyImg: '',

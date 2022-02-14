@@ -1,15 +1,15 @@
 <template>
   <div class="box">
-    <page-frame title="空间管理" icon="spaceManage">
+    <page-frame :title="$t('cs_systemManage.cs_43')" icon="spaceManage">
       <el-button type="primary" size="small" icon="el-icon-plus">
-        新建共享空间
+        {{ $t('cs_systemManage.cs_44') }}
       </el-button>
       <el-input
         v-model="searchStr"
         suffix-icon="el-icon-search"
         style="width: 300px; float: right"
         size="small"
-        placeholder="搜索空间名称、空间管理员、创建者"
+        :placeholder="$t('cs_systemManage.cs_45')"
       ></el-input>
       <div style="height: 15px; width: 100%"></div>
       <table-temp ref="table" :config="tableConfig">
@@ -33,32 +33,6 @@ export default {
   data() {
     return {
       searchStr: '',
-      testData: [
-        {
-          spaceName: 'space1',
-          totalQuota: '1055GB',
-          administrator: 'test',
-          membersTheSpace: '12',
-          creator: 'tset',
-          createTime: '2021-12-12 12:12:12',
-        },
-        {
-          spaceName: 'space1',
-          totalQuota: '2055GB',
-          administrator: 'test',
-          membersTheSpace: '12',
-          creator: 'tset',
-          createTime: '2021-12-12 12:12:12',
-        },
-        {
-          spaceName: 'space3',
-          totalQuota: '3055GB',
-          administrator: 'test',
-          membersTheSpace: '12',
-          creator: 'tset',
-          createTime: '2021-12-12 12:12:12',
-        },
-      ],
       tableConfig: {
         tableData: [],
         headerCellStyle: { fontSize: '15px', background: '#f8f9fa' },
@@ -67,29 +41,29 @@ export default {
         tableSetting: [
           {
             prop: 'spaceName',
-            label: '空间名称',
+            label: this.$t('cs_systemManage.cs_46'),
             slot: 'spaceName',
           },
           {
             prop: 'totalQuota',
-            label: '总配额',
+            label: this.$t('cs_systemManage.cs_47'),
           },
           {
             prop: 'administrator',
-            label: '管理员',
+            label: this.$t('cs_systemManage.cs_48'),
           },
           {
             prop: 'membersTheSpace',
-            label: '空间成员',
+            label: this.$t('cs_systemManage.cs_49'),
             sortable: true,
           },
           {
             prop: 'creator',
-            label: '创建者',
+            label: this.$t('cs_systemManage.cs_50'),
           },
           {
             prop: 'createTime',
-            label: '创建时间',
+            label: this.$t('cs_systemManage.cs_51'),
             sortable: true,
           },
         ],
