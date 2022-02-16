@@ -86,6 +86,7 @@ export default {
           })
           .finally(() => {
             this.$router.push({ path: '/login', replace: true })
+            sessionStorage.setItem('pathInfo', '')
           })
       })
     },

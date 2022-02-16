@@ -131,6 +131,8 @@ export default {
         ],
       },
       verifyImg: '',
+      tempObj: {},
+      lastPath: '',
     }
   },
   created() {
@@ -143,6 +145,7 @@ export default {
       this.loginForm.rememberPassword = false
       this.loginForm.password = ''
     }
+    this.tempObj = JSON.parse(sessionStorage.getItem('pathInfo'))
   },
   mounted() {
     this.handleRefreshVerify()
@@ -151,7 +154,6 @@ export default {
     handleSubmit() {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
-          // this.$router.push('/')
           this.loading = true
           this.$http('login', this.loginForm)
             .then(
@@ -169,7 +171,11 @@ export default {
                   this.loginForm.rememberPassword
                 )
                 this.$message.success(res.errMsg)
-                this.$router.push('/')
+                if (this.tempObj && Object.keys(this.tempObj).length > 0) {
+                  this.$router.push(this.tempObj)
+                } else {
+                  this.$router.push('/')
+                }
               },
               () => {
                 this.loginForm.verificationCode = ''

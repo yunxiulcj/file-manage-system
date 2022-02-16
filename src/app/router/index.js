@@ -82,6 +82,14 @@ router.beforeEach((to, from, next) => {
   if (from.path == '/login') {
     refreshRouter()
   }
+  if (to.name != 'login') {
+    let temp = {
+      name: to.name,
+      query: to.query,
+      params: to.params,
+    }
+    sessionStorage.setItem('pathInfo', JSON.stringify(temp))
+  }
   next()
 })
 export { listRouter }

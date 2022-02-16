@@ -182,7 +182,12 @@ export default {
     } else if (paramNum.length > 0) {
       this.tempData = this.$route.params
     } else {
-      this.tempData = JSON.parse(sessionStorage.getItem('tempObj'))
+      let pathInfo = JSON.parse(sessionStorage.getItem('pathInfo'))
+      if (Object.keys(pathInfo.params).length > 0) {
+        this.tempData = pathInfo.params
+      } else {
+        this.tempData = pathInfo.query
+      }
     }
     this.getData(this.tempData)
     this.accountType = this.tempData.accountType

@@ -360,13 +360,6 @@ export default {
               label: this.$t('cs_common.cs_42'),
               type: 'text',
               fn: (row) => {
-                sessionStorage.setItem(
-                  'tempObj',
-                  JSON.stringify({
-                    accountType: '1',
-                    applyId: row.applyId,
-                  })
-                )
                 this.$router.push({
                   name: 'approval',
                   query: {

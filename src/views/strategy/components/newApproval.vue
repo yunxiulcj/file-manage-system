@@ -18,6 +18,7 @@
           v-for="item in approvalType"
           :key="item.value"
           :label="item.value"
+          style="height: 22px; line-height: 22px"
         >
           {{ item.label }}
         </el-radio>
@@ -67,11 +68,11 @@
         <div class="noLevel">
           <div class="label">{{ $t('cs_strategy.cs_65') }}</div>
           <div class="Default">
-            <span class="label">{{ $t('cs_strategy.cs_66') }}</span>
+            <span>{{ $t('cs_strategy.cs_66') }}</span>
             <el-input
               v-model="formObj.superior.defaultApprovalUser"
               size="small"
-              style="width: 380px; margin-left: 10px"
+              style="width: 345px; margin-left: 10px"
             ></el-input>
           </div>
         </div>

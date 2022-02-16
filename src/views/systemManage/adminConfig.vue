@@ -55,7 +55,7 @@
         size="small"
         style="width: 400px"
         label-position="right"
-        label-width="100px"
+        label-width="135px"
       >
         <el-form-item :label="$t('cs_common.cs_101')" prop="userId">
           <el-input
@@ -72,7 +72,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('cs_systemManage.cs_7')">
-          <el-select v-model="formObj.roleId" style="width: 300px">
+          <el-select v-model="formObj.roleId" style="width: 265px">
             <el-option
               v-for="item in roleType"
               :key="item.value"

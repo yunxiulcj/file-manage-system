@@ -121,7 +121,7 @@
         <div class="cloudPath fileBox">
           <div class="title">{{ $t('cs_common.cs_105') }}</div>
           <div class="contentBox" v-loading="loading">
-            <el-form label-width="100px" label-position="right" size="small">
+            <el-form label-width="110px" label-position="right" size="small">
               <el-form-item :label="$t('cs_systemManage.cs_29')">
                 <el-input
                   v-model="formObj.diskRootPath"

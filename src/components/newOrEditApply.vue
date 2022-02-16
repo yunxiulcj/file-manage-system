@@ -11,7 +11,7 @@
         <div class="applyForm">
           <el-form
             ref="applyForm"
-            label-width="100px"
+            label-width="150px"
             label-position="right"
             size="small"
             style="width: 95%"
@@ -100,7 +100,7 @@
                   controls-position="right"
                   :min="0"
                   size="mini"
-                  style="width: 100px; margin-left: 25px; margin-right: 10px"
+                  style="width: 100px; margin: 0px 10px"
                 ></el-input-number>
                 {{ $t('cs_common.cs_8') }}
               </div>
@@ -333,14 +333,6 @@ export default {
   },
   methods: {
     jumpDetail(val) {
-      sessionStorage.setItem(
-        'tempObj',
-        JSON.stringify({
-          accountType: '2',
-          approvalState: 2,
-          applyId: val,
-        })
-      )
       this.$router.push({
         name: 'approval',
         params: {
