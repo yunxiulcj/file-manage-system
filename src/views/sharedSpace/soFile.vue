@@ -260,7 +260,7 @@
             </div>
           </el-checkbox-group>
         </div>
-        <el-empty v-else description="暂无数据"></el-empty>
+        <el-empty v-else :description="$t('cs_common.cs_57')"></el-empty>
       </div>
     </div>
     <el-dialog :visible.sync="addFolderDialog" width="500px">
@@ -287,7 +287,7 @@
           :load="loadNode"
           node-key="label"
           lazy
-          empty-text="暂无数据"
+          :empty-text="$t('cs_common.cs_57')"
           @node-click="nodeClick"
         >
           <span class="nodeItem" slot-scope="{ node }">

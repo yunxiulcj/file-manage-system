@@ -272,7 +272,6 @@ export default {
       }
     },
     initEdit(val, data) {
-      console.log('init', data)
       this.type = val == 1 ? 'superior' : 'member'
       this.formObj.type = val
       if (val == 1) {
@@ -308,7 +307,6 @@ export default {
             return item.userId
           })
         : []
-      console.log(this.userList, this.formObj.member.userList)
       this.$nextTick(() => {
         this.$refs['newCC'].setNodeCheck()
       })

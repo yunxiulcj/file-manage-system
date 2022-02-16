@@ -5,7 +5,7 @@
       ref="elTable"
       :max-height="cloneConfig.maxHeight"
       v-loading="innerLoading"
-      loadingText="正在加载表格数据"
+      :loadingText="$t('cs_.cs_19')"
       :empty-text="emptyText"
       :data="cloneConfig.tableData"
       :header-cell-style="cloneConfig.headerCellStyle"

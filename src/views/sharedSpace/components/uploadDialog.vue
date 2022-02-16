@@ -47,7 +47,6 @@
           class="upload-demo"
           ref="upload"
           :action="uploadUrl"
-          :on-remove="handleRemove"
           :show-file-list="false"
           :auto-upload="false"
           :on-change="onUploadChange"
@@ -220,22 +219,10 @@ export default {
       }
     },
     delUploadFile(data, index) {
-      console.log(data, index)
       this.fileList.splice(index, 1)
     },
     submitUpload() {
-      // console.log('submitUpload', this.fileList)
       this.$refs.upload.submit()
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    // handlePreview(file) {
-    //   console.log('handlePreview', file)
-    // },
-    handleNodeClick(data) {
-      this.targetPath = data.label
-      console.log(data)
     },
     cancel() {
       this.$emit('input', false)

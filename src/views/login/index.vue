@@ -1,5 +1,25 @@
 <template>
   <div class="box">
+    <div class="changeLangBox">
+      <el-dropdown @command="handleCommand">
+        <span
+          type="primary"
+          plain
+          size="mini"
+          round
+          style="color: #228be6"
+          class="el-dropdown-link"
+        >
+          {{ $t('cs_menu.cs_19') }}
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="zh">中文</el-dropdown-item>
+          <el-dropdown-item command="en">English</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
+
     <div class="formBox">
       <h3 class="titleBox">{{ $t('cs_login.cs_1') }}</h3>
       <el-form :model="loginForm" :rules="formRules" ref="loginForm">
@@ -172,6 +192,11 @@ export default {
           this.refleshLoading = false
         })
     },
+    handleCommand(val) {
+      this.$i18n.locale = val
+      localStorage.setItem('language', val)
+      location.reload()
+    },
   },
 }
 </script>
@@ -187,6 +212,11 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
+  .changeLangBox {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+  }
 }
 .formBox {
   width: 300px;

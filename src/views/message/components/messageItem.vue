@@ -27,7 +27,8 @@
                 <div class="periodValidity infoItem">
                   <span class="label">{{ $t('cs_message.cs_1') }}</span>
                   <span v-if="!item.dayUnlimited">
-                    {{ item.expiredStartTime }} 至 {{ item.expiredEndTime }}
+                    {{ item.expiredStartTime }} {{ $t('cs_common.cs_63') }}
+                    {{ item.expiredEndTime }}
                   </span>
                   <span v-else>{{ $t('cs_common.cs_41') }}</span>
                 </div>

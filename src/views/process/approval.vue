@@ -31,7 +31,7 @@
                 :key="index"
                 effect="dark"
                 placement="top"
-                :content="'文件路径：' + item.filePath"
+                :content="$t('cs_process.cs_2') + item.filePath"
               >
                 <div class="fileBox">
                   <div

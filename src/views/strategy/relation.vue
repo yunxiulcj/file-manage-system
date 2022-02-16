@@ -22,7 +22,7 @@
           node-key="name"
           highlight-current
           lazy
-          empty-text="暂无数据"
+          :empty-text="$t('cs_common.cs_57')"
           @node-click="nodeClick"
         >
           <span class="nodeItem" slot-scope="{ node, data }">

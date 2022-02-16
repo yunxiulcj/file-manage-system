@@ -25,14 +25,14 @@
             class="itemWrap"
             v-if="!showEmply"
             v-loading="loading"
-            element-loading-text="加载中..."
+            :element-loading-text="$t('cs_common.cs_56')"
           >
             <message-item
               :messageList="messageList"
               @updateList="updateList"
             ></message-item>
           </div>
-          <el-empty v-else description="暂无数据"></el-empty>
+          <el-empty v-else :description="$t('cs_common.cs_57')"></el-empty>
         </el-tab-pane>
         <el-tab-pane name="0">
           <span slot="label">
@@ -48,25 +48,25 @@
             class="itemWrap"
             v-if="!showEmply"
             v-loading="loading"
-            element-loading-text="加载中..."
+            :element-loading-text="$t('cs_common.cs_56')"
           >
             <message-item
               :messageList="messageList"
               @updateList="updateList"
             ></message-item>
           </div>
-          <el-empty v-else description="暂无数据"></el-empty>
+          <el-empty v-else :description="$t('cs_common.cs_57')"></el-empty>
         </el-tab-pane>
         <el-tab-pane :label="$t('cs_message.cs_14')" name="1">
           <div
             class="itemWrap"
             v-if="!showEmply"
             v-loading="loading"
-            element-loading-text="加载中..."
+            :element-loading-text="$t('cs_common.cs_56')"
           >
             <message-item :messageList="messageList"></message-item>
           </div>
-          <el-empty v-else description="暂无数据"></el-empty>
+          <el-empty v-else :description="$t('cs_common.cs_57')"></el-empty>
         </el-tab-pane>
       </el-tabs>
     </div>

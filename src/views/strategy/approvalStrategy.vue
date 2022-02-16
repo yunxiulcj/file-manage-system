@@ -443,7 +443,6 @@ export default {
       } else if (data.type == 2) {
         userInfo = data.member
       }
-      console.log('edit1', userInfo)
       this.$refs['newApproval'].initEdit(data.type, userInfo)
       this.showNewApproval = true
     },

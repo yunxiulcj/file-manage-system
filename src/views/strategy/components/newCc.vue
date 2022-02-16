@@ -28,7 +28,7 @@
             show-checkbox
             node-key="name"
             lazy
-            empty-text="暂无数据"
+            :empty-text="$t('cs_common.cs_57')"
             @check="nodeCheck"
           >
             <span class="nodeItem" slot-scope="{ node, data }">

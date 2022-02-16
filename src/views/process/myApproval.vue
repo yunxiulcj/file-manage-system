@@ -19,9 +19,9 @@
             value-format="yyyy-MM-dd HH:mm:ss"
             format="yyyy-MM-dd HH:mm:ss"
             :picker-options="pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('cs_common.cs_63')"
+            :start-placeholder="$t('cs_common.cs_64')"
+            :end-placeholder="$t('cs_common.cs_65')"
             align="right"
           ></el-date-picker>
         </el-form-item>
