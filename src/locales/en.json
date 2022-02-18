@@ -1,8 +1,8 @@
 {
-  "Uploaderror4": "Cannot find resource",
-  "Uploaderror5": "File size exceeds threshold",
-  "Uploaderror6": "Unsupported file types",
-  "Uploaderror7": "Invalid token",
+  "uploadError4": "Cannot find resource",
+  "uploadError5": "File size exceeds threshold",
+  "uploadError6": "Unsupported file types",
+  "uploadError7": "Invalid token",
   "cs_menu": {
     "cs_1": "Information",
     "cs_10": "ApprovalPolicy",

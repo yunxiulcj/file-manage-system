@@ -10,7 +10,7 @@
         >
           {{ $t('cs_message.cs_11') }}
         </el-button>
-        <el-select v-model="filterTime" size="mini">
+        <el-select v-model="filterTime" @change="handleTimeChange" size="mini">
           <el-option
             v-for="item in timeRange"
             :key="item.value"
@@ -145,6 +145,10 @@ export default {
       this.$http('getUserUnreadNoticeNum').then((res) => {
         this.unread = res.data
       })
+    },
+    handleTimeChange() {
+      this.getNoticeList(this.activeName)
+      this.getUserUnreadNoticeNum()
     },
     getNoticeList(type) {
       this.loading = true

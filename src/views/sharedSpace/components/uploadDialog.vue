@@ -79,13 +79,9 @@
               {{ $t('cs_sharedSpace.cs_4') }}
             </div>
             <div class="fileState" v-else>
-              <i
-                class="el-icon-close"
-                v-if="file.status == 'ready'"
-                @click="delUploadFile(file, index)"
-              ></i>
               <i class="el-icon-warning" v-if="file.status == 'error'"></i>
               <i class="el-icon-success" v-if="file.status == 'success'"></i>
+              <i class="el-icon-close" @click="delUploadFile(file, index)"></i>
             </div>
           </div>
         </div>
