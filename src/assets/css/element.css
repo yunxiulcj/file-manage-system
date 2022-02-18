@@ -4,55 +4,67 @@
   text-align: center;
   width: 150px;
 }
+
 .fileName .el-input--mini .el-input__inner {
   height: 22px;
   line-height: 22px;
   padding: 0px 8px;
 }
-.el-drawer__header{
+
+.el-drawer__header {
   margin-bottom: 15px;
 }
+
 .el-checkbox__input {
-	display: inline-grid;
-    white-space: pre-line;
-    word-wrap: break-word;
-    overflow: hidden;
-    line-height: 20px;
- }
-.loadingStyle {
-position: absolute;
-top: 14px;
-font-size: 17px;
+  display: inline-grid;
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow: hidden;
+  line-height: 20px;
 }
-.el-popover{
+
+.loadingStyle {
+  position: absolute;
+  top: 14px;
+  font-size: 17px;
+}
+
+.el-popover {
   min-width: 100px;
 }
-.el-timeline-item__tail{
-border-left: 2px solid #1890ff;
+
+.el-timeline-item__tail {
+  border-left: 2px solid #1890ff;
 }
-.el-timeline-item{
-padding-bottom: 8px;
+
+.el-timeline-item {
+  padding-bottom: 8px;
+  left: 30px;
 }
+
 ::-webkit-scrollbar {
   width: 7px;
   height: 5px;
-  border-radius:15px;
-  -webkit-border-radius:  15px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
 }
+
 ::-webkit-scrollbar-track-piece {
   background-color: #ffff;
-  border-radius:15px;
-  -webkit-border-radius:  15px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
 }
+
 ::-webkit-scrollbar-thumb:vertical {
   height: 5px;
   background-color: rgba(144, 147, 153, 0.5);
   border-radius: 15px;
-  -webkit-border-radius:  15px;
+  -webkit-border-radius: 15px;
 }
+
 ::-webkit-scrollbar-thumb:horizontal {
   width: 7px;
   background-color: rgba(144, 147, 153, 0.5);
-  border-radius:  15px;  
+  border-radius: 15px;
   -webkit-border-radius: 15px;
 }

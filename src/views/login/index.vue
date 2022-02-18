@@ -145,10 +145,12 @@ export default {
       this.loginForm.rememberPassword = false
       this.loginForm.password = ''
     }
-    this.tempObj = JSON.parse(sessionStorage.getItem('pathInfo'))
   },
   mounted() {
     this.handleRefreshVerify()
+    this.tempObj =
+      sessionStorage.getItem('pathInfo') &&
+      JSON.parse(sessionStorage.getItem('pathInfo'))
   },
   methods: {
     handleSubmit() {

@@ -7,7 +7,7 @@ import { typeTest } from '@/utils/obj-operation'
 import router from '@/app/router/index'
 
 function getErrText(data) {
-  if (!data || !data.message) {
+  if (!data || !data.errMsg) {
     let language = localStorage.getItem('language') || 'zh'
     let mes
     if (language == 'zh') {

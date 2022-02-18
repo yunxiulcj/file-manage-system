@@ -156,7 +156,7 @@
         </el-button>
       </span>
     </el-dialog>
-    <el-dialog :visible.sync="detailDialog">
+    <el-dialog :visible.sync="detailDialog" width="900px">
       <template slot="title">
         <div
           style="
@@ -405,7 +405,7 @@ export default {
                 }
               }
               .btnBox {
-                min-width: 140px;
+                min-width: 150px;
                 text-align: right;
               }
             }

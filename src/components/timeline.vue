@@ -129,9 +129,9 @@ export default {
 <style lang="scss" scoped>
 .labelBox {
   position: absolute;
-  left: -70px;
-  width: 70px;
-  text-align: center;
+  left: -110px;
+  width: 100px;
+  text-align: right;
   font-size: 12px;
   font-weight: bolder;
   color: #434343;

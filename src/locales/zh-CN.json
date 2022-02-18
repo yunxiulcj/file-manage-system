@@ -1,4 +1,8 @@
 {
+  "uploadError4":"无法找到资源",
+  "uploadError5":"文件大小超过阈值",
+  "uploadError6":"不支持的文件类型",
+  "uploadError7":"无效的token",
   "cs_menu": {
     "cs_1": "消息",
     "cs_2": "网盘",

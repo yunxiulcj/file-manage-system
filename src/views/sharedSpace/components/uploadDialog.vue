@@ -193,7 +193,28 @@ export default {
             } else {
               this.$set(this.fileList[fileIndex], 'status', 'error')
               this.$set(this.fileList[fileIndex], 'loading', false)
-              this.$message.warning(file.name + '：' + obj.data.errMsg)
+              switch (obj.data.errCode) {
+                case 12004:
+                  this.$message.warning(
+                    file.name + '：【' + this.$t('uploadError4') + '】'
+                  )
+                  break
+                case 12005:
+                  this.$message.warning(
+                    file.name + '：【' + this.$t('uploadError5') + '】'
+                  )
+                  break
+                case 12006:
+                  this.$message.warning(
+                    file.name + '：【' + this.$t('uploadError6') + '】'
+                  )
+                  break
+                case 12007:
+                  this.$message.warning(
+                    file.name + '：【' + this.$t('uploadError7') + '】'
+                  )
+                  break
+              }
             }
           })
       })
