@@ -277,11 +277,11 @@
         </div>
       </template>
       <div style="margin-bottom: 5px; font-size: 13px">
-        {{ $t('cs_sharedSpace.cs_23') }}
+        {{ $t('cs_sharedSpace.cs_1') }}
       </div>
       <div class="fileTreeWrap">
         <el-tree
-          style="width: 300px"
+          style="max-width: 420px"
           ref="tree"
           :props="props"
           :load="loadNode"
