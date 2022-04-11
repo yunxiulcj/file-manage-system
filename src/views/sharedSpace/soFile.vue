@@ -482,15 +482,17 @@ export default {
       let path = node.level == 0 ? '' : node.data.path
       this.$http('getFileList', { path: path }).then((res) => {
         let temp = []
-        res.data.map((item) => {
-          if (item.dir) {
-            temp.push({
-              name: item.name,
-              path: item.path,
-              leaf: !item.dir,
-            })
-          }
-        })
+        if (res.data) {
+          res.data.map((item) => {
+            if (item.dir) {
+              temp.push({
+                name: item.name,
+                path: item.path,
+                leaf: !item.dir,
+              })
+            }
+          })
+        }
         resolve(temp)
         this.node = node
         this.resolve = resolve
@@ -561,9 +563,11 @@ export default {
       }
       this.$http('getFileList', { path: path })
         .then((res) => {
-          res.data.map((item) => {
-            item['fileSize'] = unitSetUp(item.size)
-          })
+          if (res.data) {
+            res.data.map((item) => {
+              item['fileSize'] = unitSetUp(item.size)
+            })
+          }
           this.tableConfig.tableData = res.data
           this.fullData = res.data
           this.nowPath = path
@@ -609,7 +613,9 @@ export default {
       this.$http('getPersonDiskSize', {
         userId: localStorage.getItem('username') || '',
       }).then((res) => {
-        this.$store.commit('SET_CAPACITY', res.data)
+        if (res.data) {
+          this.$store.commit('SET_CAPACITY', res.data)
+        }
       })
     },
     showEditName(val) {

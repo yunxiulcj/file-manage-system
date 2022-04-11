@@ -8,6 +8,11 @@ import process from './modules/process'
 import strategy from './modules/strategy'
 import systemManage from './modules/systemManage'
 import { clone } from '../../utils/obj-operation'
+const originalPush = vueSystem.router.prototype.push
+
+vueSystem.router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err)
+}
 Vue.use(vueSystem.router)
 
 let defaultRouter = [

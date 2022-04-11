@@ -63,7 +63,7 @@
               </div>
             </el-form-item>
             <el-form-item :label="$t('cs_common.cs_7')">
-              <div class="member">
+              <div class="member" v-loading="loading1">
                 <div class="content">
                   <div v-for="user in applyForm.approvalUserList" :key="user">
                     <el-tooltip placement="top">
@@ -216,6 +216,7 @@ export default {
   data() {
     return {
       loading: false,
+      loading1: false,
       tipInfo: '',
       tipsDialog: false,
       nowPath: '/',
@@ -470,9 +471,14 @@ export default {
       })
     },
     getCurrentApprovalUser() {
-      this.$http('getCurrentApprovalUser').then((res) => {
-        this.$set(this.applyForm, 'approvalUserList', res.data)
-      })
+      this.loading1 = true
+      this.$http('getCurrentApprovalUser')
+        .then((res) => {
+          this.$set(this.applyForm, 'approvalUserList', res.data)
+        })
+        .finally(() => {
+          this.loading1 = false
+        })
     },
   },
 }

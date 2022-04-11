@@ -219,7 +219,9 @@ export default {
       this.$http('getPersonDiskSize', {
         userId: localStorage.getItem('username') || '',
       }).then((res) => {
-        this.$store.commit('SET_CAPACITY', res.data)
+        if (res.data) {
+          this.$store.commit('SET_CAPACITY', res.data)
+        }
       })
     },
     onUploadChange(file) {

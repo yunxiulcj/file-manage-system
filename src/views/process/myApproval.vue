@@ -64,7 +64,7 @@
         </el-button>
       </span>
     </el-dialog>
-    <el-dialog :visible.sync="agreeOrRefuseDialog" width="500px">
+    <!-- <el-dialog :visible.sync="agreeOrRefuseDialog" width="500px">
       <template slot="title">
         <div
           style="
@@ -115,7 +115,7 @@
           {{ $t('cs_common.cs_12') }}
         </el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -322,42 +322,42 @@ export default {
         },
         operation: {
           btns: [
+            // {
+            //   label: this.$t('cs_common.cs_43'),
+            //   style: { color: '#389e0d' },
+            //   type: 'text',
+            //   fn: (row) => {
+            //     this.editForm.applyId = row.applyId
+            //     this.editForm.applyStatus = 1
+            //     this.editForm.comment = ''
+            //     this.editForm.downloadCount = row.downloadCount
+            //     this.editForm.downloadExpiredDay = row.downloadDay
+            //     this.canEdit = row.canEdit
+            //     this.agreeOrRefuseDialog = true
+            //   },
+            //   show: (row) => {
+            //     return row.canApproval
+            //   },
+            // },
+            // {
+            //   label: this.$t('cs_common.cs_44'),
+            //   style: { color: '#f5222d' },
+            //   type: 'text',
+            //   fn: (row) => {
+            //     this.editForm.applyId = row.applyId
+            //     this.editForm.applyStatus = 2
+            //     this.editForm.downloadCount = row.downloadCount
+            //     this.editForm.downloadExpiredDay = row.downloadDay
+            //     this.editForm.comment = ''
+            //     this.canEdit = false
+            //     this.agreeOrRefuseDialog = true
+            //   },
+            //   show: (row) => {
+            //     return row.canApproval
+            //   },
+            // },
             {
-              label: this.$t('cs_common.cs_43'),
-              style: { color: '#389e0d' },
-              type: 'text',
-              fn: (row) => {
-                this.editForm.applyId = row.applyId
-                this.editForm.applyStatus = 1
-                this.editForm.comment = ''
-                this.editForm.downloadCount = row.downloadCount
-                this.editForm.downloadExpiredDay = row.downloadDay
-                this.canEdit = row.canEdit
-                this.agreeOrRefuseDialog = true
-              },
-              show: (row) => {
-                return row.canApproval
-              },
-            },
-            {
-              label: this.$t('cs_common.cs_44'),
-              style: { color: '#f5222d' },
-              type: 'text',
-              fn: (row) => {
-                this.editForm.applyId = row.applyId
-                this.editForm.applyStatus = 2
-                this.editForm.downloadCount = row.downloadCount
-                this.editForm.downloadExpiredDay = row.downloadDay
-                this.editForm.comment = ''
-                this.canEdit = false
-                this.agreeOrRefuseDialog = true
-              },
-              show: (row) => {
-                return row.canApproval
-              },
-            },
-            {
-              label: this.$t('cs_common.cs_42'),
+              label: this.$t('cs_.cs_34'),
               type: 'text',
               fn: (row) => {
                 this.$router.push({

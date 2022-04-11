@@ -49,7 +49,7 @@
               </el-tooltip>
             </template>
           </div>
-          <div class="fileFromInfo">
+          <div class="fileFromInfo" v-if="accountType == 2">
             {{ $t('cs_process.cs_10') + userName + $t('cs_process.cs_11') }}
           </div>
         </div>
@@ -57,15 +57,10 @@
         <el-divider></el-divider>
       </div>
       <div class="btnWrap" v-if="detailData.canApproval">
-        <el-button @click="agree(detailData)" type="primary" size="small" plain>
+        <el-button @click="agree(detailData)" type="primary" size="small">
           {{ $t('cs_common.cs_43') }}
         </el-button>
-        <el-button
-          @click="refuse(detailData)"
-          type="warning"
-          size="small"
-          plain
-        >
+        <el-button @click="refuse(detailData)" type="danger" size="small">
           {{ $t('cs_common.cs_44') }}
         </el-button>
       </div>
@@ -331,7 +326,7 @@ export default {
   .btnWrap {
     position: absolute;
     bottom: 0px;
-    right: 80px;
+    left: 70px;
   }
   .goBack {
     position: absolute;
